@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QResizeEvent>
 
 QT_BEGIN_NAMESPACE
 
@@ -13,12 +14,12 @@ QT_END_NAMESPACE
 
 class main_window : public QWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    main_window(QWidget* parent = nullptr);
-    ~main_window();
+	main_window(QWidget* parent = nullptr);
+	~main_window();
 
 private:
-    Ui::main_window* ui;
+	Ui::main_window* ui;
 };

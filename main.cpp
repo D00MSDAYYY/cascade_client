@@ -1,12 +1,14 @@
 #include <QApplication>
 
 #include "main_window.hpp"
-
 int main(int argc , char** argv ){
+	
 	QApplication app(argc, argv);
-
-    auto         mw = new main_window();
+    app.setStyle("fusion");
+    auto mw = new main_window();
     mw->show();
 
     return app.exec();
+
+	
 }
