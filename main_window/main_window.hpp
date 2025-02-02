@@ -1,16 +1,8 @@
 #pragma once
 
+#include <QHBoxLayout>
 #include <QMainWindow>
-#include <QResizeEvent>
-
-QT_BEGIN_NAMESPACE
-
-namespace Ui
-{
-class main_window;
-}
-
-QT_END_NAMESPACE
+#include <QPushButton>
 
 class main_window : public QWidget
 {
@@ -20,6 +12,13 @@ public:
 	main_window(QWidget* parent = nullptr);
 	~main_window();
 
+protected:
+	void
+	resizeEvent(QResizeEvent* event);
+
 private:
-	Ui::main_window* ui;
+	QHBoxLayout* tb_layout{new QHBoxLayout{}};
+	QPushButton* left_btn{new QPushButton{}};
+	QHBoxLayout* scroll_layout{new QHBoxLayout{}};
+	QPushButton* right_btn{new QPushButton{}};
 };
