@@ -59,7 +59,43 @@ QPushButton:hover {
     border: 2px outset #B0B0B0; /* Сохранение внешней рамки при наведении */
 }
 
+   QScrollBar::handle {
+            background: #808080;
+            border: 1px solid #404040;
+        }
+        QScrollBar::add-line,
+        QScrollBar::sub-line {
+            background: #C0C0C0;
+            border: 1px solid #404040;
+        }
+        QScrollBar::add-line:vertical,
+        QScrollBar::sub-line:vertical {
+            height: 16px;
+        }
+        QScrollBar::add-line:horizontal,
+        QScrollBar::sub-line:horizontal {
+            width: 16px;
+        }
+        QScrollBar::up-arrow,
+        QScrollBar::down-arrow,
+        QScrollBar::left-arrow,
+        QScrollBar::right-arrow {
+            background: #404040;
+            width: 7px;
+            height: 7px;
+        }
+        QScrollBar::add-page,
+        QScrollBar::sub-page {
+            background: #C0C0C0;
+        }
+        QScrollBar:vertical {
+            width: 16px;
+        }
+        QScrollBar:horizontal {
+            height: 16px;
+        }
 )");
+
 
 	auto mw{new main_window()};
 	mw->show();
