@@ -12,13 +12,13 @@ main_window::main_window(QWidget* parent)
 
 	for(std::string action_str: {"sensors", "connections", "journal", "information", "settings"})
 	{
-		auto path_str{":/icons/" + action_str + ".png"};
+		auto path_str{":/mw/icons/" + action_str + ".png"};
 		auto tmp_action{_tl_bar->addAction(
 			QIcon(QPixmap{{path_str.c_str()}}.scaled({32, 32}, Qt::AspectRatioMode::KeepAspectRatio)),
 			{action_str.c_str()})};
 	}
 	addToolBar(Qt::LeftToolBarArea, _tl_bar);
-
+	
 	setCentralWidget(_stkd_wgt);
 
 	for(int index1{0}; auto& action: _tl_bar->actions())

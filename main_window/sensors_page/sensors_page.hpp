@@ -1,10 +1,10 @@
 #pragma once
 
-
 #include <QGridLayout>
 #include <QMainWindow>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QToolBar>
 #include <QVBoxLayout>
 
 class sensors_page : public QMainWindow
@@ -23,5 +23,10 @@ private:
 	QWidget*	 _snsrs_pln{new QWidget{this}};
 
 	QScrollArea* _scrl_area{new QScrollArea{this}};
+
+	QToolBar*	 _tl_bar{
+		   new QToolBar{"Tool bar", this}
+	 };
+
 	// QVBoxLayout* _pg_lyt{new QVBoxLayout{this}};
 };

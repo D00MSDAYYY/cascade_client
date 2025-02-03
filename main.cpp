@@ -24,8 +24,11 @@ QToolButton {
     background-color: #C0C0C0; /* Серый фон */
     border: 2px outset #A0A0A0; /* Внешняя рамка */
     color: black; /* Черный текст */
-    padding: 5px; /* Отступы внутри кнопки */
+	margin: 2px; /* Внешний отступ */
     font-family: "MS Shell Dlg", sans-serif; /* Шрифт Windows 2000 */
+
+	min-width: 70px; /* Минимальная ширина кнопки */
+    min-height: 30px; /* Минимальная высота кнопки */
 }
 
 QToolButton:hover {
@@ -55,6 +58,7 @@ QPushButton:hover {
     background-color: #D0D0D0; /* Светлее при наведении */
     border: 2px outset #B0B0B0; /* Сохранение внешней рамки при наведении */
 }
+
 )");
 
 	auto mw{new main_window()};
