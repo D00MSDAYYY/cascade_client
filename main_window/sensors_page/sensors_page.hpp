@@ -17,6 +17,8 @@ public:
 
 	void
 	addWidget();
+	void
+	removeWidget();
 
 private:
 	QGridLayout* _snsrs_grd{new QGridLayout{this}};

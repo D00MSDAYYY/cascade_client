@@ -12,7 +12,7 @@ PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/main_window.hpp
 PRIVATE
 	main_window.cpp
-	icons.qrc
+	mw_icons.qrc
 )
 
 target_include_directories(${PROJECT_NAME}
