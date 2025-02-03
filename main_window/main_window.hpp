@@ -13,6 +13,6 @@ public:
 	~main_window();
 
 private:
-	QToolBar* _tb{new QToolBar{"Tool bar",this}};
-	QStackedWidget* _sw{new QStackedWidget{this}};
+	QToolBar* _tl_bar{new QToolBar{"Tool bar",this}};
+	QStackedWidget* _stkd_wgt{new QStackedWidget{this}};
 };

@@ -1,18 +1,17 @@
 cmake_minimum_required(VERSION 3.26)
-project(main_window)
+project(sensors_page)
 
 ####################### insert subdirectories here ##############################
-add_subdirectory(sensors_page)
+
 #################################################################################
 
 add_library(${PROJECT_NAME} "")
 
 target_sources(${PROJECT_NAME} 
 PUBLIC
-	${CMAKE_CURRENT_SOURCE_DIR}/main_window.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/sensors_page.hpp
 PRIVATE
-	main_window.cpp
-	icons.qrc
+	sensors_page.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -23,7 +22,6 @@ PUBLIC
 target_link_libraries(${PROJECT_NAME}
 PUBLIC
 	Qt::Widgets
-	sensors_page
 )
 
 

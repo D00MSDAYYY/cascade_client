@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.26)
 project(c_gui)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -12,8 +12,9 @@ set(CMAKE_AUTORCC ON)
 
 ####################### insert subdirectories here ##############################
 add_subdirectory(main_window)
+#################################################################################
 
-add_executable(${PROJECT_NAME}  )
+add_executable(${PROJECT_NAME}  "")
 
 target_sources(${PROJECT_NAME} 
 PRIVATE
