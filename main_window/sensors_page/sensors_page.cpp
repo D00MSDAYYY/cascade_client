@@ -67,10 +67,10 @@ sensors_page::addSensor()
 			this,
 			[this](QWidget* new_snsr)
 			{
-				std::cout << "page received " << std::endl;
-				std::cout << "received widget addr "<< new_snsr << std::endl;
+				new_snsr->setStyleSheet("background-color: gray ;");
 
 				new_snsr->setMinimumSize(200, 100);
+				
 				auto count{_snsrs_grd->count()};
 				new_snsr->setObjectName("Виджет " + QString::number(count));
 				// Устанавливаем политику изменения размеров

@@ -161,11 +161,7 @@ sensors_creator::sensors_creator(QWidget* parent)
 			this,
 			[this]()
 			{
-				std::cout << "create pushed" << std::endl;
-				auto tmp = new QWidget{};
-				std::cout << "received widget addr " << tmp << std::endl;
-
-				emit sensorCreated(tmp);
+				emit sensorCreated(new QWidget{this});
 				close();
 			});
 	auto cncl_btn{
