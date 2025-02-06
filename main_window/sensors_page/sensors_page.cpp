@@ -1,9 +1,13 @@
 #include "sensors_page.hpp"
 
+#include "sensors_creator.hpp"
+
 #include <QComboBox>
-#include <QMessageBox>
-#include <iostream>
 #include <QInputDialog>
+#include <QMessageBox>
+#include <QPushButton>
+#include <functional>
+#include <iostream>
 
 sensors_page::sensors_page(QWidget* parent)
 	: QMainWindow{parent}
@@ -27,16 +31,25 @@ sensors_page::sensors_page(QWidget* parent)
 	_tl_bar->setIconSize({32, 32});
 	_tl_bar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 
-	for(const auto& [action_str, func]: std::vector<std::pair<std::string, void (sensors_page::*)()>>{
-			{"add",	&sensors_page::addWidget	},
-			{"remove", &sensors_page::removeWidget}
-	   })
+	for(const auto& [str, func]:
+		std::vector<std::pair<std::string, std::function<void()>>>{
+			{"add", std::bind(&sensors_page::addSensor, this)},
+			{"remove", std::bind(&sensors_page::removeSensor, this)},
+			{"|", []() { return; }},
+			{"resume", []() { return; }},
+			{"suspend", []() { return; }}
+	 })
 	{
-		auto path_str{":/sp/icons/" + action_str + ".png"};
-		auto action{_tl_bar->addAction(
-			QIcon(QPixmap(path_str.c_str()).scaled({32, 32}, Qt::AspectRatioMode::KeepAspectRatio)),
-			action_str.c_str())};
-		connect(action, &QAction::triggered, this, func);
+		if(str == "|") { _tl_bar->addSeparator(); }
+		else
+		{
+			auto path{":/sp_icons/" + str + ".png"};
+			auto action{_tl_bar->addAction(
+				QIcon{
+					QPixmap{path.c_str()}.scaled(_tl_bar->iconSize(), Qt::AspectRatioMode::KeepAspectRatio)},
+				str.c_str())};
+			connect(action, &QAction::triggered, this, func);
+		}
 	}
 
 	setCentralWidget(_scrl_area);
@@ -45,89 +58,40 @@ sensors_page::sensors_page(QWidget* parent)
 }
 
 void
-sensors_page::addWidget()
+sensors_page::addSensor()
 {
-	auto new_snsr{new QPushButton(_snsrs_pln)};
-	new_snsr->setMinimumSize({200, 100});
-	auto count{_snsrs_grd->count()};
-	new_snsr->setText("Виджет " + QString::number(count));
+	auto creator{new sensors_creator{this}};
 
-	// Устанавливаем политику изменения размеров
-	new_snsr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	connect(creator,
+			&sensors_creator::sensorCreated,
+			this,
+			[this](QWidget* new_snsr)
+			{
+				std::cout << "page received " << std::endl;
+				std::cout << "received widget addr "<< new_snsr << std::endl;
 
-	// Определяем позицию в сетке
-	int row = count / 2;  // Два виджета в ряду
-	int col = count % 2;
+				new_snsr->setMinimumSize(200, 100);
+				auto count{_snsrs_grd->count()};
+				new_snsr->setObjectName("Виджет " + QString::number(count));
+				// Устанавливаем политику изменения размеров
+				new_snsr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-	// Добавляем виджет в сетку
-	_snsrs_grd->addWidget(new_snsr, row, col);
+				// Определяем позицию в сетке
+				int row = count / 2;  // Два виджета в ряду
+				int col = count % 2;
 
-	// Обновляем растяжение для строк
-	_snsrs_grd->setRowStretch(row, 1);
+				// Добавляем виджет в сетку
+				_snsrs_grd->addWidget(new_snsr, row, col);
+
+				// Обновляем растяжение для строк
+				_snsrs_grd->setRowStretch(row, 1);
+			});
+	creator->exec();
 }
 
 void
-sensors_page::removeWidget()
+sensors_page::removeSensor()
 {
-	// if(auto count{_snsrs_grd->count()}; count == 0) { return; }
-	// else
-	// {
-	// 	if(auto item{_snsrs_grd->itemAt(count - 1)}; item)
-	// 	{
-	// 		if(auto widget{item->widget()}; widget)
-	// 		{
-	// 			_snsrs_grd->removeWidget(widget);
-
-	// 			delete widget;
-	// 			_snsrs_pln->adjustSize();
-	// 		}
-	// 	}
-	// }
-	// ////////////////////////////////////////////////////////////////////////////////////
-	// int count = _snsrs_grd->count();
-	// if(count == 0) { return; }
-
-	// // Создаем диалоговое окно для выбора виджета
-	// QComboBox* comboBox = new QComboBox();
-
-	// // Добавляем виджеты в выпадающий список
-	// for(int i = 0; i < count; ++i)
-	// {
-	// 	if(auto item = _snsrs_grd->itemAt(i))
-	// 	{
-	// 		if(auto widget = item->widget())
-	// 		{
-	// 			comboBox->addItem(widget->objectName(), QVariant::fromValue(widget));
-	// 		}
-	// 	}
-	// }
-
-	// // Показываем диалоговое окно
-	// QMessageBox msgBox;
-	// msgBox.setWindowTitle("Выберите виджет для удаления");
-	// msgBox.setText("Выберите виджет, который вы хотите удалить:");
-	// msgBox.setInformativeText("Выберите виджет для удаления:");
-	// msgBox.setSizeGripEnabled(true);
-	// msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-	// msgBox.setDefaultButton(QMessageBox::Cancel);
-	// msgBox.layout()->addWidget(comboBox);
-
-	// if(msgBox.exec() == QMessageBox::Ok)
-	// {
-	// 	// Получаем выбранный виджет
-	// 	QWidget* selectedWidget = comboBox->currentData().value<QWidget*>();
-	// 	if(selectedWidget)
-	// 	{
-	// 		_snsrs_grd->removeWidget(selectedWidget);
-	// 		delete selectedWidget;
-	// 		_snsrs_pln->adjustSize();
-	// 	}
-	// }
-
-	// // Освобождаем память
-	// delete comboBox;
-	// //////////////////////////////////////////////////////////////////////
-
 	// Получаем количество виджетов в сетке
 	int count = _snsrs_grd->count();
 
@@ -146,19 +110,21 @@ sensors_page::removeWidget()
 		if(item && item->widget()) { widgetNames.append(item->widget()->objectName()); }
 	}
 
-	// Отображаем диалог с выбором виджета
-	bool	ok;
-	QString selectedWidgetText = QInputDialog::getItem(this,				// Родительский виджет
-													   "Удаление виджета",	// Заголовок диалога
-													   "Выберите виджет для удаления:",	 // Текст подсказки
-													   widgetNames,						 // Список виджетов
-													   0,	   // Индекс выбранного элемента по умолчанию
-													   false,  // Редактируемый список
-													   &ok	   // Флаг успешного выбора
-	);
+	// Создаем диалоговое окно для выбора виджета
+	QInputDialog dialog(this);
+	dialog.setWindowTitle("Удаление виджета");
+	dialog.setLabelText("Выберите виджет для удаления:");
+	dialog.setComboBoxItems(widgetNames);
+	dialog.setComboBoxEditable(false);
+	dialog.setWindowFlags(dialog.windowFlags() & ~Qt::WindowCloseButtonHint);  // Убираем кнопку закрытия
 
-	// Если пользователь нажал "Отмена" или не выбрал виджет, выходим
-	if(!ok || selectedWidgetText.isEmpty()) { return; }
+	// Отображаем диалог с выбором виджета
+	if(dialog.exec() != QDialog::Accepted)
+	{
+		return;	 // Если пользователь нажал "Cancel" или закрыл окно, выходим
+	}
+
+	QString selectedWidgetText = dialog.textValue();
 
 	// Ищем выбранный виджет и удаляем его
 	for(int i = 0; i < count; ++i)
@@ -178,5 +144,42 @@ sensors_page::removeWidget()
 			_snsrs_pln->adjustSize();
 			break;
 		}
+	}
+
+	// Перераспределяем оставшиеся виджеты
+	_redistributeWidgets();
+}
+
+void
+sensors_page::_redistributeWidgets()
+{
+	// Собираем все виджеты из сетки
+	QList<QWidget*> widgets;
+	for(int i = 0; i < _snsrs_grd->count(); ++i)
+	{
+		QLayoutItem* item = _snsrs_grd->itemAt(i);
+		if(item && item->widget()) { widgets.append(item->widget()); }
+	}
+
+	// Очищаем сетку
+	while(_snsrs_grd->count() > 0)
+	{
+		QLayoutItem* item = _snsrs_grd->takeAt(0);
+		if(item && item->widget()) { _snsrs_grd->removeWidget(item->widget()); }
+		delete item;
+	}
+
+	// Добавляем виджеты заново
+	for(int i = 0; i < widgets.size(); ++i)
+	{
+		int row = i / 2;  // Два виджета в ряду
+		int col = i % 2;
+		_snsrs_grd->addWidget(widgets[i], row, col);
+	}
+
+	// Обновляем растяжение для строк
+	for(int row = 0; row <= widgets.size() / 2; ++row)
+	{
+		_snsrs_grd->setRowStretch(row, 1);
 	}
 }

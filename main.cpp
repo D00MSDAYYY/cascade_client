@@ -1,103 +1,113 @@
 #include "main_window.hpp"
 
 #include <QApplication>
-#include <iostream>
 
 int
 main(int argc, char** argv)
 {
 	QApplication app(argc, argv);
+	QApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
 	app.setStyle("Windows");
 	app.setStyleSheet(R"(
-QMainWindow {
-    background-color: rgb(255, 255, 255); /* Белый фон */
-}
+			QMainWindow, QDialog, QWidget {
+				background-color: rgb(255, 255, 255); /* Белый фон */
+			}
 
-QToolBar {
-    background-color: #C0C0C0; /* Серый фон */
-    border: 1px solid #808080; /* Граница */
-    spacing: 2px; /* Расстояние между элементами */
-    padding: 2px; /* Внутренние отступы */
-}
+            QToolBar {
+                background-color: #C0C0C0; /* Серый фон */
+                border: 1px solid #808080; /* Граница */
+                spacing: 2px; /* Расстояние между элементами */
+                padding: 2px; /* Внутренние отступы */
+            }
 
-QToolButton {
-    background-color: #C0C0C0; /* Серый фон */
-    border: 2px outset #A0A0A0; /* Внешняя рамка */
-    color: black; /* Черный текст */
-	margin: 2px; /* Внешний отступ */
-    font-family: "MS Shell Dlg", sans-serif; /* Шрифт Windows 2000 */
+            QToolButton {
+                background-color: #C0C0C0; /* Серый фон */
+                border: 2px outset #A0A0A0; /* Внешняя рамка */
+                color: black; /* Черный текст */
+                margin: 2px; /* Внешний отступ */
+                font-family: "MS Shell Dlg", sans-serif; /* Шрифт Windows 2000 */
+                min-width: 70px; /* Минимальная ширина кнопки */
+                min-height: 30px; /* Минимальная высота кнопки */
+            }
 
-	min-width: 70px; /* Минимальная ширина кнопки */
-    min-height: 30px; /* Минимальная высота кнопки */
-}
+            QToolButton:hover {
+                background-color: #A0A0A0; /* Цвет фона при наведении */
+                border: 1px solid #808080; /* Граница при наведении */
+            }
 
-QToolButton:hover {
-    background-color: #A0A0A0; /* Цвет фона при наведении */
-    border: 1px solid #808080; /* Граница при наведении */
-}
+            QToolButton:pressed {
+                background-color: #808080; /* Цвет фона при нажатии */
+                border: 1px solid #404040; /* Граница при нажатии */
+            }
 
-QToolButton:pressed {
-    background-color: #808080; /* Цвет фона при нажатии */
-    border: 1px solid #404040; /* Граница при нажатии */
-}
+            QPushButton {
+                background-color: #C0C0C0; /* Серый фон */
+                border: 2px outset #A0A0A0; /* Внешняя рамка */
+                color: black; /* Черный текст */
+                padding: 5px; /* Отступы внутри кнопки */
+                font-family: "MS Shell Dlg", sans-serif; /* Шрифт Windows 2000 */
+            }
 
-QPushButton {
-    background-color: #C0C0C0; /* Серый фон */
-    border: 2px outset #A0A0A0; /* Внешняя рамка */
-    color: black; /* Черный текст */
-    padding: 5px; /* Отступы внутри кнопки */
-    font-family: "MS Shell Dlg", sans-serif; /* Шрифт Windows 2000 */
-}
+            QPushButton:hover {
+                background-color: #D0D0D0; /* Светлее при наведении */
+                border: 2px outset #B0B0B0; /* Сохранение внешней рамки при наведении */
+            }
 
-QPushButton:pressed {
-    background-color: #A0A0A0; /* Цвет фона при наведении */
-    border: 1px solid #808080; /* Граница при наведении */
-}
+            QPushButton:pressed {
+                background-color: #A0A0A0; /* Цвет фона при нажатии */
+                border: 1px solid #808080; /* Граница при нажатии */
+            }
 
-QPushButton:hover {
-    background-color: #D0D0D0; /* Светлее при наведении */
-    border: 2px outset #B0B0B0; /* Сохранение внешней рамки при наведении */
-}
+            QComboBox {
+                background-color: #C0C0C0; /* Серый фон */
+                border: 1px solid #808080; /* Граница */
+                padding: 2px; /* Отступы внутри */
+                font-family: "MS Shell Dlg", sans-serif; /* Шрифт Windows 2000 */
+                min-width: 100px; /* Минимальная ширина */
+            }
 
-   QScrollBar::handle {
-            background: #808080;
-            border: 1px solid #404040;
-        }
-        QScrollBar::add-line,
-        QScrollBar::sub-line {
-            background: #C0C0C0;
-            border: 1px solid #404040;
-        }
-        QScrollBar::add-line:vertical,
-        QScrollBar::sub-line:vertical {
-            height: 16px;
-        }
-        QScrollBar::add-line:horizontal,
-        QScrollBar::sub-line:horizontal {
-            width: 16px;
-        }
-        QScrollBar::up-arrow,
-        QScrollBar::down-arrow,
-        QScrollBar::left-arrow,
-        QScrollBar::right-arrow {
-            background: #404040;
-            width: 7px;
-            height: 7px;
-        }
-        QScrollBar::add-page,
-        QScrollBar::sub-page {
-            background: #C0C0C0;
-        }
-        QScrollBar:vertical {
-            width: 16px;
-        }
-        QScrollBar:horizontal {
-            height: 16px;
-        }
+            QLabel {
+                color: black; /* Черный текст */
+                font-family: "MS Shell Dlg", sans-serif; /* Шрифт Windows 2000 */
+            }
+
+            QRadioButton {
+                color: black; /* Черный текст */
+                font-family: "MS Shell Dlg", sans-serif; /* Шрифт Windows 2000 */
+            }
+
+            QRadioButton::indicator {
+                width: 16px; /* Размер индикатора */
+                height: 16px; /* Размер индикатора */
+            }
+
+             QGroupBox {
+                border: 1px solid gray; /* Граница */
+                margin-top: 1ex; /* Отступ сверху */
+                font-family: "MS Shell Dlg", sans-serif; /* Шрифт Windows 2000 */
+                padding-top: 10px; /* Отступ сверху внутри QGroupBox */
+            }
+
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                subcontrol-position: top left; /* Заголовок вверху слева */
+                padding: 1px; /* Отступы вокруг текста заголовка */
+                background-color: white; /* Прозрачный фон заголовка */
+                color: black; /* Черный текст */
+            }
+
+            QScrollBar::handle {
+                background-color: #C0C0C0; /* Серый фон */
+                border: 2px outset #A0A0A0; /* Внешняя рамка */
+                color: black; /* Черный текст */
+                padding: 5px; /* Отступы внутри кнопки */
+                font-family: "MS Shell Dlg", sans-serif; /* Шрифт Windows 2000 */
+            }
+           
 )");
 
-
 	auto mw{new main_window()};
+	mw->setFixedSize(1024*2/3, 600*2/3);
 	mw->show();
 
 	return app.exec();

@@ -2,10 +2,9 @@
 
 #include <QGridLayout>
 #include <QMainWindow>
-#include <QPushButton>
 #include <QScrollArea>
 #include <QToolBar>
-#include <QVBoxLayout>
+#include <QWidget>
 
 class sensors_page : public QMainWindow
 {
@@ -16,12 +15,14 @@ public:
 	~sensors_page() {};
 
 	void
-	addWidget();
+	addSensor();
 	void
-	removeWidget();
+	removeSensor();
 
 private:
-	QGridLayout* _snsrs_grd{new QGridLayout{this}};
+	void
+				 _redistributeWidgets();
+	QGridLayout* _snsrs_grd{new QGridLayout{}};
 	QWidget*	 _snsrs_pln{new QWidget{this}};
 
 	QScrollArea* _scrl_area{new QScrollArea{this}};
@@ -29,6 +30,4 @@ private:
 	QToolBar*	 _tl_bar{
 		   new QToolBar{"Tool bar", this}
 	 };
-
-	// QVBoxLayout* _pg_lyt{new QVBoxLayout{this}};
 };
