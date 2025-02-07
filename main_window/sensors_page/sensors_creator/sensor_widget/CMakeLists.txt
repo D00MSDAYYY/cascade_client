@@ -1,18 +1,18 @@
 cmake_minimum_required(VERSION 3.26)
-project(sensors_creator)
+project(sensor_widget)
 
 ####################### insert subdirectories here ##############################
-add_subdirectory(sensor_widget)
+
 #################################################################################
 
 add_library(${PROJECT_NAME} "")
 
 target_sources(${PROJECT_NAME} 
 PUBLIC
-	${CMAKE_CURRENT_SOURCE_DIR}/sensors_creator.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/sensor_widget.hpp
 PRIVATE
-	sensors_creator.cpp
-	sc_icons.qrc
+	sensor_widget.cpp
+	# sw_icons.qrc
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -22,7 +22,6 @@ PUBLIC
 
 target_link_libraries(${PROJECT_NAME}
 PUBLIC
-	sensor_widget
 	Qt::Widgets
 )
 
