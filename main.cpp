@@ -6,7 +6,6 @@ int
 main(int argc, char** argv)
 {
 	QApplication app(argc, argv);
-	QApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
 	app.setStyle("Windows");
 	app.setStyleSheet(R"(
 			QMainWindow, QDialog, QWidget {

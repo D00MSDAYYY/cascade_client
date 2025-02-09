@@ -1,4 +1,4 @@
-#include "sensors_creator.hpp"
+#include "sensor_widget.hpp"
 
 #include <QButtonGroup>
 #include <QComboBox>
@@ -10,8 +10,8 @@
 #include <QVBoxLayout>
 #include <iostream>
 
-sensors_creator::sensors_creator(QWidget* parent)
-	: QDialog(parent)
+sensor_widget::sensor_widget(QWidget* parent)
+	: QWidget(parent)
 {
 	
 }

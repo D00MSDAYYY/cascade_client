@@ -3,7 +3,7 @@ project(main_window)
 
 ####################### insert subdirectories here ##############################
 add_subdirectory(sensors_page)
-# add_subdirectory(connections_page)
+add_subdirectory(connections_page)
 #################################################################################
 
 add_library(${PROJECT_NAME} "")
@@ -25,6 +25,7 @@ target_link_libraries(${PROJECT_NAME}
 PUBLIC
 	Qt::Widgets
 	sensors_page
+	connections_page
 )
 
 

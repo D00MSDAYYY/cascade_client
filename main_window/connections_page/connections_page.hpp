@@ -16,13 +16,15 @@ public:
 	~connections_page() {};
 
 	void
-	addWidget();
+	addConnection();
 	void
-	removeWidget();
+	removeConnection();
 
 private:
-	QGridLayout* _cnntrs_grd{new QGridLayout{this}};
-	QWidget*	 _cnntrs_pln{new QWidget{this}};
+	void
+				 _redistributeWidgets();
+	QGridLayout* _snsrs_grd{new QGridLayout{}};
+	QWidget*	 _snsrs_pln{new QWidget{this}};
 
 	QScrollArea* _scrl_area{new QScrollArea{this}};
 

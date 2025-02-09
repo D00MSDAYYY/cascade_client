@@ -1,7 +1,7 @@
 #include "main_window.hpp"
 
 #include "sensors_page.hpp"
-
+#include "connections_page.hpp"
 main_window::main_window(QWidget* parent)
 	: QMainWindow(parent)
 {
@@ -9,13 +9,14 @@ main_window::main_window(QWidget* parent)
 
 	_tl_bar->setIconSize({32, 32});
 	_tl_bar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+	_tl_bar->setMovable(false);
 
 	for(int index{
 			0
 	 };
 		const auto& [str, page]:
 		std::vector<std::pair<std::string, QWidget*>>{{"sensors", new sensors_page{this}},
-													  {"connections", new QWidget{this}},
+													  {"connections", new connections_page{this}},
 													  {"logbook", new QWidget{this}},
 													  {"charts", new QWidget{this}},
 													  {"scripts", new QWidget{this}},

@@ -1,6 +1,9 @@
 <RCC>
-    <qresource prefix="/sp">
-        <file>icons/add.png</file>
-		<file>icons/remove.png</file>
+    <qresource prefix="/">
+        <file>cn_icons/add.png</file>
+		<file>cn_icons/remove.png</file>
+		<file>cn_icons/select.png</file>
+		<file>cn_icons/resume.png</file>
+		<file>cn_icons/suspend.png</file>
     </qresource>
 </RCC>

@@ -30,11 +30,13 @@ sensors_page::sensors_page(QWidget* parent)
 
 	_tl_bar->setIconSize({32, 32});
 	_tl_bar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+	_tl_bar->setMovable(false);
 
 	for(const auto& [str, func]:
 		std::vector<std::pair<std::string, std::function<void()>>>{
 			{"add", std::bind(&sensors_page::addSensor, this)},
 			{"remove", std::bind(&sensors_page::removeSensor, this)},
+			{"select", []() { return; }},
 			{"|", []() { return; }},
 			{"resume", []() { return; }},
 			{"suspend", []() { return; }}
