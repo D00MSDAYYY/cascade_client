@@ -5,7 +5,7 @@ project(sensor_widget)
 
 #################################################################################
 
-add_library(${PROJECT_NAME}  )
+add_library(${PROJECT_NAME}  OBJECT)
 
 target_sources(${PROJECT_NAME} 
 PRIVATE

@@ -26,6 +26,8 @@ PRIVATE
 	Qt::Widgets 
 	sensors_page
 	connections_page
+	$<TARGET_OBJECTS:sensors_page>
+	$<TARGET_OBJECTS:connections_page>
 )
 
 
