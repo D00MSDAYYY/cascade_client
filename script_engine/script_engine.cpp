@@ -2,7 +2,6 @@
 
 #include "sensors_page.hpp"
 #include "connections_page.hpp"
-
 main_window::main_window(QWidget* parent)
 	: QMainWindow(parent)
 {

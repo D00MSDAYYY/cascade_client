@@ -1,18 +1,17 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.31.5)
 project(connections_page)
 
 ####################### insert subdirectories here ##############################
 
 #################################################################################
 
-add_library(${PROJECT_NAME} "")
+add_library(${PROJECT_NAME}  )
 
 target_sources(${PROJECT_NAME} 
-PUBLIC
-	${CMAKE_CURRENT_SOURCE_DIR}/connections_page.hpp
 PRIVATE
-	connections_page.cpp
-	cn_icons.qrc
+	${CMAKE_CURRENT_SOURCE_DIR}/connections_page.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/connections_page.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/cn_icons.qrc
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -21,7 +20,7 @@ PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME}
-PUBLIC
+PRIVATE
 	Qt::Widgets
 )
 
