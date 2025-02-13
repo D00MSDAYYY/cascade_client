@@ -1,13 +1,9 @@
 
 #include "connections_page.hpp"
 
-#include <QComboBox>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPushButton>
-#include <functional>
-#include <iostream>
-#include <QGroupBox>
 
 connections_page::connections_page(QWidget* parent)
 	: QMainWindow{parent}

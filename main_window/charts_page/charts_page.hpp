@@ -2,10 +2,8 @@
 
 #include <QGridLayout>
 #include <QMainWindow>
-#include <QPushButton>
 #include <QScrollArea>
 #include <QToolBar>
-#include <QVBoxLayout>
 
 class charts_page : public QMainWindow
 {

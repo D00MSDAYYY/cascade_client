@@ -1,7 +1,5 @@
 #pragma once
 
-// #include "script_area.hpp"
-
 #include <QMainWindow>
 #include <QStackedWidget>
 #include <QToolBar>

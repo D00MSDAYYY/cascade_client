@@ -2,10 +2,8 @@
 
 #include <QGridLayout>
 #include <QMainWindow>
-#include <QPushButton>
 #include <QScrollArea>
 #include <QToolBar>
-#include <QVBoxLayout>
 
 class scenarios_page : public QMainWindow
 {

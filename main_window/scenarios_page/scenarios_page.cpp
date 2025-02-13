@@ -1,13 +1,8 @@
 
 #include "scenarios_page.hpp"
 
-#include <QComboBox>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QPushButton>
-#include <functional>
-#include <iostream>
-#include <QGroupBox>
 
 scenarios_page::scenarios_page(QWidget* parent)
 	: QMainWindow{parent}

@@ -2,16 +2,13 @@
 
 #include "sensors_creator.hpp"
 
-#include <QComboBox>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QPushButton>
 
 sensors_page::sensors_page(QWidget* parent)
 	: QMainWindow{parent}
 {
 	Q_INIT_RESOURCE(sp_icons);
-
 
 	_snsrs_grd->setSpacing(5);
 	_snsrs_grd->setContentsMargins(5, 5, 5, 5);
@@ -45,10 +42,10 @@ sensors_page::sensors_page(QWidget* parent)
 		else
 		{
 			auto path{":/sp_icons/" + str + ".png"};
-			auto action{_tl_bar->addAction(
-				QIcon{
-					QPixmap{path.c_str()}.scaled(_tl_bar->iconSize(), Qt::AspectRatioMode::KeepAspectRatio)},
-				str.c_str())};
+			auto action{
+				_tl_bar->addAction(QIcon{QPixmap{path.c_str()}.scaled(_tl_bar->iconSize(),
+																	  Qt::AspectRatioMode::KeepAspectRatio)},
+								   str.c_str())};
 			connect(action, &QAction::triggered, this, func);
 		}
 	}
@@ -71,7 +68,7 @@ sensors_page::addSensor()
 				new_snsr->setStyleSheet("background-color: gray ;");
 
 				new_snsr->setMinimumSize(200, 100);
-				
+
 				auto count{_snsrs_grd->count()};
 				new_snsr->setObjectName("Виджет " + QString::number(count));
 				// Устанавливаем политику изменения размеров

@@ -1,13 +1,8 @@
 
 #include "charts_page.hpp"
 
-#include <QComboBox>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QPushButton>
-#include <functional>
-#include <iostream>
-#include <QGroupBox>
 
 charts_page::charts_page(QWidget* parent)
 	: QMainWindow{parent}

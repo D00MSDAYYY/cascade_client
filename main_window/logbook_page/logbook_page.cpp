@@ -1,13 +1,8 @@
 
 #include "logbook_page.hpp"
 
-#include <QComboBox>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QPushButton>
-#include <functional>
-#include <iostream>
-#include <QGroupBox>
 
 logbook_page::logbook_page(QWidget* parent)
 	: QMainWindow{parent}
