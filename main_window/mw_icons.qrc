@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+		<file>mw_icons/alerts.png</file>
 		<file>mw_icons/connections.png</file>
 		<file>mw_icons/logbook.png</file>
 		<file>mw_icons/sensors.png</file>

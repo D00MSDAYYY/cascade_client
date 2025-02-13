@@ -15,8 +15,8 @@ main(int argc, char** argv)
             QToolBar {
                 background-color: #C0C0C0; /* Серый фон */
                 border: 1px solid #808080; /* Граница */
-                spacing: 2px; /* Расстояние между элементами */
-                padding: 2px; /* Внутренние отступы */
+                spacing: 1px; /* Расстояние между элементами */
+                padding: 1px; /* Внутренние отступы */
             }
 
             QToolButton {
@@ -64,6 +64,17 @@ main(int argc, char** argv)
                 font-family: "MS Shell Dlg", sans-serif; /* Шрифт Windows 2000 */
                 min-width: 100px; /* Минимальная ширина */
             }
+			
+			QListView{
+				color: black;
+			}
+			QComboBox QAbstractItemView {
+				outline: 0px solid gray;   /*  The virtual frame of the selected item */
+				border: 1px solid black;   /*  Border of the entire drop-down form */
+				background-color: gray;   /*  Whole drop-down form background color */
+				selection-background-color:rgb(21, 21, 186) ;   /*  The whole drop-down window is selected from the background color of the item */
+				font-color: black;
+			}
 
             QLabel {
                 color: black; /* Черный текст */

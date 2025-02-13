@@ -1,17 +1,17 @@
 cmake_minimum_required(VERSION 3.31.5)
-project(script_engine)
+project(alerts_page)
 
 ####################### insert subdirectories here ##############################
 
 #################################################################################
 
-add_library(${PROJECT_NAME} OBJECT)
+add_library(${PROJECT_NAME}  OBJECT)
 
 target_sources(${PROJECT_NAME} 
 PRIVATE
-	${CMAKE_CURRENT_SOURCE_DIR}/script_engine.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/script_engine.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/script_engine.qrc
+	${CMAKE_CURRENT_SOURCE_DIR}/alerts_page.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/alerts_page.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/ap_icons.qrc
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -19,9 +19,10 @@ PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# target_link_libraries(${PROJECT_NAME}
-
-# )
+target_link_libraries(${PROJECT_NAME}
+PRIVATE
+	Qt::Widgets
+)
 
 
 

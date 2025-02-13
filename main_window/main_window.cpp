@@ -1,7 +1,12 @@
 #include "main_window.hpp"
 
 #include "sensors_page.hpp"
+#include "alerts_page.hpp"
 #include "connections_page.hpp"
+#include "logbook_page.hpp"
+#include "charts_page.hpp"
+#include "scenarios_page.hpp"
+#include "script_area.hpp"
 
 main_window::main_window(QWidget* parent)
 	: QMainWindow(parent)
@@ -16,11 +21,12 @@ main_window::main_window(QWidget* parent)
 			0
 	 };
 		const auto& [str, page]:
-		std::vector<std::pair<std::string, QWidget*>>{{"sensors", new sensors_page{this}},
+		std::vector<std::pair<std::string, QWidget*>>{{"alerts", new alerts_page{this}},
+													  {"sensors", new sensors_page{this}},
 													  {"connections", new connections_page{this}},
-													  {"logbook", new QWidget{this}},
-													  {"charts", new QWidget{this}},
-													  {"scripts", new QWidget{this}},
+													  {"logbook", new logbook_page{this}},
+													  {"charts", new charts_page{this}},
+													  {"scripts", new scenarios_page{this}},
 													  {"settings", new QWidget{this}}})
 	{
 		auto path_str{":/mw_icons/" + str + ".png"};

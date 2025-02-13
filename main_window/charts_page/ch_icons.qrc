@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+		<file>ch_icons/add.png</file>
+		<file>ch_icons/remove.png</file>
+		<file>ch_icons/resume.png</file>
+		<file>ch_icons/suspend.png</file>
+		<file>ch_icons/select.png</file>
+    </qresource>
+</RCC>

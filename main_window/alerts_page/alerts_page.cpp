@@ -1,17 +1,18 @@
-#include "sensors_page.hpp"
 
-#include "sensors_creator.hpp"
+#include "alerts_page.hpp"
 
 #include <QComboBox>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <functional>
+#include <iostream>
+#include <QGroupBox>
 
-sensors_page::sensors_page(QWidget* parent)
+alerts_page::alerts_page(QWidget* parent)
 	: QMainWindow{parent}
 {
-	Q_INIT_RESOURCE(sp_icons);
-
+	Q_INIT_RESOURCE(ap_icons);
 
 	_snsrs_grd->setSpacing(5);
 	_snsrs_grd->setContentsMargins(5, 5, 5, 5);
@@ -33,8 +34,8 @@ sensors_page::sensors_page(QWidget* parent)
 
 	for(const auto& [str, func]:
 		std::vector<std::pair<std::string, std::function<void()>>>{
-			{"add", std::bind(&sensors_page::addSensor, this)},
-			{"remove", std::bind(&sensors_page::removeSensor, this)},
+			{"add", std::bind(&alerts_page::addConnection, this)},
+			{"remove", std::bind(&alerts_page::removeConnection, this)},
 			{"select", []() { return; }},
 			{"|", []() { return; }},
 			{"resume", []() { return; }},
@@ -44,11 +45,11 @@ sensors_page::sensors_page(QWidget* parent)
 		if(str == "|") { _tl_bar->addSeparator(); }
 		else
 		{
-			auto path{":/sp_icons/" + str + ".png"};
-			auto action{_tl_bar->addAction(
-				QIcon{
-					QPixmap{path.c_str()}.scaled(_tl_bar->iconSize(), Qt::AspectRatioMode::KeepAspectRatio)},
-				str.c_str())};
+			auto path{":/ap_icons/" + str + ".png"};
+			auto action{
+				_tl_bar->addAction(QIcon{QPixmap{path.c_str()}.scaled(_tl_bar->iconSize(),
+																	  Qt::AspectRatioMode::KeepAspectRatio)},
+								   str.c_str())};
 			connect(action, &QAction::triggered, this, func);
 		}
 	}
@@ -59,39 +60,39 @@ sensors_page::sensors_page(QWidget* parent)
 }
 
 void
-sensors_page::addSensor()
+alerts_page::addConnection()
 {
-	auto creator{new sensors_creator{this}};
+	// auto creator{new sensors_creator{this}};
 
-	connect(creator,
-			&sensors_creator::sensorCreated,
-			this,
-			[this](QWidget* new_snsr)
-			{
-				new_snsr->setStyleSheet("background-color: gray ;");
+	// connect(creator,
+	// 		&sensors_creator::sensorCreated,
+	// 		this,
+	// 		[this](QWidget* new_snsr)
+	// 		{
+	// 			new_snsr->setStyleSheet("background-color: gray ;");
 
-				new_snsr->setMinimumSize(200, 100);
-				
-				auto count{_snsrs_grd->count()};
-				new_snsr->setObjectName("Виджет " + QString::number(count));
-				// Устанавливаем политику изменения размеров
-				new_snsr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+	// 			new_snsr->setMinimumSize(200, 100);
 
-				// Определяем позицию в сетке
-				int row = count / 2;  // Два виджета в ряду
-				int col = count % 2;
+	// 			auto count{_snsrs_grd->count()};
+	// 			new_snsr->setObjectName("Виджет " + QString::number(count));
+	// 			// Устанавливаем политику изменения размеров
+	// 			new_snsr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-				// Добавляем виджет в сетку
-				_snsrs_grd->addWidget(new_snsr, row, col);
+	// 			// Определяем позицию в сетке
+	// 			int row = count / 2;  // Два виджета в ряду
+	// 			int col = count % 2;
 
-				// Обновляем растяжение для строк
-				_snsrs_grd->setRowStretch(row, 1);
-			});
-	creator->exec();
+	// 			// Добавляем виджет в сетку
+	// 			_snsrs_grd->addWidget(new_snsr, row, col);
+
+	// 			// Обновляем растяжение для строк
+	// 			_snsrs_grd->setRowStretch(row, 1);
+	// 		});
+	// creator->exec();
 }
 
 void
-sensors_page::removeSensor()
+alerts_page::removeConnection()
 {
 	// Получаем количество виджетов в сетке
 	int count = _snsrs_grd->count();
@@ -152,7 +153,7 @@ sensors_page::removeSensor()
 }
 
 void
-sensors_page::_redistributeWidgets()
+alerts_page::_redistributeWidgets()
 {
 	// Собираем все виджеты из сетки
 	QList<QWidget*> widgets;

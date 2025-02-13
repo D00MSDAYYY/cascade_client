@@ -11,6 +11,7 @@ set(CMAKE_AUTORCC ON)
 qt_standard_project_setup()
 
 ####################### insert subdirectories here ##############################
+add_subdirectory(script_area)
 add_subdirectory(main_window)
 #################################################################################
 
@@ -18,7 +19,7 @@ add_executable(${PROJECT_NAME}  )
 
 target_sources(${PROJECT_NAME} 
 PRIVATE
-	main.cpp # DON'T FORGET https://gitlab.kitware.com/cmake/cmake/-/issues/20489 
+	main.cpp # DON'T FORGET TO AVOID "PUBLIC" field here (https://gitlab.kitware.com/cmake/cmake/-/issues/20489)
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -30,7 +31,6 @@ target_link_libraries(${PROJECT_NAME}
 PRIVATE
 	Qt::Widgets
 	main_window
-
 )
 
 
