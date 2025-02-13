@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.31.5)
 project(c_gui)
 
+####################### insert subdirectories here ##############################
+find_package(Qt6 REQUIRED Core Widgets)
+#################################################################################
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-find_package(Qt6 REQUIRED Core Widgets)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -19,7 +21,7 @@ add_executable(${PROJECT_NAME}  )
 
 target_sources(${PROJECT_NAME} 
 PRIVATE
-	main.cpp # DON'T FORGET TO AVOID "PUBLIC" field here (https://gitlab.kitware.com/cmake/cmake/-/issues/20489)
+	main.cpp # DON'T FORGET TO AVOID "PUBLIC" FIELD HERE (https://gitlab.kitware.com/cmake/cmake/-/issues/20489)
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -31,6 +33,7 @@ target_link_libraries(${PROJECT_NAME}
 PRIVATE
 	Qt::Widgets
 	main_window
+	script_area
 )
 
 

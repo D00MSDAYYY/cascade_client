@@ -24,9 +24,9 @@ main_window::main_window(QWidget* parent)
 		std::vector<std::pair<std::string, QWidget*>>{{"alerts", new alerts_page{this}},
 													  {"sensors", new sensors_page{this}},
 													  {"connections", new connections_page{this}},
-													  {"logbook", new logbook_page{this}},
 													  {"charts", new charts_page{this}},
-													  {"scripts", new scenarios_page{this}},
+													  {"logbook", new logbook_page{this}},
+													  {"scenarios", new scenarios_page{this}},
 													  {"settings", new QWidget{this}}})
 	{
 		auto path_str{":/mw_icons/" + str + ".png"};
