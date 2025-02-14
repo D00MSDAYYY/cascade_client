@@ -13,7 +13,7 @@ set(CMAKE_AUTORCC ON)
 qt_standard_project_setup()
 
 ####################### insert subdirectories here ##############################
-add_subdirectory(script_area)
+add_subdirectory(script_engine)
 add_subdirectory(main_window)
 #################################################################################
 
@@ -33,7 +33,7 @@ target_link_libraries(${PROJECT_NAME}
 PRIVATE
 	Qt::Widgets
 	main_window
-	script_area
+	script_engine
 )
 
 

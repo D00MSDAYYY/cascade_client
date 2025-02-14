@@ -23,7 +23,7 @@ target_link_libraries(${PROJECT_NAME}
 PRIVATE
 	Qt::Widgets
 	sensors_creator
-	script_area
+	script_engine
 	$<TARGET_OBJECTS:sensors_creator>
 )
 

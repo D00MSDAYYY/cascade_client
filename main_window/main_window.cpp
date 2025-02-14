@@ -1,12 +1,12 @@
 #include "main_window.hpp"
 
-#include "sensors_page.hpp"
 #include "alerts_page.hpp"
+#include "charts_page.hpp"
 #include "connections_page.hpp"
 #include "logbook_page.hpp"
-#include "charts_page.hpp"
 #include "scenarios_page.hpp"
-#include "script_area.hpp"
+#include "script_engine.hpp"
+#include "sensors_page.hpp"
 
 main_window::main_window(QWidget* parent)
 	: QMainWindow(parent)

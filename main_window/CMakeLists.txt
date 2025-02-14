@@ -35,7 +35,7 @@ PRIVATE
 	logbook_page
 	charts_page
 	scenarios_page
-	script_area
+	script_engine
 
 	$<TARGET_OBJECTS:alerts_page>
 	$<TARGET_OBJECTS:sensors_page>
