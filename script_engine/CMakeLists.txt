@@ -20,12 +20,13 @@ PRIVATE
 target_include_directories(${PROJECT_NAME}
 PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}
+	${LUA_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME} 
 PRIVATE
-	sol2
 	${LUA_LIBRARIES}
+	sol2
 )
 
 

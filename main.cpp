@@ -1,7 +1,7 @@
 #include "main_window.hpp"
+#include "script_engine.hpp"
 
 #include <QApplication>
-
 int
 main(int argc, char** argv)
 {
