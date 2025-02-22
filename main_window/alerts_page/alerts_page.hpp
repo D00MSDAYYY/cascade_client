@@ -12,8 +12,9 @@ class alerts_page : public QMainWindow
 public:
 	alerts_page(QWidget* parent = nullptr);
 	~alerts_page() {};
-
-
 private:
-	;
+	QScrollArea* _scrl_area{new QScrollArea{this}};
+	QToolBar*	 _tl_bar{
+		   new QToolBar{"Tool bar", this}
+	 };
 };

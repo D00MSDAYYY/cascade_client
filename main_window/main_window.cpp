@@ -5,7 +5,7 @@
 #include "connections_page.hpp"
 #include "logbook_page.hpp"
 #include "scenarios_page.hpp"
-#include "script_engine.hpp"
+// #include "script_engine.hpp"
 #include "sensors_page.hpp"
 
 main_window::main_window(QWidget* parent)
