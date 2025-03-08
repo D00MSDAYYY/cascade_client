@@ -10,10 +10,9 @@ class logbook_page : public QMainWindow
 	Q_OBJECT
 
 public:
-	logbook_page(QWidget* parent = nullptr);
-	~logbook_page() {};
+	logbook_page( QWidget* parent = nullptr );
+	~logbook_page() { };
 
 private:
 	;
-
 };

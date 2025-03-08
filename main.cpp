@@ -2,12 +2,13 @@
 #include "script_engine.hpp"
 
 #include <QApplication>
+
 int
-main(int argc, char** argv)
+main( int argc, char** argv )
 {
-	QApplication app(argc, argv);
-	app.setStyle("Windows");
-	app.setStyleSheet(R"(
+	QApplication app( argc, argv );
+	app.setStyle( "Windows" );
+	app.setStyleSheet( R"(
 			QMainWindow, QDialog, QWidget {
 				background-color: rgb(255, 255, 255); /* Белый фон */
 			}
@@ -114,10 +115,10 @@ main(int argc, char** argv)
                 font-family: "MS Shell Dlg", sans-serif; /* Шрифт Windows 2000 */
             }
            
-)");
+)" );
 
-	auto mw{new main_window()};
-	mw->setFixedSize(1024*2/3, 600*2/3);
+	auto mw{ new main_window() };
+	mw->setFixedSize( 1'024 * 2 / 3, 600 * 2 / 3 );
 	mw->show();
 
 	return app.exec();

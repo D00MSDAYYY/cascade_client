@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
-	<file>ap_icons/remove.png</file>
-	<file>ap_icons/history.png</file>
+		<file>ap_icons/filter.png</file>
+		<file>ap_icons/remove.png</file>
+		<file>ap_icons/history.png</file>
     </qresource>
 </RCC>

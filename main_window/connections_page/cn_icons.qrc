@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+		<file>cn_icons/filter.png</file>
         <file>cn_icons/add.png</file>
 		<file>cn_icons/remove.png</file>
 		<file>cn_icons/select.png</file>

@@ -10,9 +10,11 @@ class scenarios_page : public QMainWindow
 	Q_OBJECT
 
 public:
-	scenarios_page(QWidget* parent = nullptr);
-	~scenarios_page() {};
+	scenarios_page( QWidget* parent = nullptr );
+	~scenarios_page() { };
 
 private:
-	;
+	QToolBar* _tl_bar{
+		new QToolBar{ "Tool bar", this }
+	};
 };
