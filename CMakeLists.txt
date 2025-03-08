@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.31.5)
-project(c_gui)
+project(cascade_client)
 
 ####################### insert subdirectories here ##############################
 find_package(Qt6 REQUIRED Core Widgets)
