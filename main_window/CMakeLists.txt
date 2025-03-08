@@ -35,7 +35,6 @@ PRIVATE
 	logbook_page
 	charts_page
 	scenarios_page
-	script_engine
 
 	$<TARGET_OBJECTS:alerts_page>
 	$<TARGET_OBJECTS:sensors_page>
@@ -44,7 +43,7 @@ PRIVATE
 	$<TARGET_OBJECTS:charts_page>
 	$<TARGET_OBJECTS:scenarios_page>
 	$<TARGET_OBJECTS:script_engine>
+PUBLIC 
+	script_engine
 )
-
-
 

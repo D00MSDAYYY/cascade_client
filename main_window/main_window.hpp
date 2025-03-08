@@ -1,5 +1,6 @@
 #pragma once
 
+#include "script_engine.hpp"
 #include <QMainWindow>
 #include <QStackedWidget>
 #include <QToolBar>

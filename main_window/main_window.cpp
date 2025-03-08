@@ -11,6 +11,8 @@
 main_window::main_window( QWidget* parent )
 	: QMainWindow( parent )
 {
+	script_engine e{};
+	e.do_code_globally( "print('hello')" );
 	Q_INIT_RESOURCE( mw_icons );
 
 	_tl_bar->setIconSize( { 32, 32 } );
@@ -20,7 +22,6 @@ main_window::main_window( QWidget* parent )
 	for ( int index{
 			0
 	  };
-
 		  const auto& [ str, page ] : std::vector< std::pair< std::string, QWidget* > >{
 			{ "alerts", new alerts_page{ this } },
 			{ "sensors", new sensors_page{ this } },
