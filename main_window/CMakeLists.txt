@@ -43,6 +43,7 @@ PRIVATE
 	$<TARGET_OBJECTS:logbook_page>
 	$<TARGET_OBJECTS:charts_page>
 	$<TARGET_OBJECTS:scenarios_page>
+	$<TARGET_OBJECTS:script_engine>
 )
 
 
