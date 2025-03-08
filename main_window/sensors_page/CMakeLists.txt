@@ -24,7 +24,9 @@ PRIVATE
 	Qt::Widgets
 	sensors_creator
 	script_engine
+	
 	$<TARGET_OBJECTS:sensors_creator>
+	$<TARGET_OBJECTS:script_engine>
 )
 
 

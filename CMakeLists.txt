@@ -33,7 +33,6 @@ target_link_libraries(${PROJECT_NAME}
 PRIVATE
 	Qt::Widgets
 	main_window
-	script_engine
 )
 
 

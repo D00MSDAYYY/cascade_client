@@ -1,5 +1,4 @@
 #include "main_window.hpp"
-#include "script_engine.hpp"
 
 #include <QApplication>
 

@@ -24,7 +24,6 @@ PRIVATE
 	Qt::Widgets
 	sensor_widget
 	$<TARGET_OBJECTS:sensor_widget>
-
 )
 
 
