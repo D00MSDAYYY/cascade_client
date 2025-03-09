@@ -5,7 +5,7 @@ project(scenarios_page)
 
 #################################################################################
 
-add_library(${PROJECT_NAME}  OBJECT)
+add_library(${PROJECT_NAME}  STATIC)
 
 target_sources(${PROJECT_NAME} 
 PRIVATE

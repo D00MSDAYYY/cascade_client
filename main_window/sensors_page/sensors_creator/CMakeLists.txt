@@ -5,7 +5,7 @@ project(sensors_creator)
 add_subdirectory(sensor_widget)
 #################################################################################
 
-add_library(${PROJECT_NAME}  OBJECT)
+add_library(${PROJECT_NAME}  STATIC)
 
 target_sources(${PROJECT_NAME} 
 PRIVATE
@@ -23,7 +23,6 @@ target_link_libraries(${PROJECT_NAME}
 PRIVATE
 	Qt::Widgets
 	sensor_widget
-	$<TARGET_OBJECTS:sensor_widget>
 )
 
 

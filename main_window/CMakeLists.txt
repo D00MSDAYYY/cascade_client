@@ -12,7 +12,7 @@ add_subdirectory(scenarios_page)
 
 #################################################################################
 
-add_library(${PROJECT_NAME}  OBJECT)
+add_library(${PROJECT_NAME}  STATIC)
 
 target_sources(${PROJECT_NAME} 
 PRIVATE
@@ -35,15 +35,7 @@ PRIVATE
 	logbook_page
 	charts_page
 	scenarios_page
-
-	$<TARGET_OBJECTS:alerts_page>
-	$<TARGET_OBJECTS:sensors_page>
-	$<TARGET_OBJECTS:connections_page>
-	$<TARGET_OBJECTS:logbook_page>
-	$<TARGET_OBJECTS:charts_page>
-	$<TARGET_OBJECTS:scenarios_page>
-	$<TARGET_OBJECTS:script_engine>
-PUBLIC 
+PUBLIC
 	script_engine
 )
 

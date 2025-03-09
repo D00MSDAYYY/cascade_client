@@ -73,7 +73,6 @@ main( int argc, char** argv )
 				border: 1px solid black;   /*  Border of the entire drop-down form */
 				background-color: gray;   /*  Whole drop-down form background color */
 				selection-background-color:rgb(21, 21, 186) ;   /*  The whole drop-down window is selected from the background color of the item */
-				font-color: black;
 			}
 
             QLabel {
