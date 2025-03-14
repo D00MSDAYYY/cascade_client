@@ -1,11 +1,8 @@
 cmake_minimum_required(VERSION 3.31.5)
-project(script_engine)
+project(script_entity)
 
 ####################### insert subdirectories here ##############################
 find_package(Lua REQUIRED)
-#################################################################################
-
-####################### insert subdirectories here ##############################
 add_subdirectory(sol2)
 #################################################################################
 

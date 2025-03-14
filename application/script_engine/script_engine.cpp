@@ -37,7 +37,7 @@ script_engine::do_code_globally( std::string script )
 void
 script_engine::do_code_separately( std::string script )
 {
-	sol::state local_state;				  // Создаем отдельный Lua-контекст
+	sol::state local_state;				  
 	local_state.open_libraries( sol::lib::base,
 								sol::lib::package,
 								sol::lib::table,
@@ -46,7 +46,7 @@ script_engine::do_code_separately( std::string script )
 
 	try
 		{
-			local_state.script( script ); // Выполнение Lua-кода в отдельном контексте
+			local_state.script( script ); 
 		}
 	catch ( const sol::error& e )
 		{

@@ -13,8 +13,7 @@ set(CMAKE_AUTORCC ON)
 qt_standard_project_setup()
 
 ####################### insert subdirectories here ##############################
-add_subdirectory(script_engine)
-add_subdirectory(main_window)
+add_subdirectory(application)
 #################################################################################
 
 add_executable(${PROJECT_NAME}  )
@@ -32,8 +31,7 @@ PUBLIC
 target_link_libraries(${PROJECT_NAME}
 PRIVATE
 	Qt::Widgets
-	main_window
+	application
 )
-
 
 
