@@ -1,6 +1,5 @@
 # ---> VisualStudioCode
 .vscode/
-!.vscode/cpp.json
 
 # Local History for Visual Studio Code
 .history/
