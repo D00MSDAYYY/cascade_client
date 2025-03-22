@@ -82,7 +82,7 @@ BraceWrapping:
 BreakAdjacentStringLiterals: true
 BreakAfterAttributes: Always
 BreakAfterJavaFieldAnnotations: true
-BreakAfterReturnType: AllDefinitions
+BreakAfterReturnType: All
 BreakArrays: true
 BreakBeforeBinaryOperators: All
 BreakBeforeBraces: GNU
@@ -94,12 +94,12 @@ BreakFunctionDefinitionParameters: false
 BreakInheritanceList: BeforeComma
 BreakStringLiterals: true
 BreakTemplateDeclarations: Yes
-ColumnLimit: 100
+ColumnLimit: 90
 CommentPragmas: "^ IWYU pragma:"
 CompactNamespaces: false
 ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
-Cpp11BracedListStyle: true
+Cpp11BracedListStyle: false
 DerivePointerAlignment: false
 DisableFormat: false
 EmptyLineAfterAccessModifier: Never
@@ -192,7 +192,7 @@ SkipMacroDefinitionBody: false
 SortIncludes: CaseSensitive
 SortJavaStaticImport: Before
 SortUsingDeclarations: LexicographicNumeric
-SpaceAfterCStyleCast: false
+SpaceAfterCStyleCast: true
 SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: true
 SpaceAroundPointerQualifiers: Default
@@ -215,7 +215,7 @@ SpaceBeforeParensOptions:
   AfterRequiresInExpression: true
   BeforeNonEmptyParentheses: false
 SpaceBeforeRangeBasedForLoopColon: true
-SpaceBeforeSquareBrackets: false
+SpaceBeforeSquareBrackets: true
 SpaceInEmptyBlock: true
 SpacesBeforeTrailingComments: 1
 SpacesInAngles: Always
