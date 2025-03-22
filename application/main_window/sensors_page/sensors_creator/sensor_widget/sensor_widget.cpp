@@ -10,8 +10,7 @@
 #include <QVBoxLayout>
 #include <iostream>
 
-sensor_widget::sensor_widget(QWidget* parent)
-	: QWidget(parent)
+sensor_widget::sensor_widget( QWidget* parent )
+	: QWidget( parent )
 {
-	
 }

@@ -14,7 +14,5 @@ public:
 	~scenarios_page() { };
 
 private:
-	QToolBar* _tl_bar{
-		new QToolBar{ "Tool bar", this }
-	};
+	QToolBar* _tl_bar{};
 };

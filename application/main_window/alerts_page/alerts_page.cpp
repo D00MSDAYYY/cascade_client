@@ -9,6 +9,9 @@ alerts_page::alerts_page( QWidget* parent )
 {
 	Q_INIT_RESOURCE( ap_icons );
 
+	_tl_bar	 = new QToolBar{ "Tool bar", this };
+	_lst_wgt = new QListWidget{ this };
+
 	_tl_bar->setIconSize( { 32, 32 } );
 	_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
 	_tl_bar->setMovable( false );

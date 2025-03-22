@@ -10,6 +10,11 @@ sensors_page::sensors_page( QWidget* parent )
 {
 	Q_INIT_RESOURCE( sp_icons );
 
+	_tl_bar	   = new QToolBar{ "Tool bar", this };
+	_snsrs_grd = new QGridLayout{};
+	_snsrs_pln = new QWidget{ this };
+	_scrl_area = new QScrollArea{ this };
+
 	_snsrs_grd->setSpacing( 5 );
 	_snsrs_grd->setContentsMargins( 5, 5, 5, 5 );
 
@@ -73,18 +78,16 @@ sensors_page::addSensor()
 
 				 auto count{ _snsrs_grd->count() };
 				 new_snsr->setObjectName( "Виджет " + QString::number( count ) );
-				 // Устанавливаем политику изменения размеров
+
 				 new_snsr->setSizePolicy( QSizePolicy::Expanding,
 										  QSizePolicy::Expanding );
 
-				 // Определяем позицию в сетке
-				 int row = count / 2; // Два виджета в ряду
+				 int row = count / 2;
 				 int col = count % 2;
 
-				 // Добавляем виджет в сетку
 				 _snsrs_grd->addWidget( new_snsr, row, col );
 
-				 // Обновляем растяжение для строк
+
 				 _snsrs_grd->setRowStretch( row, 1 );
 			 } );
 	creator->exec();
@@ -93,17 +96,14 @@ sensors_page::addSensor()
 void
 sensors_page::removeSensor()
 {
-	// Получаем количество виджетов в сетке
 	int count = _snsrs_grd->count();
 
-	// Если виджетов нет, выходим
 	if ( count == 0 )
 		{
 			QMessageBox::information( this, "Информация", "Нет виджетов для удаления." );
 			return;
 		}
 
-	// Создаем список текстов виджетов
 	QStringList widgetNames;
 	for ( int i = 0; i < count; ++i )
 		{
@@ -114,24 +114,17 @@ sensors_page::removeSensor()
 				}
 		}
 
-	// Создаем диалоговое окно для выбора виджета
 	QInputDialog dialog( this );
 	dialog.setWindowTitle( "Удаление виджета" );
 	dialog.setLabelText( "Выберите виджет для удаления:" );
 	dialog.setComboBoxItems( widgetNames );
 	dialog.setComboBoxEditable( false );
-	dialog.setWindowFlags( dialog.windowFlags()
-						   & ~Qt::WindowCloseButtonHint ); // Убираем кнопку закрытия
+	dialog.setWindowFlags( dialog.windowFlags() & ~Qt::WindowCloseButtonHint );
 
-	// Отображаем диалог с выбором виджета
-	if ( dialog.exec() != QDialog::Accepted )
-		{
-			return; // Если пользователь нажал "Cancel" или закрыл окно, выходим
-		}
+	if ( dialog.exec() != QDialog::Accepted ) { return; }
 
-	QString selectedWidgetText = dialog.textValue();
+	auto selectedWidgetText = dialog.textValue();
 
-	// Ищем выбранный виджет и удаляем его
 	for ( int i = 0; i < count; ++i )
 		{
 			QLayoutItem* item = _snsrs_grd->itemAt( i );
@@ -140,50 +133,38 @@ sensors_page::removeSensor()
 				{
 					QWidget* widget = item->widget();
 
-					// Удаляем виджет из сетки
 					_snsrs_grd->removeWidget( widget );
 
-					// Освобождаем память
 					delete widget;
 
-					// Обновляем содержимое прокручиваемой области
 					_snsrs_pln->adjustSize();
 					break;
 				}
 		}
-
-	// Перераспределяем оставшиеся виджеты
 	_redistributeWidgets();
 }
 
 void
 sensors_page::_redistributeWidgets()
 {
-	// Собираем все виджеты из сетки
 	QList< QWidget* > widgets;
 	for ( int i = 0; i < _snsrs_grd->count(); ++i )
 		{
 			QLayoutItem* item = _snsrs_grd->itemAt( i );
 			if ( item && item->widget() ) { widgets.append( item->widget() ); }
 		}
-
-	// Очищаем сетку
 	while ( _snsrs_grd->count() > 0 )
 		{
 			QLayoutItem* item = _snsrs_grd->takeAt( 0 );
 			if ( item && item->widget() ) { _snsrs_grd->removeWidget( item->widget() ); }
 			delete item;
 		}
-
-	// Добавляем виджеты заново
 	for ( int i = 0; i < widgets.size(); ++i )
 		{
-			int row = i / 2; // Два виджета в ряду
+			int row = i / 2;
 			int col = i % 2;
 			_snsrs_grd->addWidget( widgets [ i ], row, col );
 		}
-
-	// Обновляем растяжение для строк
 	for ( int row = 0; row <= widgets.size() / 2; ++row )
 		{
 			_snsrs_grd->setRowStretch( row, 1 );

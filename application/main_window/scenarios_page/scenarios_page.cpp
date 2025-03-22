@@ -8,6 +8,7 @@ scenarios_page::scenarios_page( QWidget* parent )
 	: QMainWindow{ parent }
 {
 	Q_INIT_RESOURCE( scn_icons );
+	_tl_bar = new QToolBar{ "Tool bar", this };
 
 	_tl_bar->setIconSize( { 32, 32 } );
 	_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );

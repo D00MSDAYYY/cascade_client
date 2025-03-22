@@ -15,7 +15,8 @@ public:
 	~sensors_creator() { };
 
 signals:
-	void sensorCreated( QWidget* sensor );
+	void
+	sensorCreated( QWidget* sensor );
 
 private:
 	;

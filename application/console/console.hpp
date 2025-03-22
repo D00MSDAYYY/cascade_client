@@ -1,12 +1,11 @@
 #pragma once
 
-class console 
+class console
 {
 public:
 	console( int& argc, char** argv );
 	~console() { };
 
 private:
-
 };
 

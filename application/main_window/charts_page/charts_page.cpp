@@ -9,6 +9,11 @@ charts_page::charts_page( QWidget* parent )
 {
 	Q_INIT_RESOURCE( ch_icons );
 
+	_snsrs_grd = new QGridLayout{};
+	_snsrs_pln = new QWidget{ this };
+	_scrl_area = new QScrollArea{ this };
+	_tl_bar	   = new QToolBar{ "Tool bar", this };
+
 	_snsrs_grd->setSpacing( 5 );
 	_snsrs_grd->setContentsMargins( 5, 5, 5, 5 );
 

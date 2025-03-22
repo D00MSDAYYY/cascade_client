@@ -14,6 +14,7 @@ sensors_creator::sensors_creator( QWidget* parent )
 	: QDialog( parent )
 {
 	Q_INIT_RESOURCE( sc_icons );
+	
 	auto main_lyt{ new QHBoxLayout{} };
 	auto main_splttr{ new QSplitter{ this } };
 

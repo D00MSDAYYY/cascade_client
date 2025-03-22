@@ -8,11 +8,15 @@
 #include "script_engine.hpp"
 #include "sensors_page.hpp"
 
-main_window::main_window( std::weak_ptr< script_engine > se, QWidget* parent )
+#include <QPushButton>
+
+main_window::main_window(
+	QWidget* parent )
 	: QMainWindow( parent )
-	, _scrpt_ngn{ se }
+
 {
 	Q_INIT_RESOURCE( mw_icons );
+
 
 	_stkd_wgt = new QStackedWidget{ this };
 	_tl_bar	  = new QToolBar{ this };
@@ -21,7 +25,7 @@ main_window::main_window( std::weak_ptr< script_engine > se, QWidget* parent )
 	_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
 	_tl_bar->setMovable( false );
 
-// TODO ! remake this like in my another project
+	// TODO ! remake this like in my another project
 	for ( int index{
 			0
 	  };
@@ -32,14 +36,14 @@ main_window::main_window( std::weak_ptr< script_engine > se, QWidget* parent )
 			{ "charts", new charts_page{ this } },
 			{ "logbook", new logbook_page{ this } },
 			{ "scenarios", new scenarios_page{ this } },
-			{ "settings", new QWidget{ this } },
-		  } )
+			{ "settings", new QWidget{ this } } } )
 		{
 			auto path_str{ ":/mw_icons/" + str + ".png" };
-			auto action{ _tl_bar->addAction( QIcon( QPixmap{ { path_str.c_str() } }.scaled(
-												 _tl_bar->iconSize(),
-												 Qt::AspectRatioMode::KeepAspectRatio ) ),
-											 { str.c_str() } ) };
+			auto action{ _tl_bar->addAction(
+				QIcon( QPixmap{ { path_str.c_str() } }.scaled(
+					_tl_bar->iconSize(),
+					Qt::AspectRatioMode::KeepAspectRatio ) ),
+				{ str.c_str() } ) };
 
 			_stkd_wgt->insertWidget( index, page );
 			QObject::connect( action, &QAction::triggered, [ this, index ]() {
@@ -50,11 +54,6 @@ main_window::main_window( std::weak_ptr< script_engine > se, QWidget* parent )
 
 	addToolBar( Qt::LeftToolBarArea, _tl_bar );
 	setCentralWidget( _stkd_wgt );
-
-	if ( auto ptr{ _scrpt_ngn.lock() } ) ptr->do_code_globally( "print('main_window is created')" );
 }
 
-main_window::~main_window()
-{
-	if ( auto ptr{ _scrpt_ngn.lock() } ) ptr->do_code_globally( " print('main_window is destroyed')" );
-}
+main_window::~main_window() { }

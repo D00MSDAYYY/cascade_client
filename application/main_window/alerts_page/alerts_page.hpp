@@ -1,5 +1,7 @@
 #pragma once
 
+#include "script_engine.hpp"
+
 #include <QGridLayout>
 #include <QListWidget>
 #include <QMainWindow>
@@ -16,8 +18,6 @@ public:
 
 private:
 	// QScrollArea* _scrl_area{new QScrollArea{this}};
-	QToolBar* _tl_bar{
-		new QToolBar{ "Tool bar", this }
-	};
-	QListWidget* _lst_wgt{ new QListWidget{ this } }; // TODO Mb change to QListView later
+	QToolBar*	 _tl_bar{};
+	QListWidget* _lst_wgt{}; // TODO Mb change to QListView later
 };

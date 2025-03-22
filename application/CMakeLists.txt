@@ -3,7 +3,6 @@ project(application)
 
 ####################### insert subdirectories here ##############################
 add_subdirectory(main_window)
-add_subdirectory(script_engine)
 #################################################################################
 
 add_library(${PROJECT_NAME}  STATIC)
@@ -22,6 +21,7 @@ PUBLIC
 target_link_libraries(${PROJECT_NAME}
 PRIVATE
 	Qt::Widgets 
+PUBLIC
 	main_window
 	script_engine
 	
