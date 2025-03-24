@@ -13,7 +13,7 @@ set(CMAKE_AUTORCC ON)
 qt_standard_project_setup()
 
 ####################### insert subdirectories here ##############################
-add_subdirectory(common_libraries)
+add_subdirectory(libraries)
 add_subdirectory(application)
 #################################################################################
 
