@@ -16,7 +16,7 @@ public:
 	~application() { };
 
 private:
-	// std::shared_ptr< script::engine > _scrpt_ngn{};
-	std::shared_ptr< main_window >	 _mn_wndw{};
+	std::shared_ptr< script::engine > _engine{};
+	std::shared_ptr< main_window >	  _mn_wndw{};
 };
 

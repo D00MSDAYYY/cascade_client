@@ -1,6 +1,6 @@
 #pragma once
 
-// #include "script_engine.hpp"
+#include "script_engine.hpp"
 
 #include <QMainWindow>
 #include <QStackedWidget>
@@ -12,7 +12,8 @@ class main_window : public QMainWindow
 	Q_OBJECT
 
 public:
-	main_window( QWidget* parent = nullptr );
+	main_window( 
+		QWidget* parent = nullptr );
 	~main_window();
 
 private:
