@@ -4,8 +4,11 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
-charts_page::charts_page( QWidget* parent )
+charts_page::charts_page( const std::string&  name,
+						  script::engine::ptr ngn_ptr,
+						  QWidget*			  parent )
 	: QMainWindow{ parent }
+	, script::object{ name, ngn_ptr }
 {
 	Q_INIT_RESOURCE( ch_icons );
 

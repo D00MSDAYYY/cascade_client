@@ -10,9 +10,11 @@
 
 #include <QPushButton>
 
-main_window::main_window(
-	QWidget* parent )
+main_window::main_window( const std::string&  name,
+						  script::engine::ptr ngn_ptr,
+						  QWidget*			  parent )
 	: QMainWindow( parent )
+	, script::object{ name, ngn_ptr }
 
 {
 	Q_INIT_RESOURCE( mw_icons );
@@ -25,35 +27,93 @@ main_window::main_window(
 	_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
 	_tl_bar->setMovable( false );
 
-	// TODO ! remake this like in my another project
-	for ( int index{
-			0
-	  };
-		  const auto& [ str, page ] : std::vector< std::pair< std::string, QWidget* > >{
-			{ "alerts", new alerts_page{ this } },
-			{ "sensors", new sensors_page{ this } },
-			{ "connections", new connections_page{ this } },
-			{ "charts", new charts_page{ this } },
-			{ "logbook", new logbook_page{ this } },
-			{ "scenarios", new scenarios_page{ this } },
-			{ "settings", new QWidget{ this } } } )
+	// auto _pages = {
+	// 	{ "alerts",		new alerts_page{ "alerts_page", _ngn_ptr, this }			 },
+	// 	{ "sensors",	 new sensors_page{ "sensors_page", _ngn_ptr, this }			},
+	// 	{ "connections", new connections_page{ "connections_page", _ngn_ptr, this } },
+	// 	{ "charts",		new charts_page{ "charts_charts", _ngn_ptr, this }		   },
+	// 	{ "logbook",	 new logbook_page{ "logbook_page", _ngn_ptr, this }			},
+	// 	{ "scenarios",   new scenarios_page{ "scenarios_page", _ngn_ptr, this }	  },
+	// 	{ "settings",	  new QWidget{ this }										  }
+	// };
+
+	for ( const auto& [ page_name, page_ptr ] : std::map< std::string, QWidget* >{
+			{ "alerts",		new alerts_page{ "alerts_page", _ngn_ptr, this }			 },
+			{ "sensors",	 new sensors_page{ "sensors_page", _ngn_ptr, this }			},
+			{ "connections", new connections_page{ "connections_page", _ngn_ptr, this } },
+			{ "charts",		new charts_page{ "charts_charts", _ngn_ptr, this }		   },
+			{ "logbook",	 new logbook_page{ "logbook_page", _ngn_ptr, this }			},
+			{ "scenarios",   new scenarios_page{ "scenarios_page", _ngn_ptr, this }	  },
+			{ "settings",	  new QWidget{ this }										  }
+	} )
 		{
-			auto path_str{ ":/mw_icons/" + str + ".png" };
+			auto path_str{ ":/mw_icons/" + page_name + ".png" };
 			auto action{ _tl_bar->addAction(
 				QIcon( QPixmap{ { path_str.c_str() } }.scaled(
 					_tl_bar->iconSize(),
 					Qt::AspectRatioMode::KeepAspectRatio ) ),
-				{ str.c_str() } ) };
+				{ page_name.c_str() } ) };
 
-			_stkd_wgt->insertWidget( index, page );
-			QObject::connect( action, &QAction::triggered, [ this, index ]() {
-				_stkd_wgt->setCurrentIndex( index );
+			page_ptr->setObjectName( page_name );
+			_stkd_wgt->addWidget( page_ptr );
+
+			QObject::connect( action, &QAction::triggered, [ this, page_ptr ]() {
+				_stkd_wgt->setCurrentWidget( page_ptr );
 			} );
-			++index;
+
+			sol::object obj{ sol::lua_nil };
+			if ( page_name == "alerts" )
+				obj = sol::make_object( _ngn_ptr->lua_state(),
+										dynamic_cast< alerts_page* >( page_ptr ) );
+			else if ( page_name == "charts" )
+				obj = sol::make_object( _ngn_ptr->lua_state(),
+										dynamic_cast< charts_page* >( page_ptr ) );
+			else if ( page_name == "connections" )
+				obj = sol::make_object( _ngn_ptr->lua_state(),
+										dynamic_cast< connections_page* >( page_ptr ) );
+			else if ( page_name == "logbook" )
+				obj = sol::make_object( _ngn_ptr->lua_state(),
+										dynamic_cast< logbook_page* >( page_ptr ) );
+			else if ( page_name == "scenarios" )
+				obj = sol::make_object( _ngn_ptr->lua_state(),
+										dynamic_cast< scenarios_page* >( page_ptr ) );
+			else if ( page_name == "sensors" )
+				obj = sol::make_object( _ngn_ptr->lua_state(),
+										dynamic_cast< sensors_page* >( page_ptr ) );
+			_pages_lua_obj.insert( { page_name, obj } );
 		}
 
 	addToolBar( Qt::LeftToolBarArea, _tl_bar );
 	setCentralWidget( _stkd_wgt );
+	self_register();
 }
 
 main_window::~main_window() { }
+
+void
+main_window::self_register()
+{
+	script::object::self_register( this );
+
+	auto type{ _ngn_ptr->new_usertype< main_window >( "main_window" ) };
+	type [ "pages" ]		   = &main_window::_pages_lua_obj;
+
+	type [ "set_active_page" ] = []( main_window* self, const sol::object obj ) {
+		for ( const auto& [ page_name, page_obj ] : self->_pages_lua_obj )
+			{
+				if ( page_obj == obj )
+					{
+						for ( auto i{ 0 }; i < self->_stkd_wgt->count(); ++i )
+							{
+								auto wgt{ self->_stkd_wgt->widget( i ) };
+								if ( page_name == wgt->objectName() )
+									{
+										self->_stkd_wgt->setCurrentWidget( wgt );
+										break;
+									}
+							}
+						break;
+					}
+			}
+	};
+}

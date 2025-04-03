@@ -5,8 +5,11 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-connections_page::connections_page( QWidget* parent )
+connections_page::connections_page( const std::string&	name,
+									script::engine::ptr ngn_ptr,
+									QWidget*			parent )
 	: QMainWindow{ parent }
+	, script::object{ name, ngn_ptr }
 {
 	Q_INIT_RESOURCE( cn_icons );
 	_snsrs_grd = new QGridLayout{};

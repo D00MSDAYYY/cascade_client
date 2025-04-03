@@ -24,6 +24,7 @@ PRIVATE
 	Qt::Widgets
 PUBLIC 
 	script_engine
+	script_object
 )
 
 

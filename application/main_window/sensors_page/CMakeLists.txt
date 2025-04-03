@@ -25,7 +25,7 @@ PRIVATE
 	sensors_creator
 PUBLIC
 	script_engine
-)
+	script_object)
 
 
 

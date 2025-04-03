@@ -4,8 +4,11 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
-scenarios_page::scenarios_page( QWidget* parent )
+scenarios_page::scenarios_page( const std::string&	name,
+								script::engine::ptr ngn_ptr,
+								QWidget*			parent )
 	: QMainWindow{ parent }
+	, script::object{ name, ngn_ptr }
 {
 	Q_INIT_RESOURCE( scn_icons );
 	_tl_bar = new QToolBar{ "Tool bar", this };

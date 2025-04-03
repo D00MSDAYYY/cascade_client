@@ -4,8 +4,11 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
-logbook_page::logbook_page( QWidget* parent )
+logbook_page::logbook_page( const std::string&	name,
+							script::engine::ptr ngn_ptr,
+							QWidget*			parent )
 	: QMainWindow{ parent }
+	, script::object{ name, ngn_ptr }
 {
 	Q_INIT_RESOURCE( lp_icons );
 }

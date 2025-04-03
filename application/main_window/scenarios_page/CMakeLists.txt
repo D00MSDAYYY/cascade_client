@@ -22,6 +22,8 @@ PUBLIC
 target_link_libraries(${PROJECT_NAME}
 PRIVATE
 	Qt::Widgets
+	script_engine
+	script_object
 )
 
 

@@ -4,8 +4,11 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
-alerts_page::alerts_page( QWidget* parent )
+alerts_page::alerts_page( const std::string&  name,
+						  script::engine::ptr ngn_ptr,
+						  QWidget*			  parent )
 	: QMainWindow{ parent }
+	, script::object{ name, ngn_ptr }
 {
 	Q_INIT_RESOURCE( ap_icons );
 
@@ -40,4 +43,14 @@ alerts_page::alerts_page( QWidget* parent )
 
 	_lst_wgt->addItems( { { "Test1" }, { "Test2" } } );
 	setCentralWidget( _lst_wgt );
+	self_register();
+}
+
+void
+alerts_page::self_register()
+{
+	script::object::self_register( this );
+
+	auto type{ _ngn_ptr->new_usertype< alerts_page >( "alerts_page" ) };
+	type [ "special_func_ap" ] = []() { return "hello from spec func for ap"; };
 }

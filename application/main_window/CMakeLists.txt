@@ -37,5 +37,6 @@ PRIVATE
 	scenarios_page
 PUBLIC
 	script_engine
+	script_object
 )
 

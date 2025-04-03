@@ -3,6 +3,7 @@ project(application)
 
 ####################### insert subdirectories here ##############################
 add_subdirectory(main_window)
+add_subdirectory(debug_console)
 #################################################################################
 
 add_library(${PROJECT_NAME}  STATIC)
@@ -24,6 +25,7 @@ PRIVATE
 PUBLIC
 	main_window
 	script_engine
-	
+	script_object
+	debug_console
 )
 
