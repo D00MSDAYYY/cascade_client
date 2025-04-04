@@ -2,7 +2,9 @@
 #include "alerts_page.hpp"
 
 #include <QInputDialog>
+#include <QMenu>
 #include <QMessageBox>
+#include <QToolButton>
 
 alerts_page::alerts_page( const std::string&  name,
 						  script::engine::ptr ngn_ptr,
@@ -12,37 +14,101 @@ alerts_page::alerts_page( const std::string&  name,
 {
 	Q_INIT_RESOURCE( ap_icons );
 
-	_tl_bar	 = new QToolBar{ "Tool bar", this };
-	_lst_wgt = new QListWidget{ this };
+	_tl_bar = new QToolBar{ "Tool bar", this };
 
 	_tl_bar->setIconSize( { 32, 32 } );
 	_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
 	_tl_bar->setMovable( false );
-	for ( const auto& [ str, func ] :
-		  std::vector< std::pair< std::string, std::function< void() > > >{
-			{ "filter",	[]() { return; } },
-			{ "|",	   []() { return; } },
-			{ "remove",	[]() { return; } },
-			{ "|",	   []() { return; } },
-			{ "history", []() { return; } }
-	} )
+
+	_actions_tree_root = std::make_shared< _nd_t >( _nd_t{
+	  { .name		 = "_root_node",
+		.description = "don't use this node ",
+		.children	 = { _nd_t{ {
+						   .name = "filter",
+						 } },
+						 _nd_t{ {
+						   .name = "|",
+						 } },
+						 _nd_t{ {
+						   .name = "remove",
+						 } },
+						 _nd_t{ { .name = "|" } },
+						 _nd_t{ {
+						   .name = "history",
+						 } } } }
+	  } );
+	std::function< void( _nd_t& ) > fill_empty_node_fields{};
+	fill_empty_node_fields = [ this, &fill_empty_node_fields ]( _nd_t& node ) -> void {
+		for ( auto& child : node._children )
+			{
+				fill_empty_node_fields( child );
+				child._data._qaction = new QAction{
+					QIcon(
+						QPixmap{
+						  std::string{ ":/ap_icons/" + child._name + ".png" }.c_str() }
+							.scaled( iconSize(), Qt::AspectRatioMode::KeepAspectRatio ) ),
+					child._name.c_str(),
+					this
+				};
+				QObject::connect(
+					child._data._qaction,
+					&QAction::triggered,
+					[ this, child ]() { _ngn_ptr->script( child._data._script ); } );
+				////////////////////////////////////////////////
+				// //
+				// add filling the scripts here as well    //
+				// //
+				////////////////////////////////////////////////
+			}
+	};
+	fill_empty_node_fields( *_actions_tree_root );
+
+
+	std::function< QMenu*( const std::vector< _nd_t >& ) > create_button_menu{};
+	create_button_menu
+		= [ this, &create_button_menu ]( const std::vector< _nd_t >& nodes ) -> QMenu* {
+		auto menu{ new QMenu( this ) };
+
+		for ( const auto& node : nodes )
+			{
+				if ( node._children.empty() ) { menu->addAction( node._data._qaction ); }
+				else
+					{
+						auto sub_menu{ create_button_menu( node._children ) };
+						sub_menu->setTitle( node._name.c_str() );
+						sub_menu->setIcon( node._data._qaction->icon() );
+						menu->addMenu( sub_menu );
+					}
+			}
+		return menu;
+	};
+	for ( auto& group : _actions_tree_root->_children )
 		{
-			if ( str == "|" ) { _tl_bar->addSeparator(); }
+			if ( group._name == "|" ) { _tl_bar->addSeparator(); }
 			else
 				{
-					auto path{ ":/ap_icons/" + str + ".png" };
-					auto action{ _tl_bar->addAction(
-						QIcon{ QPixmap{ path.c_str() }.scaled(
-							_tl_bar->iconSize(),
-							Qt::AspectRatioMode::KeepAspectRatio ) },
-						str.c_str() ) };
-					connect( action, &QAction::triggered, this, func );
+					auto btn{ new QToolButton{
+					  _tl_bar } }; // !TODO switch to tool_button implementation from MOTH
+					btn->setDefaultAction( group._data._qaction );
+					btn->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+					btn->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
+
+					if ( !group._children.empty() )
+						{
+							btn->setMenu( create_button_menu( group._children ) );
+							btn->setPopupMode( QToolButton::InstantPopup );
+						}
+					_tl_bar->addWidget( btn );
 				}
 		}
+
+
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
 
+	_lst_wgt = new QListWidget{ this };
 	_lst_wgt->addItems( { { "Test1" }, { "Test2" } } );
 	setCentralWidget( _lst_wgt );
+
 	self_register();
 }
 

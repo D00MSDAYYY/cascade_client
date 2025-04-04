@@ -21,7 +21,7 @@ public:
 	~debug_console() { };
 
 	const std::string
-	class_name() override
+	class_name() const override
 	{
 		return "debug_console";
 	}

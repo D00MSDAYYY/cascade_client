@@ -22,16 +22,9 @@ public:
 	~main_window();
 
 	const std::string
-	class_name() override
+	class_name() const override
 	{
 		return "main_window";
-	}
-
-	bool
-	_test_fn()
-	{
-		std::cout << "test fn" << std::endl;
-		return true;
 	}
 
 protected:
@@ -42,8 +35,9 @@ private:
 	QToolBar*						  _tl_bar{};
 	QStackedWidget*					  _stkd_wgt{};
 
-	// std::map< std::string, QWidget* > _pages;
 	std::map< std::string, sol::object > _pages_lua_obj;
+
+
 };
 
 

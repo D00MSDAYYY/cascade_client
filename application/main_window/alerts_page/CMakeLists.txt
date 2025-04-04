@@ -25,6 +25,7 @@ PRIVATE
 PUBLIC 
 	script_engine
 	script_object
+	actions_tree
 )
 
 

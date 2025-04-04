@@ -26,7 +26,7 @@ public:
 	removeConnection();
 
 	const std::string
-	class_name() override
+	class_name() const override
 	{
 		return "charts_page";
 	}

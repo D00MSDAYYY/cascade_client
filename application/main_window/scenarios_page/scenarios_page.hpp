@@ -21,7 +21,7 @@ public:
 	~scenarios_page() { };
 
 	const std::string
-	class_name() override
+	class_name() const override
 	{
 		return "scenarios_page";
 	}

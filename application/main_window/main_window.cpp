@@ -48,11 +48,17 @@ main_window::main_window( const std::string&  name,
 	} )
 		{
 			auto path_str{ ":/mw_icons/" + page_name + ".png" };
+			// TODO
+			////////////////////////////////////////
+			// //
+			// switch to actions_tree nodes    //
+			// //
+			////////////////////////////////////////
 			auto action{ _tl_bar->addAction(
 				QIcon( QPixmap{ { path_str.c_str() } }.scaled(
 					_tl_bar->iconSize(),
 					Qt::AspectRatioMode::KeepAspectRatio ) ),
-				{ page_name.c_str() } ) };
+				page_name.c_str() ) };
 
 			page_ptr->setObjectName( page_name );
 			_stkd_wgt->addWidget( page_ptr );
