@@ -10,7 +10,8 @@ scenarios_page::scenarios_page( const std::string&	name,
 	: QMainWindow{ parent }
 	, script::object{ name, ngn_ptr }
 {
-	Q_INIT_RESOURCE( scn_icons );
+	Q_INIT_RESOURCE( scenarios_page );
+	
 	_tl_bar = new QToolBar{ "Tool bar", this };
 
 	_tl_bar->setIconSize( { 32, 32 } );
@@ -31,7 +32,7 @@ scenarios_page::scenarios_page( const std::string&	name,
 			if ( str == "|" ) { _tl_bar->addSeparator(); }
 			else
 				{
-					auto path{ ":/scn_icons/" + str + ".png" };
+					auto path{ ":/scenarios_page/icons/" + str + ".png" };
 					auto action{ _tl_bar->addAction(
 						QIcon{ QPixmap{ path.c_str() }.scaled(
 							_tl_bar->iconSize(),
@@ -42,3 +43,5 @@ scenarios_page::scenarios_page( const std::string&	name,
 		}
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
 }
+
+scenarios_page::~scenarios_page() { Q_CLEANUP_RESOURCE( scenarios_page ); }

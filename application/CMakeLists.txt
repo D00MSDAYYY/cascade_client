@@ -23,9 +23,9 @@ target_link_libraries(${PROJECT_NAME}
 PRIVATE
 	Qt::Widgets 
 PUBLIC
+	debug_console
 	main_window
 	script_engine
 	script_object
-	debug_console
 )
 

@@ -18,7 +18,7 @@ public:
 	scenarios_page( const std::string&	name,
 					script::engine::ptr ngn_ptr,
 					QWidget*			parent = nullptr );
-	~scenarios_page() { };
+	~scenarios_page() ;
 
 	const std::string
 	class_name() const override

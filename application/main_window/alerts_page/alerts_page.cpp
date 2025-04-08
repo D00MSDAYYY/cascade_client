@@ -106,7 +106,7 @@ alerts_page::alerts_page( const std::string&  name,
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
 
 	_lst_wgt = new QListWidget{ this };
-	_lst_wgt->addItems( { { "Test1" }, { "Test2" } } );
+	_lst_wgt->addItems( { { "Test1" }, { "Test2" }, { "Test3" }, { "Test4" } } );
 	setCentralWidget( _lst_wgt );
 
 	self_register();
@@ -115,8 +115,9 @@ alerts_page::alerts_page( const std::string&  name,
 void
 alerts_page::self_register()
 {
-	script::object::self_register( this );
-
-	auto type{ _ngn_ptr->new_usertype< alerts_page >( "alerts_page" ) };
-	type [ "special_func_ap" ] = []() { return "hello from spec func for ap"; };
+	if ( can_self_register() )
+		{
+			auto type{ _ngn_ptr->new_usertype< alerts_page >( "alerts_page" ) };
+			type [ "special_func_ap" ] = []() { return "hello from spec func for ap"; };
+		}
 }

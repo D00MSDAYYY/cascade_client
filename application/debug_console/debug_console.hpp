@@ -4,9 +4,9 @@
 #include "script_object.hpp"
 
 #include <QLineEdit>
+#include <QMainWindow>
 #include <QPlainTextEdit>
 #include <QPointer>
-#include <QMainWindow>
 
 class debug_console
 	: public QMainWindow
@@ -28,10 +28,7 @@ public:
 
 protected:
 	void
-	self_register() override
-	{
-		script::object::self_register( this );
-	};
+	self_register() override { };
 
 private:
 	void

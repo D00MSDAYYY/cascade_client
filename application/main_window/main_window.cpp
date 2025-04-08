@@ -5,10 +5,7 @@
 #include "connections_page.hpp"
 #include "logbook_page.hpp"
 #include "scenarios_page.hpp"
-#include "script_engine.hpp"
 #include "sensors_page.hpp"
-
-#include <QPushButton>
 
 main_window::main_window( const std::string&  name,
 						  script::engine::ptr ngn_ptr,
@@ -17,8 +14,7 @@ main_window::main_window( const std::string&  name,
 	, script::object{ name, ngn_ptr }
 
 {
-	Q_INIT_RESOURCE( mw_icons );
-
+	Q_INIT_RESOURCE( main_window );
 
 	_stkd_wgt = new QStackedWidget{ this };
 	_tl_bar	  = new QToolBar{ this };
@@ -27,15 +23,6 @@ main_window::main_window( const std::string&  name,
 	_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
 	_tl_bar->setMovable( false );
 
-	// auto _pages = {
-	// 	{ "alerts",		new alerts_page{ "alerts_page", _ngn_ptr, this }			 },
-	// 	{ "sensors",	 new sensors_page{ "sensors_page", _ngn_ptr, this }			},
-	// 	{ "connections", new connections_page{ "connections_page", _ngn_ptr, this } },
-	// 	{ "charts",		new charts_page{ "charts_charts", _ngn_ptr, this }		   },
-	// 	{ "logbook",	 new logbook_page{ "logbook_page", _ngn_ptr, this }			},
-	// 	{ "scenarios",   new scenarios_page{ "scenarios_page", _ngn_ptr, this }	  },
-	// 	{ "settings",	  new QWidget{ this }										  }
-	// };
 
 	for ( const auto& [ page_name, page_ptr ] : std::map< std::string, QWidget* >{
 			{ "alerts",		new alerts_page{ "alerts_page", _ngn_ptr, this }			 },
@@ -47,7 +34,7 @@ main_window::main_window( const std::string&  name,
 			{ "settings",	  new QWidget{ this }										  }
 	} )
 		{
-			auto path_str{ ":/mw_icons/" + page_name + ".png" };
+			auto path_str{ ":/main_window/icons/" + page_name + ".png" };
 			// TODO
 			////////////////////////////////////////
 			// //
@@ -94,32 +81,33 @@ main_window::main_window( const std::string&  name,
 	self_register();
 }
 
-main_window::~main_window() { }
+main_window::~main_window() { Q_CLEANUP_RESOURCE( main_window ); }
 
 void
 main_window::self_register()
 {
-	script::object::self_register( this );
-
-	auto type{ _ngn_ptr->new_usertype< main_window >( "main_window" ) };
-	type [ "pages" ]		   = &main_window::_pages_lua_obj;
-
-	type [ "set_active_page" ] = []( main_window* self, const sol::object obj ) {
-		for ( const auto& [ page_name, page_obj ] : self->_pages_lua_obj )
-			{
-				if ( page_obj == obj )
+	if ( can_self_register() )
+		{
+			auto type{ _ngn_ptr->new_usertype< main_window >( class_name() ) };
+			
+			type [ "pages" ]		   = &main_window::_pages_lua_obj;
+			type [ "set_active_page" ] = []( main_window* self, const sol::object obj ) {
+				for ( const auto& [ page_name, page_obj ] : self->_pages_lua_obj )
 					{
-						for ( auto i{ 0 }; i < self->_stkd_wgt->count(); ++i )
+						if ( page_obj == obj )
 							{
-								auto wgt{ self->_stkd_wgt->widget( i ) };
-								if ( page_name == wgt->objectName() )
+								for ( auto i{ 0 }; i < self->_stkd_wgt->count(); ++i )
 									{
-										self->_stkd_wgt->setCurrentWidget( wgt );
-										break;
+										auto wgt{ self->_stkd_wgt->widget( i ) };
+										if ( page_name == wgt->objectName() )
+											{
+												self->_stkd_wgt->setCurrentWidget( wgt );
+												break;
+											}
 									}
+								break;
 							}
-						break;
 					}
-			}
-	};
+			};
+		}
 }

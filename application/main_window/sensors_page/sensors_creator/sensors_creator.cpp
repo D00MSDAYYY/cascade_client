@@ -13,8 +13,8 @@
 sensors_creator::sensors_creator( QWidget* parent )
 	: QDialog( parent )
 {
-	Q_INIT_RESOURCE( sc_icons );
-	
+	Q_INIT_RESOURCE( sensors_creator );
+
 	auto main_lyt{ new QHBoxLayout{} };
 	auto main_splttr{ new QSplitter{ this } };
 
@@ -44,30 +44,13 @@ sensors_creator::sensors_creator( QWidget* parent )
 	auto stndrd_btns_lyt{ new QHBoxLayout{} };
 	auto stndrd_derive_btn{ new QPushButton{ this } };
 	stndrd_derive_btn->setFixedSize( 32, 32 );
-	stndrd_derive_btn->setIcon( QIcon( QPixmap( ":/sc_icons/derive.png" ) ) );
+	stndrd_derive_btn->setIcon( QIcon( QPixmap( ":/icons/derive.png" ) ) );
 	stndrd_btns_lyt->addWidget( stndrd_derive_btn );
 	stndrd_btns_lyt->addStretch( 1 );
 	stndrd_btns_lyt->setContentsMargins( 0, 0, 0, 0 );
 	stndrd_btns_grp->setLayout( stndrd_btns_lyt );
 	stndrd_btns_grp->setFlat( true );
-	stndrd_btns_grp->setStyleSheet(
-		R"(
-		 QGroupBox {
-                border: none; /* Граница */
-                margin: 0px; /* Убираем внешние отступы */
-                padding: 0px; /* Убираем внутренние отступы */
-                font-family: "MS Shell Dlg", sans-serif; /* Шрифт Windows 2000 */
-            }
 
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                subcontrol-position: top left; /* Заголовок вверху слева */
-                padding: 0px; /* Убираем отступы вокруг текста заголовка */
-                background-color: transparent; /* Прозрачный фон заголовка */
-                color: black; /* Черный текст */
-                margin: 0px; /* Убираем отступы у заголовка */
-            }
-		)" );
 	lft_up_lyt->addWidget( stndrd_tmplts_cmb );
 	lft_up_lyt->addWidget( stndrd_btns_grp );
 	lft_up_lyt->addStretch( 1 );
@@ -92,7 +75,7 @@ sensors_creator::sensors_creator( QWidget* parent )
 		{
 			auto usr_btn{ new QPushButton{ this } };
 			usr_btn->setFixedSize( 32, 32 );
-			auto path{ ":/sc_icons/" + str + ".png" };
+			auto path{ ":/sensors_creator/icons/" + str + ".png" };
 			usr_btn->setIcon( QIcon( QPixmap( path.c_str() ) ) );
 			usr_btns_lyt->addWidget( usr_btn );
 		}
@@ -101,24 +84,6 @@ sensors_creator::sensors_creator( QWidget* parent )
 	usr_btns_lyt->setContentsMargins( 0, 0, 0, 0 );
 	usr_btns_grp->setLayout( usr_btns_lyt );
 	usr_btns_grp->setFlat( true );
-	usr_btns_grp->setStyleSheet(
-		R"(
-		 QGroupBox {
-                border: none; /* Граница */
-                margin: 0px; /* Убираем внешние отступы */
-                padding: 0px; /* Убираем внутренние отступы */
-                font-family: "MS Shell Dlg", sans-serif; /* Шрифт Windows 2000 */
-            }
-
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                subcontrol-position: top left; /* Заголовок вверху слева */
-                padding: 0px; /* Убираем отступы вокруг текста заголовка */
-                background-color: transparent; /* Прозрачный фон заголовка */
-                color: black; /* Черный текст */
-                margin: 0px; /* Убираем отступы у заголовка */
-            }
-		)" );
 	lft_btm_lyt->addWidget( usr_tmplts_cmb );
 	lft_btm_lyt->addWidget( usr_btns_grp );
 	lft_btm_lyt->addStretch( 1 );
@@ -193,3 +158,5 @@ sensors_creator::sensors_creator( QWidget* parent )
 	setLayout( main_lyt );
 	setFixedSize( 1'024 * 2 / 3, 600 * 2 / 3 );
 }
+
+sensors_creator::~sensors_creator() { Q_CLEANUP_RESOURCE( sensors_creator ); }

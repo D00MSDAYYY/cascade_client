@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/logbook_page">
+		<file>icons/filter.png</file>
+    </qresource>
+</RCC>

@@ -11,7 +11,7 @@ target_sources(${PROJECT_NAME}
 PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/logbook_page.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/logbook_page.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/lp_icons.qrc
+	${CMAKE_CURRENT_SOURCE_DIR}/logbook_page.qrc
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -20,7 +20,7 @@ PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME}
-PRIVATE
+PUBLIC
 	Qt::Widgets
 	script_engine
 	script_object

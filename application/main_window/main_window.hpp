@@ -5,7 +5,6 @@
 
 #include <QMainWindow>
 #include <QStackedWidget>
-#include <QTabWidget>
 #include <QToolBar>
 #include <map>
 
@@ -32,12 +31,10 @@ protected:
 	self_register() override;
 
 private:
-	QToolBar*						  _tl_bar{};
-	QStackedWidget*					  _stkd_wgt{};
+	QToolBar*							 _tl_bar{};
+	QStackedWidget*						 _stkd_wgt{};
 
 	std::map< std::string, sol::object > _pages_lua_obj;
-
-
 };
 
 

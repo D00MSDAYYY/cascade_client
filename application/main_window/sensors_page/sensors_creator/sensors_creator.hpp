@@ -12,12 +12,9 @@ class sensors_creator : public QDialog
 
 public:
 	sensors_creator( QWidget* parent = 0 );
-	~sensors_creator() { };
+	~sensors_creator() ;
 
 signals:
 	void
 	sensorCreated( QWidget* sensor );
-
-private:
-	;
 };

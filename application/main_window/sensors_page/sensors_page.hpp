@@ -7,7 +7,6 @@
 #include <QMainWindow>
 #include <QScrollArea>
 #include <QToolBar>
-#include <QWidget>
 
 class sensors_page
 	: public QMainWindow
@@ -19,7 +18,7 @@ public:
 	sensors_page( const std::string&  name,
 				  script::engine::ptr ngn_ptr,
 				  QWidget*			  parent = nullptr );
-	~sensors_page() { };
+	~sensors_page() ;
 
 	void
 	addSensor();

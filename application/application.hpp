@@ -24,7 +24,7 @@ protected:
 	self_register() override;
 
 private:
-	std::shared_ptr< main_window >	  _mn_wndw{};
-	std::shared_ptr< debug_console >  _dbg_wndw{};
+	std::shared_ptr< main_window >	 _mn_wndw{};
+	std::shared_ptr< debug_console > _dbg_wndw{};
 };
 

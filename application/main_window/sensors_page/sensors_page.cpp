@@ -11,7 +11,7 @@ sensors_page::sensors_page( const std::string&	name,
 	: QMainWindow{ parent }
 	, script::object{ name, ngn_ptr }
 {
-	Q_INIT_RESOURCE( sp_icons );
+	Q_INIT_RESOURCE( sensors_page );
 
 	_tl_bar	   = new QToolBar{ "Tool bar", this };
 	_snsrs_grd = new QGridLayout{};
@@ -51,7 +51,7 @@ sensors_page::sensors_page( const std::string&	name,
 			if ( str == "|" ) { _tl_bar->addSeparator(); }
 			else
 				{
-					auto path{ ":/sp_icons/" + str + ".png" };
+					auto path{ ":/sensors_page/icons/" + str + ".png" };
 					auto action{ _tl_bar->addAction(
 						QIcon{ QPixmap{ path.c_str() }.scaled(
 							_tl_bar->iconSize(),
@@ -65,6 +65,8 @@ sensors_page::sensors_page( const std::string&	name,
 
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
 }
+
+sensors_page::~sensors_page() { Q_CLEANUP_RESOURCE( sensors_page ); }
 
 void
 sensors_page::addSensor()

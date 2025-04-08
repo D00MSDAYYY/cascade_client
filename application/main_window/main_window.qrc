@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/main_window">
+		<file>icons/alerts.png</file>
+		<file>icons/connections.png</file>
+		<file>icons/logbook.png</file>
+		<file>icons/sensors.png</file>
+		<file>icons/scenarios.png</file>
+		<file>icons/charts.png</file>
+		<file>icons/settings.png</file>
+    </qresource>
+</RCC>
