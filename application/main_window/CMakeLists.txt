@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.31.5)
 project(main_window)
 
 ####################### insert subdirectories here ##############################
+add_subdirectory(page)
 add_subdirectory(alerts_page)
 add_subdirectory(sensors_page)
 add_subdirectory(connections_page)
@@ -35,6 +36,7 @@ PRIVATE
 	scenarios_page
 	settings_page
 PUBLIC
+	page
 	Qt::Widgets
 	script_engine
 	script_object

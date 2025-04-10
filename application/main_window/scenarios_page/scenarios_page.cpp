@@ -7,8 +7,7 @@
 scenarios_page::scenarios_page( const std::string&	name,
 								script::engine::ptr ngn_ptr,
 								QWidget*			parent )
-	: QMainWindow{ parent }
-	, script::object{ name, ngn_ptr }
+	: page{name, ngn_ptr, parent}
 {
 	Q_INIT_RESOURCE( scenarios_page );
 	
@@ -42,6 +41,25 @@ scenarios_page::scenarios_page( const std::string&	name,
 				}
 		}
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
+	self_register();
 }
 
 scenarios_page::~scenarios_page() { Q_CLEANUP_RESOURCE( scenarios_page ); }
+
+sol::object
+scenarios_page::create_lua_object_from_this() const
+{
+	return sol::make_object( _ngn_ptr->lua_state(), this );
+}
+
+void
+scenarios_page::self_register()
+{
+	if ( can_self_register() )
+		{
+			auto type{ _ngn_ptr->new_usertype< scenarios_page >(
+				class_name(),
+				sol::base_classes,
+				sol::bases< page >() ) };
+		}
+}

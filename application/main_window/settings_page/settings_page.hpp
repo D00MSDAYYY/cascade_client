@@ -1,7 +1,6 @@
 #pragma once
 
-#include "script_engine.hpp"
-#include "script_object.hpp"
+#include "page.hpp"
 
 #include <QGridLayout>
 #include <QMainWindow>
@@ -9,8 +8,7 @@
 #include <QToolBar>
 
 class settings_page
-	: public QMainWindow
-	, public script::object
+	: public page
 {
 	Q_OBJECT
 
@@ -26,9 +24,12 @@ public:
 		return "settings_page";
 	}
 
+	sol::object
+	create_lua_object_from_this() const override;
+
 protected:
 	virtual void
-	self_register() override{};
+	self_register() override;
 
 private:
 

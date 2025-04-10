@@ -11,7 +11,7 @@ target_sources(${PROJECT_NAME}
 PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/charts_page.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/charts_page.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/ch_icons.qrc
+	${CMAKE_CURRENT_SOURCE_DIR}/charts_page.qrc
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -22,8 +22,7 @@ PUBLIC
 target_link_libraries(${PROJECT_NAME}
 PRIVATE
 	Qt::Widgets
-	script_engine
-	script_object
+	page
 )
 
 

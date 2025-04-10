@@ -7,29 +7,12 @@
 charts_page::charts_page( const std::string&  name,
 						  script::engine::ptr ngn_ptr,
 						  QWidget*			  parent )
-	: QMainWindow{ parent }
-	, script::object{ name, ngn_ptr }
+	: page{name, ngn_ptr, parent}
 {
-	Q_INIT_RESOURCE( ch_icons );
+	Q_INIT_RESOURCE( charts_page );
 
-	_snsrs_grd = new QGridLayout{};
-	_snsrs_pln = new QWidget{ this };
-	_scrl_area = new QScrollArea{ this };
-	_tl_bar	   = new QToolBar{ "Tool bar", this };
+	_tl_bar = new QToolBar{ "Tool bar", this };
 
-	_snsrs_grd->setSpacing( 5 );
-	_snsrs_grd->setContentsMargins( 5, 5, 5, 5 );
-
-	_snsrs_grd->setColumnStretch( 0, 1 );
-	_snsrs_grd->setColumnStretch( 1, 1 );
-
-	_snsrs_grd->setRowStretch( 0, 1 );
-	_snsrs_grd->setRowStretch( 1, 1 );
-
-	_snsrs_pln->setLayout( _snsrs_grd );
-
-	_scrl_area->setWidgetResizable( true );
-	_scrl_area->setWidget( _snsrs_pln );
 
 	_tl_bar->setIconSize( { 32, 32 } );
 	_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
@@ -37,20 +20,20 @@ charts_page::charts_page( const std::string&  name,
 
 	for ( const auto& [ str, func ] :
 		  std::vector< std::pair< std::string, std::function< void() > > >{
-			{ "filter", []() { return; } },
-			{ "|", []() { return; } },
-			{ "add", std::bind( &charts_page::addConnection, this ) },
-			{ "remove", std::bind( &charts_page::removeConnection, this ) },
-			{ "select", []() { return; } },
-			{ "|", []() { return; } },
-			{ "resume", []() { return; } },
+			{ "filter",	[]() { return; } },
+			{ "|",	   []() { return; } },
+			{ "add",	 []() { return; } },
+			{ "remove",	[]() { return; } },
+			{ "select",	[]() { return; } },
+			{ "|",	   []() { return; } },
+			{ "resume",	[]() { return; } },
 			{ "suspend", []() { return; } }
 	} )
 		{
 			if ( str == "|" ) { _tl_bar->addSeparator(); }
 			else
 				{
-					auto path{ ":/ch_icons/" + str + ".png" };
+					auto path{ ":/charts_page/icons/" + str + ".png" };
 					auto action{ _tl_bar->addAction(
 						QIcon{ QPixmap{ path.c_str() }.scaled(
 							_tl_bar->iconSize(),
@@ -60,139 +43,27 @@ charts_page::charts_page( const std::string&  name,
 				}
 		}
 
-	setCentralWidget( _scrl_area );
-
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
+	self_register();
+}
+
+charts_page::~charts_page() { Q_CLEANUP_RESOURCE( charts_page ); }
+
+sol::object
+charts_page::create_lua_object_from_this() const
+{
+	return sol::make_object(_ngn_ptr->lua_state(), this);
 }
 
 void
-charts_page::addConnection()
+charts_page::self_register()
 {
-	// auto creator{new sensors_creator{this}};
-
-	// connect(creator,
-	// 		&sensors_creator::sensorCreated,
-	// 		this,
-	// 		[this](QWidget* new_snsr)
-	// 		{
-	// 			new_snsr->setStyleSheet("background-color: gray ;");
-
-	// 			new_snsr->setMinimumSize(200, 100);
-
-	// 			auto count{_snsrs_grd->count()};
-	// 			new_snsr->setObjectName("Виджет " + QString::number(count));
-	// 			// Устанавливаем политику изменения размеров
-	// 			new_snsr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-	// 			// Определяем позицию в сетке
-	// 			int row = count / 2;  // Два виджета в ряду
-	// 			int col = count % 2;
-
-	// 			// Добавляем виджет в сетку
-	// 			_snsrs_grd->addWidget(new_snsr, row, col);
-
-	// 			// Обновляем растяжение для строк
-	// 			_snsrs_grd->setRowStretch(row, 1);
-	// 		});
-	// creator->exec();
+	if ( can_self_register() )
+		{
+			auto type{ _ngn_ptr->new_usertype< charts_page >( class_name(),
+															  sol::base_classes,
+															  sol::bases< page >() ) };
+			type [ "special_func_ap" ] = []() { return "hello from spec func for ap"; };
+		}
 }
 
-void
-charts_page::removeConnection()
-{
-	// Получаем количество виджетов в сетке
-	int count = _snsrs_grd->count();
-
-	// Если виджетов нет, выходим
-	if ( count == 0 )
-		{
-			QMessageBox::information( this, "Информация", "Нет виджетов для удаления." );
-			return;
-		}
-
-	// Создаем список текстов виджетов
-	QStringList widgetNames;
-	for ( int i = 0; i < count; ++i )
-		{
-			QLayoutItem* item = _snsrs_grd->itemAt( i );
-			if ( item && item->widget() )
-				{
-					widgetNames.append( item->widget()->objectName() );
-				}
-		}
-
-	// Создаем диалоговое окно для выбора виджета
-	QInputDialog dialog( this );
-	dialog.setWindowTitle( "Удаление виджета" );
-	dialog.setLabelText( "Выберите виджет для удаления:" );
-	dialog.setComboBoxItems( widgetNames );
-	dialog.setComboBoxEditable( false );
-	dialog.setWindowFlags( dialog.windowFlags()
-						   & ~Qt::WindowCloseButtonHint ); // Убираем кнопку закрытия
-
-	// Отображаем диалог с выбором виджета
-	if ( dialog.exec() != QDialog::Accepted )
-		{
-			return; // Если пользователь нажал "Cancel" или закрыл окно, выходим
-		}
-
-	QString selectedWidgetText = dialog.textValue();
-
-	// Ищем выбранный виджет и удаляем его
-	for ( int i = 0; i < count; ++i )
-		{
-			QLayoutItem* item = _snsrs_grd->itemAt( i );
-			if ( item && item->widget()
-				 && item->widget()->objectName() == selectedWidgetText )
-				{
-					QWidget* widget = item->widget();
-
-					// Удаляем виджет из сетки
-					_snsrs_grd->removeWidget( widget );
-
-					// Освобождаем память
-					delete widget;
-
-					// Обновляем содержимое прокручиваемой области
-					_snsrs_pln->adjustSize();
-					break;
-				}
-		}
-
-	// Перераспределяем оставшиеся виджеты
-	_redistributeWidgets();
-}
-
-void
-charts_page::_redistributeWidgets()
-{
-	// Собираем все виджеты из сетки
-	QList< QWidget* > widgets;
-	for ( int i = 0; i < _snsrs_grd->count(); ++i )
-		{
-			QLayoutItem* item = _snsrs_grd->itemAt( i );
-			if ( item && item->widget() ) { widgets.append( item->widget() ); }
-		}
-
-	// Очищаем сетку
-	while ( _snsrs_grd->count() > 0 )
-		{
-			QLayoutItem* item = _snsrs_grd->takeAt( 0 );
-			if ( item && item->widget() ) { _snsrs_grd->removeWidget( item->widget() ); }
-			delete item;
-		}
-
-	// Добавляем виджеты заново
-	for ( int i = 0; i < widgets.size(); ++i )
-		{
-			int row = i / 2; // Два виджета в ряду
-			int col = i % 2;
-			_snsrs_grd->addWidget( widgets [ i ], row, col );
-		}
-
-	// Обновляем растяжение для строк
-	for ( int row = 0; row <= widgets.size() / 2; ++row )
-		{
-			_snsrs_grd->setRowStretch( row, 1 );
-		}
-}

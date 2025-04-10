@@ -19,6 +19,12 @@ public:
 	application( int& argc, char** argv );
 	~application() { };
 
+	const std::string
+	class_name() const override
+	{
+		return "application";
+	}
+
 protected:
 	void
 	self_register() override;

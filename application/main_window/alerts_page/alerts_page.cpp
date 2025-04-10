@@ -9,10 +9,9 @@
 alerts_page::alerts_page( const std::string&  name,
 						  script::engine::ptr ngn_ptr,
 						  QWidget*			  parent )
-	: QMainWindow{ parent }
-	, script::object{ name, ngn_ptr }
+	: page{name, ngn_ptr, parent}
 {
-	Q_INIT_RESOURCE( ap_icons );
+	Q_INIT_RESOURCE( alerts_page );
 
 	_tl_bar = new QToolBar{ "Tool bar", this };
 
@@ -45,7 +44,7 @@ alerts_page::alerts_page( const std::string&  name,
 				child._data._qaction = new QAction{
 					QIcon(
 						QPixmap{
-						  std::string{ ":/ap_icons/" + child._name + ".png" }.c_str() }
+						  std::string{ ":alerts_page/icons/" + child._name + ".png" }.c_str() }
 							.scaled( iconSize(), Qt::AspectRatioMode::KeepAspectRatio ) ),
 					child._name.c_str(),
 					this
@@ -112,14 +111,20 @@ alerts_page::alerts_page( const std::string&  name,
 	self_register();
 }
 
+sol::object
+alerts_page::create_lua_object_from_this() const
+{
+	return sol::make_object(_ngn_ptr->lua_state(), this);
+}
+
 void
 alerts_page::self_register()
 {
 	if ( can_self_register() )
 		{
-			auto type{ _ngn_ptr->new_usertype< alerts_page >( "alerts_page",
+			auto type{ _ngn_ptr->new_usertype< alerts_page >( class_name(),
 															  sol::base_classes,
-															  sol::bases< QWidget >() ) };
+															  sol::bases< page >() ) };
 			type [ "special_func_ap" ] = []() { return "hello from spec func for ap"; };
 		}
 }

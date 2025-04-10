@@ -11,7 +11,7 @@ target_sources(${PROJECT_NAME}
 PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/alerts_page.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/alerts_page.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/ap_icons.qrc
+	${CMAKE_CURRENT_SOURCE_DIR}/alerts_page.qrc
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -23,9 +23,8 @@ target_link_libraries(${PROJECT_NAME}
 PRIVATE
 	Qt::Widgets
 PUBLIC 
-	script_engine
-	script_object
 	actions_tree
+	page
 )
 
 

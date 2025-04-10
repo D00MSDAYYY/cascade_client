@@ -1,18 +1,13 @@
 #pragma once
 
 #include "actions_tree.hpp"
-#include "script_engine.hpp"
-#include "script_object.hpp"
+#include "page.hpp"
 
-#include <QGridLayout>
 #include <QListWidget>
-#include <QMainWindow>
 #include <QScrollArea>
 #include <QToolBar>
 
-class alerts_page
-	: public QMainWindow
-	, public script::object
+class alerts_page : public page
 {
 	Q_OBJECT
 
@@ -27,6 +22,7 @@ public:
 	{
 		return "alerts_page";
 	}
+	sol::object create_lua_object_from_this() const override;
 
 protected:
 	virtual void

@@ -28,7 +28,11 @@ application::self_register()
 {
 	if ( can_self_register() )
 		{
+			_ngn_ptr->globals() [ _name ] = this;
+			
 			auto type{ _ngn_ptr->new_usertype< application >( class_name() ) };
+			
 			type [ _mn_wndw->_name ] = &application::_mn_wndw;
+			
 		}
 }

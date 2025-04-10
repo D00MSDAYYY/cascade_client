@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/alerts_page">
+		<file>icons/filter.png</file>
+		<file>icons/remove.png</file>
+		<file>icons/history.png</file>
+    </qresource>
+</RCC>

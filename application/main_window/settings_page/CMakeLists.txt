@@ -20,8 +20,7 @@ PUBLIC
 target_link_libraries(${PROJECT_NAME}
 PUBLIC
 	Qt::Widgets
-	script_engine
-	script_object
+	page
 )
 
 

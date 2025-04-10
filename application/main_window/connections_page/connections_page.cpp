@@ -8,8 +8,7 @@
 connections_page::connections_page( const std::string&	name,
 									script::engine::ptr ngn_ptr,
 									QWidget*			parent )
-	: QMainWindow{ parent }
-	, script::object{ name, ngn_ptr }
+	: page{name, ngn_ptr, parent}
 {
 	Q_INIT_RESOURCE( cn_icons );
 	_snsrs_grd = new QGridLayout{};
@@ -63,6 +62,7 @@ connections_page::connections_page( const std::string&	name,
 	setCentralWidget( _scrl_area );
 
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
+	self_register();
 }
 
 void
@@ -163,6 +163,25 @@ connections_page::removeConnection()
 
 	// Перераспределяем оставшиеся виджеты
 	_redistributeWidgets();
+}
+
+sol::object
+connections_page::create_lua_object_from_this() const
+{
+	return sol::make_object( _ngn_ptr->lua_state(), this );
+}
+
+void
+connections_page::self_register()
+{
+	if ( can_self_register() )
+		{
+			auto type{ _ngn_ptr->new_usertype< connections_page >(
+				class_name(),
+				sol::base_classes,
+				sol::bases< page >() ) };
+			type [ "special_func_ap" ] = []() { return "hello from spec func for ap"; };
+		}
 }
 
 void
