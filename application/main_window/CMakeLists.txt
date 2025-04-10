@@ -8,6 +8,7 @@ add_subdirectory(connections_page)
 add_subdirectory(logbook_page)
 add_subdirectory(charts_page)
 add_subdirectory(scenarios_page)
+add_subdirectory(settings_page)
 #################################################################################
 
 add_library(${PROJECT_NAME}  STATIC)
@@ -32,9 +33,11 @@ PRIVATE
 	logbook_page
 	charts_page
 	scenarios_page
+	settings_page
 PUBLIC
 	Qt::Widgets
 	script_engine
 	script_object
+	actions_tree
 )
 

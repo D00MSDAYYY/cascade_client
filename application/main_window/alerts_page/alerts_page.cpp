@@ -117,7 +117,9 @@ alerts_page::self_register()
 {
 	if ( can_self_register() )
 		{
-			auto type{ _ngn_ptr->new_usertype< alerts_page >( "alerts_page" ) };
+			auto type{ _ngn_ptr->new_usertype< alerts_page >( "alerts_page",
+															  sol::base_classes,
+															  sol::bases< QWidget >() ) };
 			type [ "special_func_ap" ] = []() { return "hello from spec func for ap"; };
 		}
 }
