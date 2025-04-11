@@ -5,13 +5,6 @@
 
 #include <QMainWindow>
 
-enum class WORKING_STATE
-{
-	ON,
-	OFF,
-	SUSPENDED
-};
-
 class page
 	: public QMainWindow
 	, public script::object
@@ -24,7 +17,14 @@ public:
 		  QWidget*			  parent = nullptr )
 		: QMainWindow( parent )
 		, script::object{ name, ngn_ptr } { };
-	~page() { };
+	~page() = default;
+
+	enum class WORKING_STATE
+	{
+		ON,
+		OFF,
+		SUSPENDED
+	};
 
 	void
 	on()
@@ -47,7 +47,7 @@ public:
 				return;
 			}
 		_wrkng_state = WORKING_STATE::OFF;
-		on_off(); // Освобождение ресурсов
+		on_off();
 	};
 
 	void
@@ -59,7 +59,7 @@ public:
 				return;
 			}
 		_wrkng_state = WORKING_STATE::SUSPENDED;
-		on_suspend(); // Приостановка операций
+		on_suspend();
 	};
 
 	void
@@ -71,7 +71,7 @@ public:
 				return;
 			}
 		_wrkng_state = WORKING_STATE::SUSPENDED;
-		on_resume(); // Возобновление операций
+		on_resume();
 	};
 
 	WORKING_STATE
@@ -92,7 +92,6 @@ protected:
 	on_resume() { };
 	virtual void
 	on_suspend() { };
-
 
 private:
 	WORKING_STATE _wrkng_state{ WORKING_STATE::OFF };

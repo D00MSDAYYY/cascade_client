@@ -23,6 +23,10 @@ public:
 	sol::object
 	make_lua_object_from_this() const override;
 
+	void add_chart();
+	void remove_chart();
+
+
 protected:
 	virtual void
 	self_register() override;

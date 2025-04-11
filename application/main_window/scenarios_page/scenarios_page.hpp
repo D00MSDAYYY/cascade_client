@@ -24,6 +24,9 @@ public:
 	sol::object
 	make_lua_object_from_this() const override;
 
+	void add_scenario();
+	void remove_scenario();
+
 protected:
 	virtual void
 	self_register() override;

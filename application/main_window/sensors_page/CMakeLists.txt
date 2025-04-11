@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.31.5)
 project(sensors_page)
 
 ####################### insert subdirectories here ##############################
+add_subdirectory(sensor)
 add_subdirectory(sensors_creator)
 #################################################################################
 

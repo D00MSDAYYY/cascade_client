@@ -14,10 +14,13 @@ alerts_page::alerts_page( const std::string&  name,
 	Q_INIT_RESOURCE( alerts_page );
 
 	_tl_bar = new QToolBar{ "Tool bar", this };
-
+	_lst_wgt = new QListWidget{ this };
+	
 	_tl_bar->setIconSize( { 32, 32 } );
 	_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
 	_tl_bar->setMovable( false );
+
+	_lst_wgt->addItems( { { "Test1" }, { "Test2" }, { "Test3" }, { "Test4" } } );
 
 	_actions_tree_root = std::make_shared< _nd_t >( _nd_t{
 	  { .name		 = "_root_node",
@@ -101,13 +104,8 @@ alerts_page::alerts_page( const std::string&  name,
 				}
 		}
 
-
-	addToolBar( Qt::TopToolBarArea, _tl_bar );
-
-	_lst_wgt = new QListWidget{ this };
-	_lst_wgt->addItems( { { "Test1" }, { "Test2" }, { "Test3" }, { "Test4" } } );
 	setCentralWidget( _lst_wgt );
-
+	addToolBar( Qt::TopToolBarArea, _tl_bar );
 	self_register();
 }
 

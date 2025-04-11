@@ -8,7 +8,6 @@
 #include <QRadioButton>
 #include <QSplitter>
 #include <QVBoxLayout>
-#include <iostream>
 
 sensors_creator::sensors_creator( QWidget* parent )
 	: QDialog( parent )

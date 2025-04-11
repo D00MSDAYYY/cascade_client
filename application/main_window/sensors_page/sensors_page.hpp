@@ -17,6 +17,7 @@ public:
 				  QWidget*			  parent = nullptr );
 	~sensors_page() ;
 
+// !
 	void
 	addSensor();
 	void
@@ -30,6 +31,9 @@ public:
 
 	sol::object
 	make_lua_object_from_this() const override;
+
+	void add_sensor();
+	void remove_sensor();
 
 protected:
 	virtual void

@@ -14,7 +14,7 @@ public:
 	connections_page( const std::string&  name,
 					  script::engine::ptr ngn_ptr,
 					  QWidget*			  parent = nullptr );
-	~connections_page() { };
+	~connections_page() = default;
 
 	void
 	addConnection();
@@ -29,6 +29,14 @@ public:
 
 	sol::object
 	make_lua_object_from_this() const override;
+
+	void
+	add_connection();
+	void
+	remove_connection();
+
+	void //?
+	get_connections_creator();
 
 protected:
 	virtual void

@@ -163,7 +163,6 @@ sensors_page::self_register()
 			auto type{ _ngn_ptr->new_usertype< sensors_page >( class_name(),
 															   sol::base_classes,
 															   sol::bases< page >() ) };
-			type [ "special_func_ap" ] = []() { return "hello from spec func for ap"; };
 		}
 }
 

@@ -11,7 +11,7 @@ public:
 	settings_page( const std::string&  name,
 				  script::engine::ptr ngn_ptr,
 				  QWidget*			  parent = nullptr );
-	~settings_page(){} ;
+	~settings_page() = default;
 
 	const std::string
 	class_name() const override

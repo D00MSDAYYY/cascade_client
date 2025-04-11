@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.31.5)
 project(sensors_creator)
 
 ####################### insert subdirectories here ##############################
-add_subdirectory(sensor_widget)
 #################################################################################
 
 add_library(${PROJECT_NAME}  STATIC)
@@ -22,7 +21,7 @@ PUBLIC
 target_link_libraries(${PROJECT_NAME}
 PUBLIC
 	Qt::Widgets
-	sensor_widget
+	sensor
 )
 
 

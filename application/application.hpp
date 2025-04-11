@@ -17,7 +17,7 @@ class application
 
 public:
 	application( int& argc, char** argv );
-	~application() { };
+	~application() = default;
 
 	const std::string
 	class_name() const override
