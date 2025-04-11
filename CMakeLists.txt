@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.31.5)
 project(cascade_client)
 
 ####################### insert subdirectories here ##############################
-find_package(Qt6 REQUIRED Core Widgets Sql)
+find_package(Qt6 REQUIRED Core Widgets)
 #################################################################################
 
 set(CMAKE_CXX_STANDARD 20)

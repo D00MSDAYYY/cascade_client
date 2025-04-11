@@ -10,7 +10,7 @@ connections_page::connections_page( const std::string&	name,
 									QWidget*			parent )
 	: page{name, ngn_ptr, parent}
 {
-	Q_INIT_RESOURCE( cn_icons );
+	Q_INIT_RESOURCE( connections_page );
 	_snsrs_grd = new QGridLayout{};
 	_snsrs_pln = new QWidget{ this };
 	_scrl_area = new QScrollArea{ this };

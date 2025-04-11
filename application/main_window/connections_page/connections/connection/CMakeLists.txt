@@ -1,17 +1,16 @@
 cmake_minimum_required(VERSION 3.31.5)
-project(connections_page)
+project(connection)
 
 ####################### insert subdirectories here ##############################
-add_subdirectory(connections)
+find_package(Qt6 REQUIRED Core SerialPort Network)
 #################################################################################
 
 add_library(${PROJECT_NAME}  STATIC)
 
 target_sources(${PROJECT_NAME} 
 PRIVATE
-	${CMAKE_CURRENT_SOURCE_DIR}/connections_page.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/connections_page.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/connections_page.qrc
+	${CMAKE_CURRENT_SOURCE_DIR}/connection.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/connection.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -20,9 +19,12 @@ PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME}
-PRIVATE
-	Qt::Widgets
-	page
+PUBLIC 
+	Qt::Core
+    Qt::SerialPort
+    Qt::Network
+	script_engine
+	script_object
 )
 
 
