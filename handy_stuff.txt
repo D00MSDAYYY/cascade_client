@@ -1,7 +1,3 @@
-cascade_client.main_window
-cascade_client.main_window:set_active_page("alerts")
-cascade_client.main_window.pages["alerts"]
------
- page = cascade_client.main_window.pages["alerts"];
-cascade_client.main_window:set_current_page(page)
+page = cascade_client.main_window.system_pages["sensors"];
+cascade_client.main_window:set_current_page(page);
 -----

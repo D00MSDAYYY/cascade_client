@@ -166,7 +166,7 @@ connections_page::removeConnection()
 }
 
 sol::object
-connections_page::create_lua_object_from_this() const
+connections_page::make_lua_object_from_this() const
 {
 	return sol::make_object( _ngn_ptr->lua_state(), this );
 }

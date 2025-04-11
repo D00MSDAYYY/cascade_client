@@ -2,11 +2,6 @@
 
 #include "page.hpp"
 
-#include <QGridLayout>
-#include <QMainWindow>
-#include <QScrollArea>
-#include <QToolBar>
-
 class settings_page
 	: public page
 {
@@ -25,7 +20,7 @@ public:
 	}
 
 	sol::object
-	create_lua_object_from_this() const override;
+	make_lua_object_from_this() const override;
 
 protected:
 	virtual void

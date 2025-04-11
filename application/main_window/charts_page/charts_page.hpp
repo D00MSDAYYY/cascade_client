@@ -1,10 +1,10 @@
 #pragma once
 
 #include "page.hpp"
+
 #include <QToolBar>
 
-class charts_page
-	: public page
+class charts_page : public page
 {
 	Q_OBJECT
 
@@ -12,7 +12,7 @@ public:
 	charts_page( const std::string&	 name,
 				 script::engine::ptr ngn_ptr,
 				 QWidget*			 parent = nullptr );
-	~charts_page() ;
+	~charts_page();
 
 	const std::string
 	class_name() const override
@@ -20,13 +20,13 @@ public:
 		return "charts_page";
 	}
 
-	sol::object create_lua_object_from_this() const override;
+	sol::object
+	make_lua_object_from_this() const override;
 
 protected:
 	virtual void
 	self_register() override;
 
 private:
-
-	QToolBar*	 _tl_bar{};
+	QToolBar* _tl_bar{};
 };

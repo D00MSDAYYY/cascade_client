@@ -9,7 +9,7 @@ settings_page::settings_page( const std::string&  name,
 }
 
 sol::object
-settings_page::create_lua_object_from_this() const
+settings_page::make_lua_object_from_this() const
 {
 	return sol::make_object( _ngn_ptr->lua_state(), this );
 }

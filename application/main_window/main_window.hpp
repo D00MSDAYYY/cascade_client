@@ -29,7 +29,11 @@ public:
 	}
 
 	sol::object
-	create_lua_object_from_this() const override;
+	make_lua_object_from_this() const override;
+
+	void add_page( page* page);
+	void remove_page(page* page);
+	void set_current_page(page* page);
 
 protected:
 	void

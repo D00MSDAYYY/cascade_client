@@ -1,8 +1,4 @@
-
 #include "charts_page.hpp"
-
-#include <QInputDialog>
-#include <QMessageBox>
 
 charts_page::charts_page( const std::string&  name,
 						  script::engine::ptr ngn_ptr,
@@ -50,7 +46,7 @@ charts_page::charts_page( const std::string&  name,
 charts_page::~charts_page() { Q_CLEANUP_RESOURCE( charts_page ); }
 
 sol::object
-charts_page::create_lua_object_from_this() const
+charts_page::make_lua_object_from_this() const
 {
 	return sol::make_object(_ngn_ptr->lua_state(), this);
 }

@@ -16,7 +16,7 @@ logbook_page::logbook_page( const std::string&	name,
 logbook_page::~logbook_page() { Q_CLEANUP_RESOURCE( logbook_page ); }
 
 sol::object
-logbook_page::create_lua_object_from_this() const
+logbook_page::make_lua_object_from_this() const
 {
 	return sol::make_object( _ngn_ptr->lua_state(), this );
 }

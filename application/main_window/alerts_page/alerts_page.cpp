@@ -112,7 +112,7 @@ alerts_page::alerts_page( const std::string&  name,
 }
 
 sol::object
-alerts_page::create_lua_object_from_this() const
+alerts_page::make_lua_object_from_this() const
 {
 	return sol::make_object(_ngn_ptr->lua_state(), this);
 }

@@ -22,20 +22,35 @@ public:
 	{
 		return "alerts_page";
 	}
-	sol::object create_lua_object_from_this() const override;
+
+	sol::object
+	make_lua_object_from_this() const override;
+
+	void
+	add_alert();
+	void
+	remove_alert();
+
+	void
+	add_warning();
+	void
+	remove_warning();
+
+	void sort();
 
 protected:
 	virtual void
 	self_register() override;
 
 private:
-	// QScrollArea* _scrl_area{new QScrollArea{this}};
-	QToolBar*	 _tl_bar{};
+	QToolBar*				   _tl_bar{};
+	QListWidget*			   _lst_wgt{}; // TODO Mb change to QListView later
 
-	QListWidget* _lst_wgt{}; // TODO Mb change to QListView later
+	std::vector< std::string > _alerts;
+	std::vector< std::string > _warnings;
 
 	std::map< std::string, sol::object >
-		_tlbtns_lua_obj;	 //! TODO not only tlbtns, but all exposed objects
+		_tlbtns_lua_obj; //! TODO not only tlbtns, but all exposed objects
 
 	struct _c_c_d_t
 	{
