@@ -12,7 +12,7 @@ class connections_page : public page
 
 public:
 	connections_page( const std::string&  name,
-					  script::engine::ptr ngn_ptr,
+					  scripting::engine::ptr ngn_ptr,
 					  QWidget*			  parent = nullptr );
 	~connections_page() = default;
 

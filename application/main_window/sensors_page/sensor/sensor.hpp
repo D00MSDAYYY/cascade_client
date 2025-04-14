@@ -1,20 +1,19 @@
 #pragma once
 
-#include "script_engine.hpp"
-#include "script_object.hpp"
+#include "scripting.hpp"
 
 #include <QHBoxLayout>
 #include <QWidget>
 
 class sensor
 	: public QWidget
-	, public script::object
+	, public scripting::object
 {
 	Q_OBJECT
 
 public:
 	sensor( const std::string&	name,
-			script::engine::ptr ngn_ptr,
+			scripting::engine::ptr ngn_ptr,
 			QWidget*			parent = nullptr );
 	~sensor() = default;
 

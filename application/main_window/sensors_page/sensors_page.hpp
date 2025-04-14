@@ -13,7 +13,7 @@ class sensors_page
 
 public:
 	sensors_page( const std::string&  name,
-				  script::engine::ptr ngn_ptr,
+				  scripting::engine::ptr ngn_ptr,
 				  QWidget*			  parent = nullptr );
 	~sensors_page() ;
 

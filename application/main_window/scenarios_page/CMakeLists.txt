@@ -8,9 +8,9 @@ add_library(${PROJECT_NAME}  STATIC)
 
 target_sources(${PROJECT_NAME} 
 PRIVATE
-	${CMAKE_CURRENT_SOURCE_DIR}/scenarios_page.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/scenarios_page.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/scenarios_page.qrc
+	${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.qrc
 )
 
 target_include_directories(${PROJECT_NAME}

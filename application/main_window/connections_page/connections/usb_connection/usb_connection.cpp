@@ -1,7 +1,7 @@
 #include "usb_connection.hpp"
 
 usb_connection::usb_connection( const std::string&	name,
-								script::engine::ptr ngn_ptr,
+								scripting::engine::ptr ngn_ptr,
 								quint16				vendorId,
 								quint16				productId,
 								QObject*			parent )

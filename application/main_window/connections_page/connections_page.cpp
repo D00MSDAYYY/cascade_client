@@ -6,7 +6,7 @@
 #include <QPushButton>
 
 connections_page::connections_page( const std::string&	name,
-									script::engine::ptr ngn_ptr,
+									scripting::engine::ptr ngn_ptr,
 									QWidget*			parent )
 	: page{name, ngn_ptr, parent}
 {
@@ -49,7 +49,7 @@ connections_page::connections_page( const std::string&	name,
 			if ( str == "|" ) { _tl_bar->addSeparator(); }
 			else
 				{
-					auto path{ ":/cn_icons/" + str + ".png" };
+					auto path{ ":/connections_page/icons/" + str + ".png" };
 					auto action{ _tl_bar->addAction(
 						QIcon{ QPixmap{ path.c_str() }.scaled(
 							_tl_bar->iconSize(),
@@ -68,35 +68,7 @@ connections_page::connections_page( const std::string&	name,
 void
 connections_page::addConnection()
 {
-	// auto creator{new sensors_creator{this}};
-
-	// connect(creator,
-	// 		&sensors_creator::sensorCreated,
-	// 		this,
-	// 		[this](QWidget* new_snsr)
-	// 		{
-	// 			new_snsr->setStyleSheet("background-color: gray ;");
-
-	// 			new_snsr->setMinimumSize(200, 100);
-
-	// 			auto count{_snsrs_grd->count()};
-	// 			new_snsr->setObjectName("Виджет " +
-	// QString::number(count));
-	// 			// Устанавливаем политику изменения размеров
-	// 			new_snsr->setSizePolicy(QSizePolicy::Expanding,
-	// QSizePolicy::Expanding);
-
-	// 			// Определяем позицию в сетке
-	// 			int row = count / 2;  // Два виджета в ряду
-	// 			int col = count % 2;
-
-	// 			// Добавляем виджет в сетку
-	// 			_snsrs_grd->addWidget(new_snsr, row, col);
-
-	// 			// Обновляем растяжение для строк
-	// 			_snsrs_grd->setRowStretch(row, 1);
-	// 		});
-	// creator->exec();
+	
 }
 
 void

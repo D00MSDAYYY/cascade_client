@@ -1,12 +1,5 @@
-
 cmake_minimum_required(VERSION 3.31.5)
 project(libraries)
-
-
-find_package(Git REQUIRED)
-if(NOT Git_FOUND)
-    message(FATAL_ERROR "Git not found! Please install Git.")
-endif()
 
 include(FetchContent)
 
@@ -14,12 +7,6 @@ set(DEP_NAME "common_libraries")
 set(REMOTE_REPO "https://github.com/D00MSDAYYY/common_libraries.git")
 set(TAG "main")
 set(DEP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${DEP_NAME}")
-
-if(NOT EXISTS "${DEP_DIR}")
-    file(MAKE_DIRECTORY "${DEP_DIR}")
-    message(STATUS "Created directory: ${DEP_DIR}")
-endif()
-
 
 FetchContent_Declare(
     ${DEP_NAME}

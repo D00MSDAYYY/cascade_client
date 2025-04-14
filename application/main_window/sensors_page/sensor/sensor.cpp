@@ -1,8 +1,8 @@
 #include "sensor.hpp"
 
-sensor::sensor( const std::string& name, script::engine::ptr ngn_ptr, QWidget* parent )
+sensor::sensor( const std::string& name, scripting::engine::ptr ngn_ptr, QWidget* parent )
 	: QWidget{ parent }
-	, script::object{ name, ngn_ptr }
+	, scripting::object{ name, ngn_ptr }
 {
 }
 

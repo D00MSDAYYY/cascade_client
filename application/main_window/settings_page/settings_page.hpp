@@ -9,7 +9,7 @@ class settings_page
 
 public:
 	settings_page( const std::string&  name,
-				  script::engine::ptr ngn_ptr,
+				  scripting::engine::ptr ngn_ptr,
 				  QWidget*			  parent = nullptr );
 	~settings_page() = default;
 

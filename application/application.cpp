@@ -2,7 +2,7 @@
 
 application::application( int& argc, char** argv )
 	: QApplication{ argc, argv }
-	, script::object{ "cascade_client", script::engine::make_real_engine() }
+	, scripting::object{ "cascade_client", scripting::engine::make_real_engine() }
 {
 	setStyle( "Fusion" );
 	

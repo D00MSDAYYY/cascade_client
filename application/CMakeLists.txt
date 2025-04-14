@@ -10,8 +10,8 @@ add_library(${PROJECT_NAME}  STATIC)
 
 target_sources(${PROJECT_NAME} 
 PRIVATE
-	${CMAKE_CURRENT_SOURCE_DIR}/application.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/application.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -25,7 +25,6 @@ PRIVATE
 PUBLIC
 	debug_console
 	main_window
-	script_engine
-	script_object
+	scripting
 )
 

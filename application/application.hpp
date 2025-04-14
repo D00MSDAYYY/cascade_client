@@ -2,8 +2,7 @@
 
 #include "debug_console.hpp"
 #include "main_window.hpp"
-#include "script_engine.hpp"
-#include "script_object.hpp"
+#include "scripting.hpp"
 
 #include <QApplication>
 
@@ -11,7 +10,7 @@ class main_window;
 
 class application
 	: public QApplication
-	, public script::object
+	, public scripting::object
 {
 	Q_OBJECT
 

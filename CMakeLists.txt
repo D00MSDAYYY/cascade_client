@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.31.5)
 project(cascade_client)
 
-####################### insert subdirectories here ##############################
+########################### find packages here ##################################
 find_package(Qt6 REQUIRED Core Widgets)
 #################################################################################
 
@@ -22,6 +22,7 @@ add_executable(${PROJECT_NAME}  )
 target_sources(${PROJECT_NAME} 
 PRIVATE
 	main.cpp # DON'T FORGET TO AVOID "PUBLIC" FIELD HERE (https://gitlab.kitware.com/cmake/cmake/-/issues/20489)
+
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -30,7 +31,7 @@ PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME}
-PRIVATE
+PUBLIC
 	Qt::Widgets
 	application
 )

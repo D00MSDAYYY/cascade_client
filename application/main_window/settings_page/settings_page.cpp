@@ -1,7 +1,7 @@
 #include "settings_page.hpp"
 
 settings_page::settings_page( const std::string&  name,
-							  script::engine::ptr ngn_ptr,
+							  scripting::engine::ptr ngn_ptr,
 							  QWidget*			  parent )
 	: page{name, ngn_ptr, parent}
 {

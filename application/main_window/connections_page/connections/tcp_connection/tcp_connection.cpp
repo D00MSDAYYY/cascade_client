@@ -1,7 +1,7 @@
 #include "tcp_connection.hpp"
 
 tcp_connection::tcp_connection( const std::string&	name,
-								script::engine::ptr ngn_ptr,
+								scripting::engine::ptr ngn_ptr,
 								const QString&		hostAddress,
 								quint16				port,
 								QObject*			parent )

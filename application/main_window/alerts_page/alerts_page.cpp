@@ -1,32 +1,34 @@
 
 #include "alerts_page.hpp"
 
+#include <QFrame>
 #include <QInputDialog>
+#include <QLabel>
+#include <QListWidgetItem>
 #include <QMenu>
 #include <QMessageBox>
 #include <QToolButton>
+#include <QVBoxLayout>
 
-alerts_page::alerts_page( const std::string&  name,
-						  script::engine::ptr ngn_ptr,
-						  QWidget*			  parent )
-	: page{name, ngn_ptr, parent}
+alerts_page::alerts_page( const std::string&	 name,
+						  scripting::engine::ptr ngn_ptr,
+						  QWidget*				 parent )
+	: page{ name, ngn_ptr, parent }
 {
 	Q_INIT_RESOURCE( alerts_page );
 
-	_tl_bar = new QToolBar{ "Tool bar", this };
+	_tl_bar	 = new QToolBar{ "Tool bar", this };
 	_lst_wgt = new QListWidget{ this };
-	
+
 	_tl_bar->setIconSize( { 32, 32 } );
 	_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
 	_tl_bar->setMovable( false );
-
-	_lst_wgt->addItems( { { "Test1" }, { "Test2" }, { "Test3" }, { "Test4" } } );
 
 	_actions_tree_root = std::make_shared< _nd_t >( _nd_t{
 	  { .name		 = "_root_node",
 		.description = "don't use this node ",
 		.children	 = { _nd_t{ {
-						   .name = "filter",
+						   .name = "sort",
 						 } },
 						 _nd_t{ {
 						   .name = "|",
@@ -47,7 +49,8 @@ alerts_page::alerts_page( const std::string&  name,
 				child._data._qaction = new QAction{
 					QIcon(
 						QPixmap{
-						  std::string{ ":alerts_page/icons/" + child._name + ".png" }.c_str() }
+						  std::string{ ":alerts_page/icons/" + child._name + ".png" }
+							  .c_str() }
 							.scaled( iconSize(), Qt::AspectRatioMode::KeepAspectRatio ) ),
 					child._name.c_str(),
 					this
@@ -106,13 +109,32 @@ alerts_page::alerts_page( const std::string&  name,
 
 	setCentralWidget( _lst_wgt );
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
+
+
+	for ( int i = 0; i < 20; ++i )
+		{
+			auto item  = new QListWidgetItem();
+			auto frame = new QFrame();
+			frame->setFrameShape( QFrame::StyledPanel );
+			// frame->setStyleSheet( "background: white; border-radius: 5px;" );
+
+			auto label	= new QLabel( QString( "Item %1" ).arg( i + 1 ) );
+			auto layout = new QVBoxLayout( frame );
+			layout->addWidget( label );
+
+			item->setSizeHint( frame->sizeHint() );
+			_lst_wgt->addItem( item );
+			_lst_wgt->setItemWidget( item, frame );
+		}
+
+
 	self_register();
 }
 
 sol::object
 alerts_page::make_lua_object_from_this() const
 {
-	return sol::make_object(_ngn_ptr->lua_state(), this);
+	return sol::make_object( _ngn_ptr->lua_state(), this );
 }
 
 void
@@ -123,6 +145,5 @@ alerts_page::self_register()
 			auto type{ _ngn_ptr->new_usertype< alerts_page >( class_name(),
 															  sol::base_classes,
 															  sol::bases< page >() ) };
-			type [ "special_func_ap" ] = []() { return "hello from spec func for ap"; };
 		}
 }

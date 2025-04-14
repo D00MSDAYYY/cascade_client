@@ -1,22 +1,21 @@
 #pragma once
 
-#include "script_engine.hpp"
-#include "script_object.hpp"
+#include "scripting.hpp"
 
 #include <QMainWindow>
 
 class page
 	: public QMainWindow
-	, public script::object
+	, public scripting::object
 {
 	Q_OBJECT
 
 public:
 	page( const std::string&  name,
-		  script::engine::ptr ngn_ptr,
+		  scripting::engine::ptr ngn_ptr,
 		  QWidget*			  parent = nullptr )
 		: QMainWindow( parent )
-		, script::object{ name, ngn_ptr } { };
+		, scripting::object{ name, ngn_ptr } { };
 	~page() = default;
 
 	enum class WORKING_STATE

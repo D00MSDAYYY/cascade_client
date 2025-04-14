@@ -1,7 +1,7 @@
 #include "com_connection.hpp"
 
 com_connection::com_connection( const std::string&		 name,
-								script::engine::ptr		 ngn_ptr,
+								scripting::engine::ptr		 ngn_ptr,
 								const QString&			 portName,
 								qint32					 baudRate,
 								QSerialPort::DataBits	 dataBits,

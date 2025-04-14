@@ -2,8 +2,7 @@
 
 #include "actions_tree.hpp"
 #include "page.hpp"
-#include "script_engine.hpp"
-#include "script_object.hpp"
+#include "scripting.hpp"
 
 #include <QMainWindow>
 #include <QStackedWidget>
@@ -12,13 +11,13 @@
 
 class main_window
 	: public QMainWindow
-	, public script::object
+	, public scripting::object
 {
 	Q_OBJECT
 
 public:
 	main_window( const std::string&	 name,
-				 script::engine::ptr ngn_ptr,
+				 scripting::engine::ptr ngn_ptr,
 				 QWidget*			 parent = nullptr );
 	~main_window();
 

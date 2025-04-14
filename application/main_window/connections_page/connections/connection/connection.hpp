@@ -1,23 +1,22 @@
 #pragma once
 
-#include "script_engine.hpp"
-#include "script_object.hpp"
+#include "scripting.hpp"
 
 #include <QByteArray>
 #include <QObject>
 
 class connection
 	: public QObject
-	, public script::object
+	, public scripting::object
 {
 	Q_OBJECT
 
 public:
 	explicit connection( const std::string&	 name,
-						 script::engine::ptr ngn_ptr,
+						 scripting::engine::ptr ngn_ptr,
 						 QObject*			 parent = nullptr )
 		: QObject( parent )
-		, script::object( name, ngn_ptr )
+		, scripting::object( name, ngn_ptr )
 	{
 	}
 

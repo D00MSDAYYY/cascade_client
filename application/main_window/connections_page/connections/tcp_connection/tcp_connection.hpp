@@ -10,7 +10,7 @@ class tcp_connection : public connection
 
 public:
 	explicit tcp_connection( const std::string&	 name,
-							 script::engine::ptr ngn_ptr,
+							 scripting::engine::ptr ngn_ptr,
 							 const QString&		 hostAddress,
 							 quint16			 port,
 							 QObject*			 parent = nullptr );
@@ -29,6 +29,12 @@ public:
 	hostAddress() const;
 	quint16
 	port() const;
+
+	const std::string
+	class_name() const override
+	{
+		return "tcp_connection";
+	}
 
 protected:
 	sol::object

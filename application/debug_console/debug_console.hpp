@@ -1,7 +1,6 @@
 #pragma once
 
-#include "script_engine.hpp"
-#include "script_object.hpp"
+#include "scripting.hpp"
 
 #include <QLineEdit>
 #include <QMainWindow>
@@ -10,13 +9,13 @@
 
 class debug_console
 	: public QMainWindow
-	, public script::object
+	, public scripting::object
 {
 	Q_OBJECT
 
 public:
 	explicit debug_console( const std::string&	name,
-							script::engine::ptr ngn_ptr,
+							scripting::engine::ptr ngn_ptr,
 							QWidget*			parent = nullptr );
 	~debug_console() = default;
 

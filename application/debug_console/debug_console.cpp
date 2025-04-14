@@ -6,10 +6,10 @@
 #include <iostream>
 
 debug_console::debug_console( const std::string&  name,
-							  script::engine::ptr ngn_ptr,
+							  scripting::engine::ptr ngn_ptr,
 							  QWidget*			  parent )
 	: QMainWindow{ parent }
-	, script::object{ name, ngn_ptr }
+	, scripting::object{ name, ngn_ptr }
 {
 	auto cntrl_wgt{ new QWidget{ this } };
 	auto layout{ new QVBoxLayout( cntrl_wgt ) };

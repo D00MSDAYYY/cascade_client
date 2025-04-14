@@ -10,7 +10,7 @@ class usb_connection : public connection
 
 public:
 	explicit usb_connection( const std::string&	 name,
-							 script::engine::ptr ngn_ptr,
+							 scripting::engine::ptr ngn_ptr,
 							 quint16			 vendorId,
 							 quint16			 productId,
 							 QObject*			 parent = nullptr );

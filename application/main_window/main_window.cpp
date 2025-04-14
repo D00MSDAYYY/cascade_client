@@ -9,10 +9,10 @@
 #include "settings_page.hpp"
 
 main_window::main_window( const std::string&  name,
-						  script::engine::ptr ngn_ptr,
+						  scripting::engine::ptr ngn_ptr,
 						  QWidget*			  parent )
 	: QMainWindow( parent )
-	, script::object{ name, ngn_ptr }
+	, scripting::object{ name, ngn_ptr }
 
 {
 	Q_INIT_RESOURCE( main_window );
@@ -127,7 +127,7 @@ main_window::self_register()
 			auto type{ _ngn_ptr->new_usertype< main_window >( class_name() ) };
 
 			type [ "system_pages" ] = &main_window::_sys_pages_lua_obj;
-			type [ "custom_pages" ] = &main_window::_sys_pages_lua_obj;
+			type [ "custom_pages" ] = &main_window::_cstm_pages_lua_obj;
 
 			type [ "add_page" ]		= []( main_window* self, const sol::object obj ) {
 				if ( auto page_ptr{ obj.as< sol::optional< page* > >() }; page_ptr )

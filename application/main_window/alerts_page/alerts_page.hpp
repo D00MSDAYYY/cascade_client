@@ -13,7 +13,7 @@ class alerts_page : public page
 
 public:
 	alerts_page( const std::string&	 name,
-				 script::engine::ptr ngn_ptr,
+				 scripting::engine::ptr ngn_ptr,
 				 QWidget*			 parent = nullptr );
 	~alerts_page() = default;
 

@@ -8,8 +8,8 @@ add_library(${PROJECT_NAME}  STATIC)
 
 target_sources(${PROJECT_NAME} 
 PRIVATE
-	${CMAKE_CURRENT_SOURCE_DIR}/usb_connection.hpp
-	${CMAKE_CURRENT_SOURCE_DIR}/usb_connection.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
