@@ -36,12 +36,9 @@ PRIVATE
 	scenarios_page
 	settings_page
 PUBLIC
-
-
-
-	page
 	Qt::Widgets
-	scripting
 	actions_tree
+	scripting
+	page
 )
 

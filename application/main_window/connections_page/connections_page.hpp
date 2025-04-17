@@ -12,7 +12,7 @@ class connections_page : public page
 
 public:
 	connections_page( const std::string&  name,
-					  scripting::engine::ptr ngn_ptr,
+					  const scripting::engine::ptr ngn_ptr,
 					  QWidget*			  parent = nullptr );
 	~connections_page() = default;
 
@@ -26,9 +26,6 @@ public:
 	{
 		return "connections_page";
 	}
-
-	sol::object
-	make_lua_object_from_this() const override;
 
 	void
 	add_connection();

@@ -1,7 +1,7 @@
 #include "charts_page.hpp"
 
 charts_page::charts_page( const std::string&  name,
-						  scripting::engine::ptr ngn_ptr,
+						  const scripting::engine::ptr ngn_ptr,
 						  QWidget*			  parent )
 	: page{name, ngn_ptr, parent}
 {
@@ -44,12 +44,6 @@ charts_page::charts_page( const std::string&  name,
 }
 
 charts_page::~charts_page() { Q_CLEANUP_RESOURCE( charts_page ); }
-
-sol::object
-charts_page::make_lua_object_from_this() const
-{
-	return sol::make_object(_ngn_ptr->lua_state(), this);
-}
 
 void
 charts_page::self_register()

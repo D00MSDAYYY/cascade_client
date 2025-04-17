@@ -16,6 +16,7 @@ logbook_page::logbook_page( const std::string&	name,
 logbook_page::~logbook_page() { Q_CLEANUP_RESOURCE( logbook_page ); }
 
 
+
 void
 logbook_page::self_register()
 {

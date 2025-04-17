@@ -91,14 +91,6 @@ tcp_connection::port() const
 	return m_port;
 }
 
-sol::object
-tcp_connection::make_lua_object_from_this() const
-{
-	//! TODO refactor to using template or macro for many classes with default impl of
-	//! this func
-	return sol::make_object( _ngn_ptr->lua_state(), this );
-}
-
 void
 tcp_connection::self_register()
 {

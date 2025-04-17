@@ -10,7 +10,7 @@ class charts_page : public page
 
 public:
 	charts_page( const std::string&	 name,
-				 scripting::engine::ptr ngn_ptr,
+				 const scripting::engine::ptr ngn_ptr,
 				 QWidget*			 parent = nullptr );
 	~charts_page();
 
@@ -19,9 +19,6 @@ public:
 	{
 		return "charts_page";
 	}
-
-	sol::object
-	make_lua_object_from_this() const override;
 
 	void add_chart();
 	void remove_chart();

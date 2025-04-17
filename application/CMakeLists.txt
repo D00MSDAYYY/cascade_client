@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.31.5)
 project(application)
 
 ####################### insert subdirectories here ##############################
+add_subdirectory(clock)
 add_subdirectory(main_window)
 add_subdirectory(debug_console)
 #################################################################################
@@ -26,5 +27,6 @@ PUBLIC
 	debug_console
 	main_window
 	scripting
+	clock
 )
 

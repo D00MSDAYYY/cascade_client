@@ -46,11 +46,7 @@ scenarios_page::scenarios_page( const std::string&	name,
 
 scenarios_page::~scenarios_page() { Q_CLEANUP_RESOURCE( scenarios_page ); }
 
-sol::object
-scenarios_page::make_lua_object_from_this() const
-{
-	return sol::make_object( _ngn_ptr->lua_state(), this );
-}
+
 
 void
 scenarios_page::self_register()

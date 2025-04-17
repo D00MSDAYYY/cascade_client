@@ -6,7 +6,7 @@
 #include <iostream>
 
 debug_console::debug_console( const std::string&  name,
-							  scripting::engine::ptr ngn_ptr,
+							  const scripting::engine::ptr ngn_ptr,
 							  QWidget*			  parent )
 	: QMainWindow{ parent }
 	, scripting::object{ name, ngn_ptr }

@@ -17,7 +17,7 @@ class main_window
 
 public:
 	main_window( const std::string&	 name,
-				 scripting::engine::ptr ngn_ptr,
+				 const scripting::engine::ptr ngn_ptr,
 				 QWidget*			 parent = nullptr );
 	~main_window();
 
@@ -27,8 +27,6 @@ public:
 		return "main_window";
 	}
 
-	sol::object
-	make_lua_object_from_this() const override;
 
 	void add_page( page* page);
 	void remove_page(page* page);

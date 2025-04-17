@@ -10,7 +10,7 @@ class tcp_connection : public connection
 
 public:
 	explicit tcp_connection( const std::string&	 name,
-							 scripting::engine::ptr ngn_ptr,
+							const scripting::engine::ptr ngn_ptr,
 							 const QString&		 hostAddress,
 							 quint16			 port,
 							 QObject*			 parent = nullptr );
@@ -37,8 +37,6 @@ public:
 	}
 
 protected:
-	sol::object
-	make_lua_object_from_this() const override;
 	void
 	self_register() override;
 

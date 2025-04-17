@@ -13,7 +13,7 @@ class connection
 
 public:
 	explicit connection( const std::string&	 name,
-						 scripting::engine::ptr ngn_ptr,
+						 const scripting::engine::ptr ngn_ptr,
 						 QObject*			 parent = nullptr )
 		: QObject( parent )
 		, scripting::object( name, ngn_ptr )

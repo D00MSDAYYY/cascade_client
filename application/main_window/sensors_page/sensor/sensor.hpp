@@ -23,9 +23,6 @@ public:
 		return "sensor";
 	}
 
-	sol::object
-	make_lua_object_from_this() const override;
-
 	void
 	on();
 	void

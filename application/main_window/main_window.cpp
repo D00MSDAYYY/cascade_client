@@ -9,7 +9,7 @@
 #include "settings_page.hpp"
 
 main_window::main_window( const std::string&  name,
-						  scripting::engine::ptr ngn_ptr,
+						  const scripting::engine::ptr ngn_ptr,
 						  QWidget*			  parent )
 	: QMainWindow( parent )
 	, scripting::object{ name, ngn_ptr }
@@ -92,11 +92,7 @@ main_window::main_window( const std::string&  name,
 
 main_window::~main_window() { Q_CLEANUP_RESOURCE( main_window ); }
 
-sol::object
-main_window::make_lua_object_from_this() const
-{
-	return sol::make_object( _ngn_ptr->lua_state(), this );
-}
+
 
 void
 main_window::add_page( page* page )

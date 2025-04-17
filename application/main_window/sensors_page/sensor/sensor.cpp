@@ -6,11 +6,6 @@ sensor::sensor( const std::string& name, scripting::engine::ptr ngn_ptr, QWidget
 {
 }
 
-sol::object
-sensor::make_lua_object_from_this() const
-{
-	return sol::make_object( _ngn_ptr->lua_state(), this );
-}
 
 void
 sensor::on()

@@ -12,7 +12,7 @@ class page
 
 public:
 	page( const std::string&  name,
-		  scripting::engine::ptr ngn_ptr,
+		  const scripting::engine::ptr ngn_ptr,
 		  QWidget*			  parent = nullptr )
 		: QMainWindow( parent )
 		, scripting::object{ name, ngn_ptr } { };

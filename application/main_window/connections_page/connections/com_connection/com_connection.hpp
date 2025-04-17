@@ -11,7 +11,7 @@ class com_connection : public connection
 
 public:
 	explicit com_connection( const std::string&	 name,
-							 scripting::engine::ptr ngn_ptr,
+							 const scripting::engine::ptr ngn_ptr,
 							 const QString&		 portName,
 							 qint32				 baudRate	= QSerialPort::Baud9600,
 							 QSerialPort::DataBits dataBits = QSerialPort::Data8,

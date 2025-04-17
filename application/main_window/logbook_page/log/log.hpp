@@ -19,12 +19,23 @@ public:
 	}
 
 	void
-	add_log( const std::string& log ); //! TODO mb change to special log class
+	set_timestamp();
+	void		//! what timestamp?
+	get_timestamp();
+
+	void
+	set_text( const std::string& content_str );
+	std::string //! json str?
+	get_text();
+
+	void		// !
+	set_reporter();
+	void		// !
+	get_reporter();
 
 protected:
 	virtual void
 	self_register() override;
 
 private:
-	;
 };

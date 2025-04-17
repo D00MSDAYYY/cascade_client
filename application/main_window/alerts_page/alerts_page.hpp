@@ -1,6 +1,7 @@
 #pragma once
 
 #include "actions_tree.hpp"
+#include "alert.hpp"
 #include "page.hpp"
 
 #include <QListWidget>
@@ -12,9 +13,9 @@ class alerts_page : public page
 	Q_OBJECT
 
 public:
-	alerts_page( const std::string&	 name,
-				 scripting::engine::ptr ngn_ptr,
-				 QWidget*			 parent = nullptr );
+	alerts_page( const std::string&			  name,
+				 const scripting::engine::ptr ngn_ptr,
+				 QWidget*					  parent = nullptr );
 	~alerts_page() = default;
 
 	const std::string
@@ -23,20 +24,16 @@ public:
 		return "alerts_page";
 	}
 
-	sol::object
-	make_lua_object_from_this() const override;
+	void
+	add_alert( alert::TYPE		  type,
+			   const std::string& tp_str,
+			   const std::string& text,
+			   const std::string& alertist_name );
+	void
+	remove_alert( const std::string& alertist_name );
 
 	void
-	add_alert();
-	void
-	remove_alert();
-
-	void
-	add_warning();
-	void
-	remove_warning();
-
-	void sort();
+	sort();
 
 protected:
 	virtual void

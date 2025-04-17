@@ -6207,7 +6207,7 @@
 											"top": 559,
 											"width": 41.919921875,
 											"height": 13,
-											"text": "Timer"
+											"text": "clock"
 										},
 										{
 											"_type": "LabelView",
@@ -6837,7 +6837,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Timer"
+					"name": "clock"
 				}
 			]
 		}

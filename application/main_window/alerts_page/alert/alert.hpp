@@ -1,12 +1,23 @@
 #pragma once
 
+#include "clock.hpp"
 #include "scripting.hpp"
 
 class alert : public scripting::object
 {
 public:
-	alert( const std::string&	  name,
-		   scripting::engine::ptr ngn_ptr);
+	enum class TYPE
+	{
+		ALARM,
+		WARNING
+	};
+
+	alert( const std::string&			name,
+		   const scripting::engine::ptr ngn_ptr,
+		   const TYPE					type,
+		   const std::string&			tp_str,
+		   const std::string&			text,
+		   const std::string&			alertist_name );
 	~alert() = default;
 
 	const std::string
@@ -15,30 +26,32 @@ public:
 		return "alert";
 	}
 
-	sol::object
-	make_lua_object_from_this() const override;
+	std::optional< std::string >
+	get_timestamp()
+	{
+		if ( _timepoint ) { return timepoint_to_string( *_timepoint ); }
+		else { return std::nullopt; }
+	}
 
-	void
-	set_timestamp();
-	void		//! what timestamp?
-	get_timestamp();
+	const std::string
+	get_text()
+	{
+		return _text;
+	}
 
-	void
-	set_text( const std::string& content_str );
-	std::string //! json str?
-	get_text();
-
-	void		// !
-	set_alertist();
-	void		// !
-	get_alertist();
+	const std::string
+	get_alertist_name()
+	{
+		return _alertist_name;
+	}
 
 protected:
 	virtual void
 	self_register() override;
 
 private:
-	std::string _text;
-	// timestamp
-	// alertist sol::object
+	TYPE											   _type;
+	std::optional< std::chrono::system_clock::time_point > _timepoint;
+	std::string											   _text;
+	std::string											   _alertist_name;
 };
