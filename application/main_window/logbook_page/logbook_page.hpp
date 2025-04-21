@@ -21,6 +21,12 @@ public:
 	void
 	add_log( const std::string& log ); //! TODO mb change to special log class
 
+	virtual sol::object
+	make_lua_object_from_this() const override
+	{
+		return sol::make_object( _ngn_ptr->lua_state(), this );
+	};
+
 protected:
 	virtual void
 	self_register() override;

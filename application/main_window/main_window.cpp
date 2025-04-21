@@ -8,11 +8,11 @@
 #include "sensors_page.hpp"
 #include "settings_page.hpp"
 
-main_window::main_window( const std::string&  name,
+main_window::main_window( 
 						  const scripting::engine::ptr ngn_ptr,
 						  QWidget*			  parent )
 	: QMainWindow( parent )
-	, scripting::object{ name, ngn_ptr }
+	, scripting::object{  ngn_ptr }
 
 {
 	Q_INIT_RESOURCE( main_window );

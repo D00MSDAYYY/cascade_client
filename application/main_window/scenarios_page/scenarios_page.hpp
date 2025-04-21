@@ -24,6 +24,12 @@ public:
 	void add_scenario();
 	void remove_scenario();
 
+	virtual sol::object
+	make_lua_object_from_this() const override
+	{
+		return sol::make_object( _ngn_ptr->lua_state(), this );
+	};
+
 protected:
 	virtual void
 	self_register() override;

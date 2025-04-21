@@ -10,9 +10,9 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 
-alerts_page::alerts_page( const std::string&	 name,
+alerts_page::alerts_page( const std::string&		   name,
 						  const scripting::engine::ptr ngn_ptr,
-						  QWidget*				 parent )
+						  QWidget*					   parent )
 	: page{ name, ngn_ptr, parent }
 {
 	Q_INIT_RESOURCE( alerts_page );
@@ -111,26 +111,91 @@ alerts_page::alerts_page( const std::string&	 name,
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
 
 
-	for ( int i = 0; i < 20; ++i )
-		{
-			auto item  = new QListWidgetItem();
-			auto frame = new QFrame();
-			frame->setFrameShape( QFrame::StyledPanel );
-			// frame->setStyleSheet( "background: white; border-radius: 5px;" );
+	self_register();
+}
 
-			auto label	= new QLabel( QString( "Item %1" ).arg( i + 1 ) );
-			auto layout = new QVBoxLayout( frame );
-			layout->addWidget( label );
+void
+alerts_page::add_alert( alert::TYPE									type,
+						const std::string&							alert_name,
+						const std::string&							tp_str,
+						const std::string&							text,
+						const std::string&							alertist_name,
+						std::optional< std::vector< std::string > > tags )
+{
+	if ( auto [ range_start, range_end ]{ _alerts.equal_range( alertist_name ) };
+		 range_start == _alerts.end()
+		 or not std::any_of( range_start, range_end, [ &alert_name ]( const auto& pair ) {
+				return pair.second->get_name() == alert_name;
+			} ) )
+		{
+			auto alert_ptr{
+				new alert{ _ngn_ptr, type, alert_name, tp_str, text, alertist_name, tags.value_or(std::vector<std::string>{}) }
+			};
+			_alerts.insert( { alertist_name, std::shared_ptr< alert >( alert_ptr ) } );
+
+			auto item{ new QListWidgetItem() };
+			auto frame{ new QFrame() };
+
+			frame->setFrameShape( QFrame::StyledPanel );
+
+			auto layout{ new QVBoxLayout( frame ) };
+
+			auto nameLabel{ new QLabel( QString::fromStdString( alert_name ) ) };
+			auto typeLabel{ new QLabel( QString::fromStdString( tp_str ) ) };
+			auto textLabel{ new QLabel( QString::fromStdString( text ) ) };
+
+			// switch ( type )
+			// 	{
+			// 		case alert::TYPE::ALARM :
+			// 			frame->setStyleSheet(
+			// 				"background: #e6f7ff; border: 1px solid #91d5ff;" );
+			// 			break;
+			// 		case alert::TYPE::WARNING :
+			// 			frame->setStyleSheet(
+			// 				"background: #fffbe6; border: 1px solid #ffe58f;" );
+			// 			break;
+			// 		case alert::TYPE::INFO :
+			// 			frame->setStyleSheet(
+			// 				"background: #fffbe6; border: 1px solid #ffe58f;" );
+			// 			break;
+			// 	}
+
+			layout->addWidget( nameLabel );
+			layout->addWidget( typeLabel );
+			layout->addWidget( textLabel );
 
 			item->setSizeHint( frame->sizeHint() );
 			_lst_wgt->addItem( item );
 			_lst_wgt->setItemWidget( item, frame );
+
+			_lst_wgt->scrollToItem( item );
 		}
-
-
-	self_register();
+	else { std::cout << "'aletist_name' and 'alert_name' is not a unique pair"; }
 }
 
+void
+alerts_page::remove_alert( const std::string& alert_name,
+						   const std::string& alertist_name )
+{
+	auto range{ _alerts.equal_range( alertist_name ) };
+
+	for ( auto it{ range.first }; it != range.second; )
+		{
+			if ( it->second->get_name() == alert_name ) { it = _alerts.erase( it ); }
+			else { ++it; }
+		}
+}
+
+std::multimap< std::string, sol::object >
+alerts_page::get_alerts()
+{
+	std::multimap< std::string, sol::object > tmp;
+	for ( const auto& [ key, value ] : _alerts )
+		{
+			tmp.insert( { key, value->make_lua_object_from_this() } );
+		}
+	return tmp;
+}
 
 void
 alerts_page::self_register()
@@ -140,5 +205,16 @@ alerts_page::self_register()
 			auto type{ _ngn_ptr->new_usertype< alerts_page >( class_name(),
 															  sol::base_classes,
 															  sol::bases< page >() ) };
+			type [ "get_alerts" ]	= &alerts_page::get_alerts;
+			type [ "add_alert" ]	= &alerts_page::add_alert;
+			type [ "remove_alert" ] = &alerts_page::remove_alert;
+			type [ "sort" ]			= &alerts_page::sort;
+
+			_ngn_ptr->new_enum< alert::TYPE >( "ALERT_TYPE",
+											   {
+												 { "ALARM",	alert::TYPE::ALARM   },
+												 { "WARNING", alert::TYPE::WARNING },
+												 { "INFO",	   alert::TYPE::INFO	 }
+			   } );
 		}
 }

@@ -2,10 +2,10 @@
 
 sensor::sensor( const std::string& name, scripting::engine::ptr ngn_ptr, QWidget* parent )
 	: QWidget{ parent }
-	, scripting::object{ name, ngn_ptr }
+	, _name{ name }
+	, scripting::object{ ngn_ptr }
 {
 }
-
 
 void
 sensor::on()

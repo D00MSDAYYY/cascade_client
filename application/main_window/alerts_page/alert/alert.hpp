@@ -9,15 +9,17 @@ public:
 	enum class TYPE
 	{
 		ALARM,
-		WARNING
+		WARNING,
+		INFO
 	};
 
-	alert( const std::string&			name,
-		   const scripting::engine::ptr ngn_ptr,
-		   const TYPE					type,
-		   const std::string&			tp_str,
-		   const std::string&			text,
-		   const std::string&			alertist_name );
+	alert( const scripting::engine::ptr		ngn_ptr,
+		   const TYPE						type,
+		   const std::string&				alert_name,
+		   const std::string&				tp_str,
+		   const std::string&				text,
+		   const std::string&				alertist_name,
+		   const std::vector< std::string > tags = {} );
 	~alert() = default;
 
 	const std::string
@@ -26,23 +28,40 @@ public:
 		return "alert";
 	}
 
-	std::optional< std::string >
-	get_timestamp()
+	auto
+	get_type()
 	{
-		if ( _timepoint ) { return timepoint_to_string( *_timepoint ); }
-		else { return std::nullopt; }
+		return _type;
 	}
 
-	const std::string
+	auto
+	get_timepoint()
+	{
+		return _timepoint;
+	}
+
+	auto
 	get_text()
 	{
 		return _text;
 	}
 
-	const std::string
+	auto
+	get_name()
+	{
+		return _alert_name;
+	}
+
+	auto
 	get_alertist_name()
 	{
 		return _alertist_name;
+	}
+
+	auto
+	get_tags()
+	{
+		return _tags;
 	}
 
 protected:
@@ -50,8 +69,10 @@ protected:
 	self_register() override;
 
 private:
-	TYPE											   _type;
-	std::optional< std::chrono::system_clock::time_point > _timepoint;
-	std::string											   _text;
-	std::string											   _alertist_name;
+	const std::string				 _alert_name;
+	const TYPE						 _type;
+	const std::string				 _timepoint;
+	const std::string				 _text;
+	const std::string				 _alertist_name;
+	const std::vector< std::string > _tags; // like 'temperature', 'air', 'co2'
 };

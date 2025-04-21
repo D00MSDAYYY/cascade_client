@@ -16,7 +16,7 @@ public:
 						 const scripting::engine::ptr ngn_ptr,
 						 QObject*			 parent = nullptr )
 		: QObject( parent )
-		, scripting::object( name, ngn_ptr )
+		, scripting::object( ngn_ptr )
 	{
 	}
 

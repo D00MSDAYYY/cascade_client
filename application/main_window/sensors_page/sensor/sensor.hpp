@@ -12,9 +12,9 @@ class sensor
 	Q_OBJECT
 
 public:
-	sensor( const std::string&	name,
+	sensor( const std::string&	   name,
 			scripting::engine::ptr ngn_ptr,
-			QWidget*			parent = nullptr );
+			QWidget*			   parent = nullptr );
 	~sensor() = default;
 
 	const std::string
@@ -32,10 +32,14 @@ public:
 	void
 	resume();
 
-	void add_widget();
-	void subscribe();
-	void unsubscribe();
-	void update(); // ! TODO mb use qt signals?
+	void
+	add_widget();
+	void
+	subscribe();
+	void
+	unsubscribe();
+	void
+	update(); // ! TODO mb use qt signals?
 
 	enum class WORKING_STATE
 	{
@@ -69,7 +73,8 @@ protected:
 	on_suspend() { };
 
 private:
-	QHBoxLayout*  layout;
+	QHBoxLayout*	  layout;
 
-	WORKING_STATE _wrkng_state{ WORKING_STATE::OFF };
+	WORKING_STATE	  _wrkng_state{ WORKING_STATE::OFF };
+	const std::string _name;
 };

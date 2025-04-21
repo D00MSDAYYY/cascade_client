@@ -14,9 +14,7 @@ class debug_console
 	Q_OBJECT
 
 public:
-	explicit debug_console( const std::string&	name,
-							scripting::engine::ptr ngn_ptr,
-							QWidget*			parent = nullptr );
+	explicit debug_console( scripting::engine::ptr ngn_ptr, QWidget* parent = nullptr );
 	~debug_console() = default;
 
 	const std::string

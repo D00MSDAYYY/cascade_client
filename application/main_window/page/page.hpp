@@ -11,11 +11,11 @@ class page
 	Q_OBJECT
 
 public:
-	page( const std::string&  name,
+	page( const std::string&		   name,
 		  const scripting::engine::ptr ngn_ptr,
-		  QWidget*			  parent = nullptr )
+		  QWidget*					   parent = nullptr )
 		: QMainWindow( parent )
-		, scripting::object{ name, ngn_ptr } { };
+		, scripting::object{ ngn_ptr } { };
 	~page() = default;
 
 	enum class WORKING_STATE
@@ -82,6 +82,8 @@ public:
 		return "default empty report";
 	}
 
+	const std::string _name;
+
 protected:
 	virtual void
 	on_on() { };
@@ -93,7 +95,7 @@ protected:
 	on_suspend() { };
 
 private:
-	WORKING_STATE _wrkng_state{ WORKING_STATE::OFF };
+	WORKING_STATE	  _wrkng_state{ WORKING_STATE::OFF };
 };
 
 

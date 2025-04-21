@@ -7,6 +7,7 @@
 #include <QListWidget>
 #include <QScrollArea>
 #include <QToolBar>
+#include <unordered_map>
 
 class alerts_page : public page
 {
@@ -23,31 +24,42 @@ public:
 	{
 		return "alerts_page";
 	}
+// /////////////////////////////////////////////////////////////////
+	// TODO! mb add alert id as return to unique identifing (to store into alertist to faster and convinient deletion)
+	void
+	add_alert( alert::TYPE								   type,
+			   const std::string&						   alert_name,
+			   const std::string&						   tp_str,
+			   const std::string&						   text,
+			   const std::string&						   alertist_name,
+			   std::optional< std::vector< std::string > > tags = {} );
 
 	void
-	add_alert( alert::TYPE		  type,
-			   const std::string& tp_str,
-			   const std::string& text,
-			   const std::string& alertist_name );
-	void
-	remove_alert( const std::string& alertist_name );
+	remove_alert( const std::string& alert_name, const std::string& alertist_name );
+
+	std::multimap< std::string, sol::object >
+	get_alerts();
 
 	void
-	sort();
+	sort() { }; // TODO! implement sorting (by name, tags, type, ... )
+
+	// /////////////////////////////////////////////////////////////////
+
+	virtual sol::object
+	make_lua_object_from_this() const override
+	{
+		return sol::make_object( _ngn_ptr->lua_state(), this );
+	};
 
 protected:
 	virtual void
 	self_register() override;
 
 private:
-	QToolBar*				   _tl_bar{};
-	QListWidget*			   _lst_wgt{}; // TODO Mb change to QListView later
+	QToolBar*	 _tl_bar{};
+	QListWidget* _lst_wgt{}; // TODO Mb change to QListView later
 
-	std::vector< std::string > _alerts;
-	std::vector< std::string > _warnings;
-
-	std::map< std::string, sol::object >
-		_tlbtns_lua_obj; //! TODO not only tlbtns, but all exposed objects
+	std::multimap< std::string, std::shared_ptr< alert > > _alerts;
 
 	struct _c_c_d_t
 	{
@@ -58,4 +70,7 @@ private:
 	using _nd_t = actions_tree::node< _c_c_d_t >;
 
 	std::shared_ptr< _nd_t > _actions_tree_root{};
+
+	std::map< std::string, sol::object >
+		_tlbtns_lua_obj; //! TODO not only tlbtns, but all exposed objects
 };

@@ -5,11 +5,9 @@
 #include <QVBoxLayout>
 #include <iostream>
 
-debug_console::debug_console( const std::string&  name,
-							  const scripting::engine::ptr ngn_ptr,
-							  QWidget*			  parent )
+debug_console::debug_console( const scripting::engine::ptr ngn_ptr, QWidget* parent )
 	: QMainWindow{ parent }
-	, scripting::object{ name, ngn_ptr }
+	, scripting::object{ ngn_ptr }
 {
 	auto cntrl_wgt{ new QWidget{ this } };
 	auto layout{ new QVBoxLayout( cntrl_wgt ) };

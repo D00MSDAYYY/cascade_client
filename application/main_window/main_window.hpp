@@ -16,9 +16,7 @@ class main_window
 	Q_OBJECT
 
 public:
-	main_window( const std::string&	 name,
-				 const scripting::engine::ptr ngn_ptr,
-				 QWidget*			 parent = nullptr );
+	main_window( const scripting::engine::ptr ngn_ptr, QWidget* parent = nullptr );
 	~main_window();
 
 	const std::string
@@ -27,10 +25,13 @@ public:
 		return "main_window";
 	}
 
+	void
+	add_page( page* page );
+	void
+	remove_page( page* page );
+	void
+	set_current_page( page* page );
 
-	void add_page( page* page);
-	void remove_page(page* page);
-	void set_current_page(page* page);
 
 protected:
 	void
@@ -41,6 +42,7 @@ private:
 	{
 		page* _page_ptr;
 	};
+
 	using _nd_t = actions_tree::node< _pg_d_t >;
 
 	QToolBar*							 _tl_bar{};
