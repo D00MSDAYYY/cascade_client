@@ -8,11 +8,9 @@
 #include "sensors_page.hpp"
 #include "settings_page.hpp"
 
-main_window::main_window( 
-						  const scripting::engine::ptr ngn_ptr,
-						  QWidget*			  parent )
+main_window::main_window( const scripting::engine::ptr ngn_ptr, QWidget* parent )
 	: QMainWindow( parent )
-	, scripting::object{  ngn_ptr }
+	, scripting::object{ ngn_ptr }
 
 {
 	Q_INIT_RESOURCE( main_window );
@@ -79,8 +77,7 @@ main_window::main_window(
 									  set_current_page( page_ptr );
 								  } );
 
-				_sys_pages_lua_obj.insert(
-					{ page_name, child._data._page_ptr->make_lua_object_from_this() } );
+				_pages.insert( { page_name, child._data._page_ptr } );
 
 				traverse_nodes( child );
 			}
@@ -92,7 +89,18 @@ main_window::main_window(
 
 main_window::~main_window() { Q_CLEANUP_RESOURCE( main_window ); }
 
-
+std::map< std::string, sol::object >
+main_window::get_pages()
+{
+	std::map< std::string, sol::object > tmp{};
+	for ( int i = 0; i < _stkd_wdgt->count(); ++i )
+		{
+			auto wgt { _stkd_wdgt->widget( i )}; 
+			auto page_ptr{qobject_cast<page*>(wgt)};
+			tmp.insert( { page_ptr->_name, page_ptr->make_lua_object_from_this() } );
+		}
+		return tmp;
+}
 
 void
 main_window::add_page( page* page )
@@ -122,8 +130,7 @@ main_window::self_register()
 		{
 			auto type{ _ngn_ptr->new_usertype< main_window >( class_name() ) };
 
-			type [ "system_pages" ] = &main_window::_sys_pages_lua_obj;
-			type [ "custom_pages" ] = &main_window::_cstm_pages_lua_obj;
+			type [ "get_pages" ] = &main_window::get_pages;
 
 			type [ "add_page" ]		= []( main_window* self, const sol::object obj ) {
 				if ( auto page_ptr{ obj.as< sol::optional< page* > >() }; page_ptr )

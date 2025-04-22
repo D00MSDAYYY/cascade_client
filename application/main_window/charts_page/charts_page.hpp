@@ -20,9 +20,22 @@ public:
 		return "charts_page";
 	}
 
-	void add_chart();
+	// /////////////////////////////////////////////////////////////////
+
+	std::multimap< std::string, sol::object >
+	get_charts();
+	// TODO! mb add alert id as return to unique identifing (to store into alertist to
+	// faster and convinient deletion)
 	void
-	remove_chart();
+	add_chart(  ); 
+
+	void
+	remove_chart( const std::string& alert_name, const std::string& alertist_name );
+
+	void
+	sort() { };		   // TODO! implement sorting (by name, tags, type, ... )
+
+	// /////////////////////////////////////////////////////////////////
 
 	virtual sol::object
 	make_lua_object_from_this() const override

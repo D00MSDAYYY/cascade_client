@@ -24,24 +24,23 @@ public:
 	{
 		return "alerts_page";
 	}
-// /////////////////////////////////////////////////////////////////
-	// TODO! mb add alert id as return to unique identifing (to store into alertist to faster and convinient deletion)
+
+	// /////////////////////////////////////////////////////////////////
+
+	std::multimap< std::string, sol::object >
+	get_alerts();
+	// TODO! mb add alert id as return to unique identifing (to store into alertist to
+	// faster and convinient deletion)
 	void
-	add_alert( alert::TYPE								   type,
-			   const std::string&						   alert_name,
-			   const std::string&						   tp_str,
-			   const std::string&						   text,
-			   const std::string&						   alertist_name,
-			   std::optional< std::vector< std::string > > tags = {} );
+	add_alert(   alert& a ); // TODO! mb create static function in alert class to
+								 // create pointer and change this add_alert function to
+								 // accept only pointer
 
 	void
 	remove_alert( const std::string& alert_name, const std::string& alertist_name );
 
-	std::multimap< std::string, sol::object >
-	get_alerts();
-
 	void
-	sort() { }; // TODO! implement sorting (by name, tags, type, ... )
+	sort() { };		   // TODO! implement sorting (by name, tags, type, ... )
 
 	// /////////////////////////////////////////////////////////////////
 
@@ -56,11 +55,6 @@ protected:
 	self_register() override;
 
 private:
-	QToolBar*	 _tl_bar{};
-	QListWidget* _lst_wgt{}; // TODO Mb change to QListView later
-
-	std::multimap< std::string, std::shared_ptr< alert > > _alerts;
-
 	struct _c_c_d_t
 	{
 		QAction*	_qaction{};
@@ -69,8 +63,9 @@ private:
 
 	using _nd_t = actions_tree::node< _c_c_d_t >;
 
-	std::shared_ptr< _nd_t > _actions_tree_root{};
+	QToolBar*	 _tl_bar{};
+	QListWidget* _lst_wgt{}; // TODO Mb change to QListView later
 
-	std::map< std::string, sol::object >
-		_tlbtns_lua_obj; //! TODO not only tlbtns, but all exposed objects
+	std::multimap< std::string, std::shared_ptr< alert > > _alerts;
+	std::shared_ptr< _nd_t >							   _actions_tree_root{};
 };

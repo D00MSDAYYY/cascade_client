@@ -110,28 +110,31 @@ alerts_page::alerts_page( const std::string&		   name,
 	setCentralWidget( _lst_wgt );
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
 
+	auto a{
+		alert{ _ngn_ptr,
+			   alert::TYPE::INFO,
+			   "initial_alert", "0-0-0",
+			   "some_text", "none" }
+	};
+	
+	add_alert( a );
 
 	self_register();
 }
 
 void
-alerts_page::add_alert( alert::TYPE									type,
-						const std::string&							alert_name,
-						const std::string&							tp_str,
-						const std::string&							text,
-						const std::string&							alertist_name,
-						std::optional< std::vector< std::string > > tags )
+alerts_page::add_alert( alert& a )
 {
-	if ( auto [ range_start, range_end ]{ _alerts.equal_range( alertist_name ) };
+	if ( auto [ range_start, range_end ]{ _alerts.equal_range( a.get_alertist_name() ) };
 		 range_start == _alerts.end()
-		 or not std::any_of( range_start, range_end, [ &alert_name ]( const auto& pair ) {
-				return pair.second->get_name() == alert_name;
-			} ) )
+		 or not std::any_of( range_start, range_end, [ &a ]( const auto& pair ) {
+				return pair.second->get_name() == a.get_name();
+			} ) ) // check for uniqness of alert_name and alertist_name pair
 		{
-			auto alert_ptr{
-				new alert{ _ngn_ptr, type, alert_name, tp_str, text, alertist_name, tags.value_or(std::vector<std::string>{}) }
-			};
-			_alerts.insert( { alertist_name, std::shared_ptr< alert >( alert_ptr ) } );
+			auto alert_ptr = new alert( std::move( a ) );
+
+			_alerts.insert(
+				{ alert_ptr->get_name(), std::shared_ptr< alert >( alert_ptr ) } );
 
 			auto item{ new QListWidgetItem() };
 			auto frame{ new QFrame() };
@@ -140,9 +143,10 @@ alerts_page::add_alert( alert::TYPE									type,
 
 			auto layout{ new QVBoxLayout( frame ) };
 
-			auto nameLabel{ new QLabel( QString::fromStdString( alert_name ) ) };
-			auto typeLabel{ new QLabel( QString::fromStdString( tp_str ) ) };
-			auto textLabel{ new QLabel( QString::fromStdString( text ) ) };
+			auto nameLabel{ new QLabel(
+				QString::fromStdString( alert_ptr->get_name() ) ) };
+			auto textLabel{ new QLabel(
+				QString::fromStdString( alert_ptr->get_text() ) ) };
 
 			// switch ( type )
 			// 	{
@@ -161,7 +165,6 @@ alerts_page::add_alert( alert::TYPE									type,
 			// 	}
 
 			layout->addWidget( nameLabel );
-			layout->addWidget( typeLabel );
 			layout->addWidget( textLabel );
 
 			item->setSizeHint( frame->sizeHint() );

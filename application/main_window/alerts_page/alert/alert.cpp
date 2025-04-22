@@ -15,6 +15,7 @@ alert::alert( const scripting::engine::ptr	   ngn_ptr,
 	, _alertist_name{ alertist_name }
 	, _tags{ tags }
 {
+	self_register();
 }
 
 void
@@ -22,8 +23,29 @@ alert::self_register()
 {
 	if ( can_self_register() )
 		{
-			auto type{ _ngn_ptr->new_usertype< alert >( class_name() ) };
-			// !TODO mb create getter-setter pairs
+			// TODO! create some common _ngn_ptr and bind it with factory function
+
+			auto factory_func{ [ ngn = this->_ngn_ptr ]( // TODO! do something with common _ngn_ptr for ALL alerts
+								   const TYPE type,
+								   const std::string& alert_name,
+								   const std::string& tp_str,
+								   const std::string& text,
+								   const std::string& alertist_name,
+								   std::optional< const std::vector< std::string > > tags
+								   = std::nullopt ) -> alert {
+				return alert{ ngn,
+							  type,
+							  alert_name,
+							  tp_str,
+							  text,
+							  alertist_name,
+							  tags.value_or( std::vector< std::string >{} ) };
+			} };
+
+
+			auto type{ _ngn_ptr->new_usertype< alert >( class_name(),
+														sol::call_constructor, factory_func)};
+			// !TODO mb create getter-setter pairs ( or no coz readonly stuff should be)
 			type [ "get_type" ]			 = &alert::get_type;
 			type [ "get_name" ]			 = &alert::get_name;
 			type [ "get_timepoint" ]	 = &alert::get_timepoint;

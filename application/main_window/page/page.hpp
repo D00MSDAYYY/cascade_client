@@ -15,7 +15,8 @@ public:
 		  const scripting::engine::ptr ngn_ptr,
 		  QWidget*					   parent = nullptr )
 		: QMainWindow( parent )
-		, scripting::object{ ngn_ptr } { };
+		, scripting::object{ ngn_ptr }
+		, _name{ name } { };
 	~page() = default;
 
 	enum class WORKING_STATE

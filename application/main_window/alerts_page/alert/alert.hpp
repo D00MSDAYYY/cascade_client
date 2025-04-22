@@ -20,7 +20,20 @@ public:
 		   const std::string&				text,
 		   const std::string&				alertist_name,
 		   const std::vector< std::string > tags = {} );
-	~alert() = default;
+
+	alert( alert&& a ) = default;
+	// TODO! mb switch to
+	// : scripting::object{ a._ngn_ptr }
+	// , _type{ a._type }
+	// , _alert_name{ a._alert_name }
+	// , _timepoint{ a._timepoint }
+	// , _text{ a._text }
+	// , _alertist_name{ a._alertist_name }
+	// , _tags{ a._tags }
+	// {
+	// }
+
+	~alert()		   = default;
 
 	const std::string
 	class_name() const override
@@ -29,37 +42,37 @@ public:
 	}
 
 	auto
-	get_type()
+	get_type() const
 	{
 		return _type;
 	}
 
 	auto
-	get_timepoint()
+	get_timepoint() const
 	{
 		return _timepoint;
 	}
 
 	auto
-	get_text()
+	get_text() const
 	{
 		return _text;
 	}
 
 	auto
-	get_name()
+	get_name() const
 	{
 		return _alert_name;
 	}
 
 	auto
-	get_alertist_name()
+	get_alertist_name() const
 	{
 		return _alertist_name;
 	}
 
 	auto
-	get_tags()
+	get_tags() const
 	{
 		return _tags;
 	}

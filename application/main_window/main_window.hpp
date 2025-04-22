@@ -25,12 +25,17 @@ public:
 		return "main_window";
 	}
 
+	// /////////////////////////////////////////////////////////////////
+
+	std::map< std::string, sol::object >
+	get_pages();
 	void
 	add_page( page* page );
 	void
 	remove_page( page* page );
 	void
 	set_current_page( page* page );
+	// /////////////////////////////////////////////////////////////////
 
 
 protected:
@@ -45,13 +50,12 @@ private:
 
 	using _nd_t = actions_tree::node< _pg_d_t >;
 
-	QToolBar*							 _tl_bar{};
-	QStackedWidget*						 _stkd_wdgt{};
+	QToolBar*					   _tl_bar{};
+	QStackedWidget*				   _stkd_wdgt{};
 
-	std::shared_ptr< _nd_t >			 _pages_tree_root{};
+	std::shared_ptr< _nd_t >	   _pages_tree_root{};
 
-	std::map< std::string, sol::object > _sys_pages_lua_obj;
-	std::map< std::string, sol::object > _cstm_pages_lua_obj;
+	std::map< std::string, page* > _pages;
 };
 
 

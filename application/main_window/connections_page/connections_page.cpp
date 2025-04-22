@@ -148,7 +148,6 @@ connections_page::self_register()
 				class_name(),
 				sol::base_classes,
 				sol::bases< page >() ) };
-			type [ "special_func_ap" ] = []() { return "hello from spec func for ap"; };
 		}
 }
 
