@@ -1,8 +1,7 @@
 #include "scripting.hpp"
 
 #include <chrono>
-#include <format>
-#include <iomanip>
+
 #include <optional>
 #include "timepoint.hpp"
 #include "duration.hpp"
@@ -16,18 +15,20 @@ public:
 		: scripting::object( ngn_ptr )
 	{
 		register_in_lua(*_ngn_ptr);
+		
 	}
+
+	CLASS_NAME_AS_STRING(clock)
 
 	timepoint
 	now()
 	{
-		return timepoint{ _ngn_ptr, std::chrono::system_clock::now() };
+		return timepoint{  std::chrono::system_clock::now() };
 	}
 
-protected:
-	void
-	register_in_lua() override
-	;
+	static void
+	register_in_lua( const scripting::engine::ptr& ngn_ptr );
+
 };
 
 

@@ -12,7 +12,7 @@ application::application( int& argc, char** argv )
 
 	_mn_wndw  = std::shared_ptr< main_window >( new main_window{ *_ngn_ptr } );
 
-	_clock	  = std::shared_ptr< class clock >( new clock{ *_ngn_ptr } );
+	_clock	  = std::shared_ptr< class clock >( new class clock{ *_ngn_ptr } );
 
 	_dbg_wndw->show();
 	_mn_wndw->show();
@@ -21,7 +21,7 @@ application::application( int& argc, char** argv )
 	_mn_wndw->setMinimumSize( 800, 600 );
 
 	register_in_lua( *_ngn_ptr );
-	_ngn_ptr->globals() [ "cascade_client" ] = this;
+	( *_ngn_ptr )->globals() [ "cascade_client" ] = this;
 }
 
 void
