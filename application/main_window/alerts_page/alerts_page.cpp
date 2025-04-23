@@ -16,6 +16,7 @@ alerts_page::alerts_page( const std::string&		   name,
 	: page{ name, ngn_ptr, parent }
 {
 	Q_INIT_RESOURCE( alerts_page );
+	register_in_lua( *_ngn_ptr );
 
 	_tl_bar	 = new QToolBar{ "Tool bar", this };
 	_lst_wgt = new QListWidget{ this };
@@ -58,7 +59,7 @@ alerts_page::alerts_page( const std::string&		   name,
 				QObject::connect(
 					child._data._qaction,
 					&QAction::triggered,
-					[ this, child ]() { (*_ngn_ptr)->script( child._data._script ); } );
+					[ this, child ]() { ( *_ngn_ptr )->script( child._data._script ); } );
 				////////////////////////////////////////////////
 				// //
 				// add filling the scripts here as well    //
@@ -110,20 +111,21 @@ alerts_page::alerts_page( const std::string&		   name,
 	setCentralWidget( _lst_wgt );
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
 
-	// auto a{
-	// 	alert{ _ngn_ptr,
-	// 		   alert::TYPE::INFO,
-	// 		   "initial_alert", "0-0-0",
-	// 		   "some_text", "none" }
-	// };
-	
-	// add_alert( a );
 
-	register_in_lua(*_ngn_ptr);
+	add_alert(
+		alert{ alert::TYPE::INFO, "initial_alert", "00-00-00", "some_text", "none" } );
+
+	auto a = ( *_ngn_ptr )
+				 ->script( "return alert.new(alert.TYPE.INFO, 'hell', tostring(cascade_client.clock:now()), 'test "
+						   "text str ',' wowo ')" );
+
+	auto	   obj	 = make_lua_object_from_this();
+	sol::table table = obj.as< sol::table >();
+	table [ "add_alert" ]( this, a.get< alert >() );
 }
 
 void
-alerts_page::add_alert( alert& a )
+alerts_page::add_alert( const alert& a )
 {
 	if ( auto [ range_start, range_end ]{ _alerts.equal_range( a.get_alertist_name() ) };
 		 range_start == _alerts.end()
@@ -200,24 +202,20 @@ alerts_page::get_alerts()
 	return tmp;
 }
 
- void
+void
 alerts_page::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 {
 	if ( can_register_in_lua< alerts_page >( ngn_ptr ) )
 		{
+			alert::register_in_lua( ngn_ptr );
+
 			auto type{ ngn_ptr->new_usertype< alerts_page >( _class_name,
-															  sol::base_classes,
-															  sol::bases< page >() ) };
+															 sol::base_classes,
+															 sol::bases< page >() ) };
 			type [ "get_alerts" ]	= &alerts_page::get_alerts;
 			type [ "add_alert" ]	= &alerts_page::add_alert;
 			type [ "remove_alert" ] = &alerts_page::remove_alert;
 			type [ "sort" ]			= &alerts_page::sort;
-
-			ngn_ptr->new_enum< alert::TYPE >( "ALERT_TYPE",
-											   {
-												 { "ALARM",	alert::TYPE::ALARM   },
-												 { "WARNING", alert::TYPE::WARNING },
-												 { "INFO",	   alert::TYPE::INFO	 }
-			   } );
 		}
+	std::cout << _class_name << "\t is registered" << std::endl;
 }

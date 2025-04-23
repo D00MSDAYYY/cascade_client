@@ -10,6 +10,7 @@ scenarios_page::scenarios_page( const std::string&	   name,
 	: page{ name, ngn_ptr, parent }
 {
 	Q_INIT_RESOURCE( scenarios_page );
+	register_in_lua( *_ngn_ptr );
 
 	_tl_bar = new QToolBar{ "Tool bar", this };
 
@@ -41,7 +42,7 @@ scenarios_page::scenarios_page( const std::string&	   name,
 				}
 		}
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
-	register_in_lua( *_ngn_ptr );
+	
 }
 
 scenarios_page::~scenarios_page() { Q_CLEANUP_RESOURCE( scenarios_page ); }
@@ -55,4 +56,5 @@ scenarios_page::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 																sol::base_classes,
 																sol::bases< page >() ) };
 		}
+	std::cout << _class_name << "\t is registered" << std::endl;
 }

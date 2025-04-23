@@ -96,4 +96,5 @@ timepoint::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 				return tm.tm_year + 1'900;
 			};
 		}
+	std::cout << _class_name << "\t is registered" << std::endl;
 }

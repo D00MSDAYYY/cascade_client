@@ -137,6 +137,7 @@ tcp_connection::register_in_lua(const scripting::engine::ptr& ngn_ptr)
 								  } );
 			};
 		}
+	std::cout << _class_name << "\t is registered" << std::endl;
 }
 
 void

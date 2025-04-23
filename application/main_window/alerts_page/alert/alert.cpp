@@ -11,24 +11,30 @@ alert::alert( const TYPE										type,
 	, _timepoint{ tp_str } // TODO! switch to timepoint class here
 	, _text{ text }
 	, _alertist_name{ alertist_name }
-	, _tags{ tags.value_or(std::vector<std::string>{}) }
+	, _tags{ tags.value_or( std::vector< std::string >{} ) }
 {
 }
 
- void
+void
 alert::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 {
 	if ( can_register_in_lua< alert >( ngn_ptr ) )
 		{
-			auto type{ ngn_ptr->new_usertype< alert >(
-				_class_name,
-				sol::constructors< alert(
-					const TYPE,
-					const std::string&,
-					const std::string&,
-					const std::string&,
-					const std::string&,
-					std::optional< const std::vector< std::string > > ) >() ) };
+			auto	   type{ ngn_ptr->new_usertype< alert >(
+				  _class_name,
+				  sol::constructors< alert(
+					  const TYPE,
+					  const std::string&,
+					  const std::string&,
+					  const std::string&,
+					  const std::string&,
+					  std::optional< const std::vector< std::string > > ) >() ) };
+
+			sol::table alert_type{ ngn_ptr->lua_state(), sol::create };
+			type["TYPE"] = alert_type;
+			alert_type [ "ALARM" ]	 = alert::TYPE::ALARM;
+			alert_type [ "WARNING" ] = alert::TYPE::WARNING;
+			alert_type [ "INFO" ]	 = alert::TYPE::INFO;
 
 
 			// !TODO mb create getter-setter pairs ( or no coz readonly stuff should be)
@@ -39,4 +45,5 @@ alert::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 			type [ "get_alertist_name" ] = &alert::get_alertist_name;
 			type [ "get_tags" ]			 = &alert::get_tags;
 		};
+	std::cout << _class_name << "\t is registered" << std::endl;
 }

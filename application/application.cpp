@@ -8,20 +8,25 @@ application::application( int& argc, char** argv )
 
 	( *_ngn_ptr )->open_libraries( sol::lib::base );
 
-	_dbg_wndw = std::shared_ptr< debug_console >( new debug_console{ *_ngn_ptr } );
+	register_in_lua( *_ngn_ptr );
 
-	_mn_wndw  = std::shared_ptr< main_window >( new main_window{ *_ngn_ptr } );
+	( *_ngn_ptr )->globals() [ "cascade_client" ] = this;
 
 	_clock	  = std::shared_ptr< class clock >( new class clock{ *_ngn_ptr } );
 
-	_dbg_wndw->show();
-	_mn_wndw->show();
+	_mn_wndw  = std::shared_ptr< main_window >( new main_window{ *_ngn_ptr } );
 
-	_mn_wndw->resize( 1'024, 768 );
+	_dbg_wndw = std::shared_ptr< debug_console >( new debug_console{ *_ngn_ptr } );
+
+
+	_mn_wndw->show();
+	_dbg_wndw->show();
+
+	_mn_wndw->resize( 1'000, 800 );
 	_mn_wndw->setMinimumSize( 800, 600 );
 
-	register_in_lua( *_ngn_ptr );
-	( *_ngn_ptr )->globals() [ "cascade_client" ] = this;
+	_dbg_wndw->resize( 500, 400 );
+	_dbg_wndw->setMinimumSize( 400, 300 );
 }
 
 void
@@ -33,4 +38,5 @@ application::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 			type [ "main_window" ] = &application::_mn_wndw;
 			type [ "clock" ]	   = &application::_clock;
 		}
+	std::cout << _class_name << "\t is registered" << std::endl;
 }

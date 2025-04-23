@@ -1,7 +1,7 @@
 #pragma once
 
-#include "timepoint.hpp"
 #include "scripting.hpp"
+#include "timepoint.hpp"
 
 class alert : public scripting::object
 {
@@ -23,6 +23,9 @@ public:
 	~alert() = default;
 
 	CLASS_NAME_AS_STRING( alert )
+
+	static void
+	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
 	auto
 	get_type() const
@@ -59,9 +62,6 @@ public:
 	{
 		return _tags;
 	}
-
-	static void
-	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
 private:
 	const std::string				 _alert_name;

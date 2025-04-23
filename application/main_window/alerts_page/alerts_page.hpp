@@ -19,7 +19,11 @@ public:
 				 QWidget*					  parent = nullptr );
 	~alerts_page() = default;
 
-	CLASS_NAME_AS_STRING(alerts_page)
+	CLASS_NAME_AS_STRING( alerts_page )
+	MAKE_LUA_OBJECT_FROM_THIS()
+
+	static void
+	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
 	// /////////////////////////////////////////////////////////////////
 
@@ -28,7 +32,7 @@ public:
 	// TODO! mb add alert id as return to unique identifing (to store into alertist to
 	// faster and convinient deletion)
 	void
-	add_alert(   alert& a ); // TODO! mb create static function in alert class to
+	add_alert( const alert& a ); // TODO! mb create static function in alert class to
 								 // create pointer and change this add_alert function to
 								 // accept only pointer
 
@@ -36,13 +40,7 @@ public:
 	remove_alert( const std::string& alert_name, const std::string& alertist_name );
 
 	void
-	sort() { };		   // TODO! implement sorting (by name, tags, type, ... )
-
-	// ////////////////////////////////////////////////////////////////
-
-	static void
-	register_in_lua( const scripting::engine::ptr& ngn_ptr );
-
+	sort() { };					 // TODO! implement sorting (by name, tags, type, ... )
 
 private:
 	struct _c_c_d_t

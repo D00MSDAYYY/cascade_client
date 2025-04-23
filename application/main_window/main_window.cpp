@@ -14,6 +14,7 @@ main_window::main_window( const scripting::engine::ptr ngn_ptr, QWidget* parent 
 
 {
 	Q_INIT_RESOURCE( main_window );
+	register_in_lua( *_ngn_ptr );
 
 	_stkd_wdgt = new QStackedWidget{ this };
 	_tl_bar	   = new QToolBar{ this };
@@ -84,7 +85,7 @@ main_window::main_window( const scripting::engine::ptr ngn_ptr, QWidget* parent 
 	};
 	traverse_nodes( *_pages_tree_root );
 
-	register_in_lua(*_ngn_ptr);
+
 }
 
 main_window::~main_window() { Q_CLEANUP_RESOURCE( main_window ); }
@@ -152,4 +153,5 @@ main_window::register_in_lua(const scripting::engine::ptr& ngn_ptr)
 					}
 			};
 		}
+	std::cout << _class_name << "\t is registered" << std::endl;
 }

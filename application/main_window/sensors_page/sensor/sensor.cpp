@@ -67,4 +67,5 @@ sensor::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 			type [ "suspend" ] = []() { };
 			type [ "resume" ]  = []() { };
 		}
+	std::cout << _class_name << "\t is registered" << std::endl;
 }
