@@ -31,27 +31,27 @@ main_window::main_window( const scripting::engine::ptr ngn_ptr, QWidget* parent 
 		.children
 		= { _nd_t{
 			  { .name = "alerts",
-				.data = { ._page_ptr = new alerts_page{ "alerts", _ngn_ptr, this } } } },
+				.data = { ._page_ptr = new alerts_page{ "alerts", *_ngn_ptr, this } } } },
 			_nd_t{ { .name = "sensors",
 					 .data
-					 = { ._page_ptr = new sensors_page{ "sensors", _ngn_ptr, this } } } },
+					 = { ._page_ptr = new sensors_page{ "sensors", *_ngn_ptr, this } } } },
 			_nd_t{
 			  { .name = "connections",
 				.data = { ._page_ptr
-						  = new connections_page{ "connections", _ngn_ptr, this } } } },
+						  = new connections_page{ "connections", *_ngn_ptr, this } } } },
 			_nd_t{
 			  { .name = "charts",
-				.data = { ._page_ptr = new charts_page{ "charts", _ngn_ptr, this } } } },
+				.data = { ._page_ptr = new charts_page{ "charts", *_ngn_ptr, this } } } },
 			_nd_t{ { .name = "logbook",
 					 .data
-					 = { ._page_ptr = new logbook_page{ "logbook", _ngn_ptr, this } } } },
+					 = { ._page_ptr = new logbook_page{ "logbook", *_ngn_ptr, this } } } },
 			_nd_t{ { .name = "scenarios",
 					 .data = { ._page_ptr
-							   = new scenarios_page{ "scenarios", _ngn_ptr, this } } } },
+							   = new scenarios_page{ "scenarios", *_ngn_ptr, this } } } },
 			_nd_t{
 			  { .name = "settings",
 				.data = { ._page_ptr
-						  = new settings_page{ "settings", _ngn_ptr, this } } } } } }
+						  = new settings_page{ "settings", *_ngn_ptr, this } } } } } }
 	  } );
 
 	std::function< void( _nd_t& ) > traverse_nodes{};
@@ -84,7 +84,7 @@ main_window::main_window( const scripting::engine::ptr ngn_ptr, QWidget* parent 
 	};
 	traverse_nodes( *_pages_tree_root );
 
-	self_register();
+	register_in_lua(*_ngn_ptr);
 }
 
 main_window::~main_window() { Q_CLEANUP_RESOURCE( main_window ); }
@@ -124,11 +124,11 @@ main_window::set_current_page( page* page )
 }
 
 void
-main_window::self_register()
+main_window::register_in_lua(const scripting::engine::ptr& ngn_ptr)
 {
-	if ( can_self_register() )
+	if ( can_register_in_lua<main_window>(ngn_ptr) )
 		{
-			auto type{ _ngn_ptr->new_usertype< main_window >( class_name() ) };
+			auto type{ ngn_ptr->new_usertype< main_window >( _class_name ) };
 
 			type [ "get_pages" ] = &main_window::get_pages;
 

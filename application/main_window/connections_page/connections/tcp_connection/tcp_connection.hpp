@@ -30,15 +30,11 @@ public:
 	quint16
 	port() const;
 
-	const std::string
-	class_name() const override
-	{
-		return "tcp_connection";
-	}
+	CLASS_NAME_AS_STRING(tcp_connection)
 
 protected:
 	void
-	self_register() override;
+	register_in_lua() override;
 
 private:
 	QTcpSocket* m_socket;

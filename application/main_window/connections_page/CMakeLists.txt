@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.31.5)
 project(connections_page)
 
 ####################### insert subdirectories here ##############################
-add_subdirectory(connections)
+# add_subdirectory(connections)
 #################################################################################
 
 add_library(${PROJECT_NAME}  STATIC)
@@ -24,7 +24,7 @@ PRIVATE
 	Qt::Widgets
 	page
 PUBLIC 
-	tcp_connection
+	# tcp_connection
 )
 
 

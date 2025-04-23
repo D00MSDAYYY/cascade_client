@@ -44,7 +44,7 @@ protected:
 	make_lua_object_from_this() const
 		= 0;
 	virtual void
-	self_register()
+	register_in_lua()
 		= 0;
 signals:
 	// Сигнал о получении данных

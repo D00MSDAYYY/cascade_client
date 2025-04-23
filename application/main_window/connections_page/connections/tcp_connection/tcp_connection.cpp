@@ -21,7 +21,7 @@ tcp_connection::tcp_connection( const std::string&	name,
 			 this,
 			 &tcp_connection::on_socket_error );
 
-	self_register();
+	register_in_lua();
 }
 
 tcp_connection::~tcp_connection() { disconnect_device(); }
@@ -92,9 +92,9 @@ tcp_connection::port() const
 }
 
 void
-tcp_connection::self_register()
+tcp_connection::register_in_lua(const scripting::engine::ptr& ngn_ptr)
 {
-	if ( can_self_register() )
+	if ( can_register_in_lua() )
 		{
 			auto type
 				= _ngn_ptr->new_usertype< tcp_connection >( class_name(),

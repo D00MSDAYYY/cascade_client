@@ -56,11 +56,11 @@ sensor::resume()
 };
 
 void
-sensor::self_register()
+sensor::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 {
-	if ( can_self_register() )
+	if ( can_register_in_lua< sensor >(ngn_ptr) )
 		{
-			auto type{ _ngn_ptr->new_usertype< sensor >( class_name() ) };
+			auto type{ ngn_ptr->new_usertype< sensor >( _class_name ) };
 
 			type [ "on" ]	   = []() { };
 			type [ "off" ]	   = []() { };

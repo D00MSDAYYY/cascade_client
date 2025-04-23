@@ -63,7 +63,7 @@ sensors_page::sensors_page( const std::string&	name,
 	setCentralWidget( _scrl_area );
 
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
-	self_register();
+	register_in_lua(*_ngn_ptr);
 }
 
 sensors_page::~sensors_page() { Q_CLEANUP_RESOURCE( sensors_page ); }
@@ -152,11 +152,11 @@ sensors_page::removeSensor()
 
 
 void
-sensors_page::self_register()
+sensors_page::register_in_lua(const scripting::engine::ptr& ngn_ptr)
 {
-	if ( can_self_register() )
+	if ( can_register_in_lua<sensors_page>(ngn_ptr) )
 		{
-			auto type{ _ngn_ptr->new_usertype< sensors_page >( class_name(),
+			auto type{ ngn_ptr->new_usertype< sensors_page >( _class_name,
 															   sol::base_classes,
 															   sol::bases< page >() ) };
 		}

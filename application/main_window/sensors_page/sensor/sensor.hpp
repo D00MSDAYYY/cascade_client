@@ -17,11 +17,7 @@ public:
 			QWidget*			   parent = nullptr );
 	~sensor() = default;
 
-	const std::string
-	class_name() const override
-	{
-		return "sensor";
-	}
+	CLASS_NAME_AS_STRING(sensor)
 
 	void
 	on();
@@ -57,12 +53,9 @@ public:
 		return "default empty report";
 	}
 
-protected:
-	virtual void
-	self_register() override;
+	static void
+	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
-	// !TODO mb merge 'sensor' and 'page' classes in one base class? but i have trouble
-	// with dirrent parent for both (QWidget and QMainWindow)
 	virtual void
 	on_on() { };
 	virtual void

@@ -17,16 +17,6 @@ public:
 	explicit debug_console( scripting::engine::ptr ngn_ptr, QWidget* parent = nullptr );
 	~debug_console() = default;
 
-	const std::string
-	class_name() const override
-	{
-		return "debug_console";
-	}
-
-protected:
-	void
-	self_register() override { };
-
 private:
 	void
 							   _printToOutput( const QString& text );

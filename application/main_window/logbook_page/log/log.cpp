@@ -10,15 +10,15 @@ logbook_page::logbook_page( const std::string&	   name,
 	: page{ name, ngn_ptr, parent }
 {
 	Q_INIT_RESOURCE( logbook_page );
-	self_register();
+	register_in_lua();
 }
 
 logbook_page::~logbook_page() { Q_CLEANUP_RESOURCE( logbook_page ); }
 
 void
-logbook_page::self_register()
+logbook_page::register_in_lua(const scripting::engine::ptr& ngn_ptr)
 {
-	if ( can_self_register() )
+	if ( can_register_in_lua() )
 		{
 			auto type{ _ngn_ptr->new_usertype< logbook_page >( class_name(),
 															   sol::base_classes,

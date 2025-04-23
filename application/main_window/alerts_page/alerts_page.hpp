@@ -19,11 +19,7 @@ public:
 				 QWidget*					  parent = nullptr );
 	~alerts_page() = default;
 
-	const std::string
-	class_name() const override
-	{
-		return "alerts_page";
-	}
+	CLASS_NAME_AS_STRING(alerts_page)
 
 	// /////////////////////////////////////////////////////////////////
 
@@ -42,17 +38,11 @@ public:
 	void
 	sort() { };		   // TODO! implement sorting (by name, tags, type, ... )
 
-	// /////////////////////////////////////////////////////////////////
+	// ////////////////////////////////////////////////////////////////
 
-	virtual sol::object
-	make_lua_object_from_this() const override
-	{
-		return sol::make_object( _ngn_ptr->lua_state(), this );
-	};
+	static void
+	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
-protected:
-	virtual void
-	self_register() override;
 
 private:
 	struct _c_c_d_t

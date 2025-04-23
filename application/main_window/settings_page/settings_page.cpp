@@ -5,18 +5,18 @@ settings_page::settings_page( const std::string&  name,
 							  QWidget*			  parent )
 	: page{name, ngn_ptr, parent}
 {
-	self_register();
+	register_in_lua(*_ngn_ptr);
 }
 
 
 
 void
-settings_page::self_register()
+settings_page::register_in_lua(const scripting::engine::ptr& ngn_ptr)
 {
-	if ( can_self_register() )
+	if ( can_register_in_lua<settings_page>(ngn_ptr) )
 		{
-			auto type{ _ngn_ptr->new_usertype< settings_page >(
-				class_name(),
+			auto type{ ngn_ptr->new_usertype< settings_page >(
+			_class_name,
 				sol::base_classes,
 				sol::bases< page >() ) };
 		}

@@ -62,7 +62,7 @@ connections_page::connections_page( const std::string&	name,
 	setCentralWidget( _scrl_area );
 
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
-	self_register();
+	register_in_lua(*_ngn_ptr);
 }
 
 void
@@ -140,12 +140,12 @@ connections_page::removeConnection()
 
 
 void
-connections_page::self_register()
+connections_page::register_in_lua(const scripting::engine::ptr& ngn_ptr)
 {
-	if ( can_self_register() )
+	if ( can_register_in_lua<connections_page>(ngn_ptr) )
 		{
-			auto type{ _ngn_ptr->new_usertype< connections_page >(
-				class_name(),
+			auto type{ ngn_ptr->new_usertype< connections_page >(
+				_class_name,
 				sol::base_classes,
 				sol::bases< page >() ) };
 		}
@@ -154,7 +154,6 @@ connections_page::self_register()
 void
 connections_page::_redistributeWidgets()
 {
-	// Собираем все виджеты из сетки
 	QList< QWidget* > widgets;
 	for ( int i = 0; i < _snsrs_grd->count(); ++i )
 		{

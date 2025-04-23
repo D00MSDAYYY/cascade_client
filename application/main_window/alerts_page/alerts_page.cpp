@@ -58,7 +58,7 @@ alerts_page::alerts_page( const std::string&		   name,
 				QObject::connect(
 					child._data._qaction,
 					&QAction::triggered,
-					[ this, child ]() { _ngn_ptr->script( child._data._script ); } );
+					[ this, child ]() { (*_ngn_ptr)->script( child._data._script ); } );
 				////////////////////////////////////////////////
 				// //
 				// add filling the scripts here as well    //
@@ -110,16 +110,16 @@ alerts_page::alerts_page( const std::string&		   name,
 	setCentralWidget( _lst_wgt );
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
 
-	auto a{
-		alert{ _ngn_ptr,
-			   alert::TYPE::INFO,
-			   "initial_alert", "0-0-0",
-			   "some_text", "none" }
-	};
+	// auto a{
+	// 	alert{ _ngn_ptr,
+	// 		   alert::TYPE::INFO,
+	// 		   "initial_alert", "0-0-0",
+	// 		   "some_text", "none" }
+	// };
 	
-	add_alert( a );
+	// add_alert( a );
 
-	self_register();
+	register_in_lua(*_ngn_ptr);
 }
 
 void
@@ -200,12 +200,12 @@ alerts_page::get_alerts()
 	return tmp;
 }
 
-void
-alerts_page::self_register()
+ void
+alerts_page::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 {
-	if ( can_self_register() )
+	if ( can_register_in_lua< alerts_page >( ngn_ptr ) )
 		{
-			auto type{ _ngn_ptr->new_usertype< alerts_page >( class_name(),
+			auto type{ ngn_ptr->new_usertype< alerts_page >( _class_name,
 															  sol::base_classes,
 															  sol::bases< page >() ) };
 			type [ "get_alerts" ]	= &alerts_page::get_alerts;
@@ -213,7 +213,7 @@ alerts_page::self_register()
 			type [ "remove_alert" ] = &alerts_page::remove_alert;
 			type [ "sort" ]			= &alerts_page::sort;
 
-			_ngn_ptr->new_enum< alert::TYPE >( "ALERT_TYPE",
+			ngn_ptr->new_enum< alert::TYPE >( "ALERT_TYPE",
 											   {
 												 { "ALARM",	alert::TYPE::ALARM   },
 												 { "WARNING", alert::TYPE::WARNING },

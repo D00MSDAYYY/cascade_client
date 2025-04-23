@@ -1,6 +1,6 @@
 #pragma once
 
-#include "clock.hpp"
+#include "timepoint.hpp"
 #include "scripting.hpp"
 
 class alert : public scripting::object
@@ -13,33 +13,16 @@ public:
 		INFO
 	};
 
-	alert( const scripting::engine::ptr		ngn_ptr,
-		   const TYPE						type,
-		   const std::string&				alert_name,
-		   const std::string&				tp_str,
-		   const std::string&				text,
-		   const std::string&				alertist_name,
-		   const std::vector< std::string > tags = {} );
+	alert( const TYPE										 type,
+		   const std::string&								 alert_name,
+		   const std::string&								 tp_str,
+		   const std::string&								 text,
+		   const std::string&								 alertist_name,
+		   std::optional< const std::vector< std::string > > tags = std::nullopt );
 
-	alert( alert&& a ) = default;
-	// TODO! mb switch to
-	// : scripting::object{ a._ngn_ptr }
-	// , _type{ a._type }
-	// , _alert_name{ a._alert_name }
-	// , _timepoint{ a._timepoint }
-	// , _text{ a._text }
-	// , _alertist_name{ a._alertist_name }
-	// , _tags{ a._tags }
-	// {
-	// }
+	~alert() = default;
 
-	~alert()		   = default;
-
-	const std::string
-	class_name() const override
-	{
-		return "alert";
-	}
+	CLASS_NAME_AS_STRING( alert )
 
 	auto
 	get_type() const
@@ -77,9 +60,8 @@ public:
 		return _tags;
 	}
 
-protected:
-	virtual void
-	self_register() override;
+	static void
+	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
 private:
 	const std::string				 _alert_name;

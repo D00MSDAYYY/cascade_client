@@ -19,11 +19,7 @@ public:
 	main_window( const scripting::engine::ptr ngn_ptr, QWidget* parent = nullptr );
 	~main_window();
 
-	const std::string
-	class_name() const override
-	{
-		return "main_window";
-	}
+	CLASS_NAME_AS_STRING(main_window)
 
 	// /////////////////////////////////////////////////////////////////
 
@@ -38,9 +34,8 @@ public:
 	// /////////////////////////////////////////////////////////////////
 
 
-protected:
-	void
-	self_register() override;
+	static void
+	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
 private:
 	struct _pg_d_t

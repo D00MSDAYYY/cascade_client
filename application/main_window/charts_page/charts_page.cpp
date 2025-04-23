@@ -40,20 +40,19 @@ charts_page::charts_page( const std::string&  name,
 		}
 
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
-	self_register();
+	register_in_lua(*_ngn_ptr);
 }
 
 charts_page::~charts_page() { Q_CLEANUP_RESOURCE( charts_page ); }
 
 void
-charts_page::self_register()
+charts_page::register_in_lua(const scripting::engine::ptr& ngn_ptr)
 {
-	if ( can_self_register() )
+	if ( can_register_in_lua<charts_page>(ngn_ptr) )
 		{
-			auto type{ _ngn_ptr->new_usertype< charts_page >( class_name(),
+			auto type{ ngn_ptr->new_usertype< charts_page >( _class_name,
 															  sol::base_classes,
 															  sol::bases< page >() ) };
-			type [ "special_func_ap" ] = []() { return "hello from spec func for ap"; };
 		}
 }
 

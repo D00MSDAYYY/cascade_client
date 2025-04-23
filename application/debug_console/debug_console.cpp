@@ -24,11 +24,11 @@ debug_console::debug_console( const scripting::engine::ptr ngn_ptr, QWidget* par
 
 	connect( _input, &QLineEdit::returnPressed, this, &debug_console::execute_command );
 
-	_ngn_ptr->globals() [ "debug_output" ] = [ this ]( const std::string& text ) {
+	(*_ngn_ptr)->globals() [ "debug_output" ] = [ this ]( const std::string& text ) {
 		_printToOutput( QString::fromStdString( text ) );
 	};
 
-	_ngn_ptr->script( R"(
+	(*_ngn_ptr)->script( R"(
         local original_print = print
         print = function(...)
             local args = {...}
@@ -42,8 +42,8 @@ debug_console::debug_console( const scripting::engine::ptr ngn_ptr, QWidget* par
         end
     )" );
 	setCentralWidget( cntrl_wgt );
-	self_register();
 }
+
 
 void
 debug_console::_printToOutput( const QString& text )
@@ -59,21 +59,37 @@ debug_console::_printToOutput( const QString& text )
 void
 debug_console::execute_command()
 {
-	auto command{ _input->text() };
+	const QString command = _input->text().trimmed();
 	_input->clear();
 
-	if ( command.isEmpty() ) return;
+	if ( command.isEmpty() ) { return; }
 
 	_printToOutput( "> " + command );
 
 	try
 		{
-			auto result = _ngn_ptr->do_string( "return " + command.toStdString() );
-			_printToOutput( QString::fromStdString(
-				_ngn_ptr->globals() [ "tostring" ]( result.get< sol::object >() ) ) );
+			// Пробуем выполнить как выражение (с return)
+			sol::object result
+				= ( *_ngn_ptr )->do_string( "return " + command.toStdString() );
+
+			// Безопасное преобразование результата в строку
+			sol::function tostring	 = ( *_ngn_ptr )->globals() [ "tostring" ];
+			std::string	  result_str = tostring( result );
+			_printToOutput( QString::fromStdString( result_str ) );
 		}
-	catch ( ... )
+	catch ( const sol::error& e )
 		{
-			_ngn_ptr->do_string( command.toStdString() );
+			try
+				{
+					( *_ngn_ptr )->do_string( command.toStdString() );
+				}
+			catch ( const sol::error& e )
+				{
+					_printToOutput( "Error: " + QString::fromStdString( e.what() ) );
+				}
+		}
+	catch ( const std::exception& e )
+		{
+			_printToOutput( "System error: " + QString::fromStdString( e.what() ) );
 		}
 }

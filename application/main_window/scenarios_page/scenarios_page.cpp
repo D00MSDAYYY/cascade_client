@@ -4,13 +4,13 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
-scenarios_page::scenarios_page( const std::string&	name,
+scenarios_page::scenarios_page( const std::string&	   name,
 								scripting::engine::ptr ngn_ptr,
-								QWidget*			parent )
-	: page{name, ngn_ptr, parent}
+								QWidget*			   parent )
+	: page{ name, ngn_ptr, parent }
 {
 	Q_INIT_RESOURCE( scenarios_page );
-	
+
 	_tl_bar = new QToolBar{ "Tool bar", this };
 
 	_tl_bar->setIconSize( { 32, 32 } );
@@ -41,21 +41,18 @@ scenarios_page::scenarios_page( const std::string&	name,
 				}
 		}
 	addToolBar( Qt::TopToolBarArea, _tl_bar );
-	self_register();
+	register_in_lua( *_ngn_ptr );
 }
 
 scenarios_page::~scenarios_page() { Q_CLEANUP_RESOURCE( scenarios_page ); }
 
-
-
 void
-scenarios_page::self_register()
+scenarios_page::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 {
-	if ( can_self_register() )
+	if ( can_register_in_lua< scenarios_page >(ngn_ptr) )
 		{
-			auto type{ _ngn_ptr->new_usertype< scenarios_page >(
-				class_name(),
-				sol::base_classes,
-				sol::bases< page >() ) };
+			auto type{ ngn_ptr->new_usertype< scenarios_page >( _class_name,
+																sol::base_classes,
+																sol::bases< page >() ) };
 		}
 }

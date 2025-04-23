@@ -1,5 +1,6 @@
 #pragma once
 
+#include "clock.hpp"
 #include "debug_console.hpp"
 #include "main_window.hpp"
 #include "scripting.hpp"
@@ -18,18 +19,14 @@ public:
 	application( int& argc, char** argv );
 	~application() = default;
 
-	const std::string
-	class_name() const override
-	{
-		return "application";
-	}
+	CLASS_NAME_AS_STRING(application)
 
-protected:
-	void
-	self_register() override;
+	static void
+	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
 private:
 	std::shared_ptr< main_window >	 _mn_wndw{};
 	std::shared_ptr< debug_console > _dbg_wndw{};
+	std::shared_ptr< class clock >		 _clock{};
 };
 

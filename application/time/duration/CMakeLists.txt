@@ -1,10 +1,7 @@
 cmake_minimum_required(VERSION 3.31.5)
-project(application)
+project(duration)
 
 ####################### insert subdirectories here ##############################
-add_subdirectory(time)
-add_subdirectory(main_window)
-add_subdirectory(debug_console)
 #################################################################################
 
 add_library(${PROJECT_NAME}  STATIC)
@@ -21,12 +18,9 @@ PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME}
-PRIVATE
-	Qt::Widgets 
 PUBLIC
-	debug_console
-	main_window
 	scripting
-	clock
 )
+
+
 

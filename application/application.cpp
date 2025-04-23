@@ -5,14 +5,14 @@ application::application( int& argc, char** argv )
 	, scripting::object{ scripting::engine::make_real_engine() }
 {
 	setStyle( "Fusion" );
-	
-	_ngn_ptr->open_libraries( sol::lib::base );
 
-	_dbg_wndw = std::shared_ptr< debug_console >(
-		new debug_console{  _ngn_ptr } );
+	( *_ngn_ptr )->open_libraries( sol::lib::base );
 
-	_mn_wndw
-		= std::shared_ptr< main_window >( new main_window{  _ngn_ptr } );
+	_dbg_wndw = std::shared_ptr< debug_console >( new debug_console{ *_ngn_ptr } );
+
+	_mn_wndw  = std::shared_ptr< main_window >( new main_window{ *_ngn_ptr } );
+
+	_clock	  = std::shared_ptr< class clock >( new clock{ *_ngn_ptr } );
 
 	_dbg_wndw->show();
 	_mn_wndw->show();
@@ -20,18 +20,17 @@ application::application( int& argc, char** argv )
 	_mn_wndw->resize( 1'024, 768 );
 	_mn_wndw->setMinimumSize( 800, 600 );
 
-	self_register();
+	register_in_lua( *_ngn_ptr );
+	_ngn_ptr->globals() [ "cascade_client" ] = this;
 }
 
 void
-application::self_register()
+application::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 {
-	if ( can_self_register() )
+	if ( can_register_in_lua< application >( ngn_ptr ) )
 		{
-			_ngn_ptr->globals() [ "cascade_client" ] = this;
-			
-			auto type{ _ngn_ptr->new_usertype< application >( class_name() ) };
+			auto type{ ngn_ptr->new_usertype< application >( _class_name ) };
 			type [ "main_window" ] = &application::_mn_wndw;
-			
+			type [ "clock" ]	   = &application::_clock;
 		}
 }

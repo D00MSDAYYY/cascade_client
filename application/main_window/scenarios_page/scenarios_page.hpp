@@ -15,24 +15,15 @@ public:
 					QWidget*			parent = nullptr );
 	~scenarios_page() ;
 
-	const std::string
-	class_name() const override
-	{
-		return "scenarios_page";
-	}
+	CLASS_NAME_AS_STRING(scenarios_page)
 
 	void add_scenario();
 	void remove_scenario();
 
-	virtual sol::object
-	make_lua_object_from_this() const override
-	{
-		return sol::make_object( _ngn_ptr->lua_state(), this );
-	};
 
-protected:
-	virtual void
-	self_register() override;
+
+	static void
+	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
 private:
 	QToolBar* _tl_bar{};

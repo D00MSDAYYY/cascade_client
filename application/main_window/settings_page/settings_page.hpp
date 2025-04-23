@@ -12,21 +12,12 @@ public:
 				   QWidget*						parent = nullptr );
 	~settings_page() = default;
 
-	const std::string
-	class_name() const override
-	{
-		return "settings_page";
-	}
+	CLASS_NAME_AS_STRING(settings_page)
 
-	virtual sol::object
-	make_lua_object_from_this() const override
-	{
-		return sol::make_object( _ngn_ptr->lua_state(), this );
-	};
 
-protected:
-	virtual void
-	self_register() override;
+
+	static void
+	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
 private:
 };
