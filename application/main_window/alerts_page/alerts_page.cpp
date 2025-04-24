@@ -13,19 +13,16 @@
 
 static alerts_page::comparator compare_by_name{ []( const alert& lhs,
 													const alert& rhs ) -> bool {
-	std::cout << "compare_by_name triggered" << std::endl;
 	return lhs.get_name() < rhs.get_name();
 } };
 
 static alerts_page::comparator compare_by_date{ []( const alert& lhs,
 													const alert& rhs ) -> bool {
-	std::cout << "compare_by_date triggered" << std::endl;
 	return lhs.get_timepoint() < rhs.get_timepoint();
 } };
 
 static alerts_page::comparator compare_by_type{ []( const alert& lhs,
 													const alert& rhs ) -> bool {
-	std::cout << "compare_by_type triggered" << std::endl;
 	return static_cast< int >( lhs.get_type() ) < static_cast< int >( rhs.get_type() );
 } };
 
@@ -236,26 +233,30 @@ alerts_page::_add_alert_to_list_widget( const std::shared_ptr< alert >& alert_pt
 	// Создаем основной фрейм
 	auto frame = new QFrame();
 	frame->setFrameShape( QFrame::StyledPanel );
-	frame->setMinimumHeight( 80 ); // Фиксированная высота для красоты
+	frame->setMinimumHeight( 100 ); // Увеличили высоту для всех данных
 
 	// Устанавливаем стиль в зависимости от типа alert
 	QString styleSheet;
 	switch ( alert_ptr->get_type() )
 		{
-			case alert::TYPE::INFO : styleSheet = "background:rgb(0, 29, 97);"; break;
-			case alert::TYPE::WARNING :
-				styleSheet = "background:rgb(121, 117, 0); ";
+			case alert::TYPE::INFO :
+				styleSheet = "background:rgb(0, 29, 97); color: white;";
 				break;
-			case alert::TYPE::ALARM : styleSheet = "background:rgb(102, 14, 0); "; break;
+			case alert::TYPE::WARNING :
+				styleSheet = "background:rgb(121, 117, 0); color: white;";
+				break;
+			case alert::TYPE::ALARM :
+				styleSheet = "background:rgb(102, 14, 0); color: white;";
+				break;
 		}
 	frame->setStyleSheet( styleSheet );
 
-	// Главный layout
+	// Главный layout с отступами
 	auto mainLayout = new QVBoxLayout( frame );
 	mainLayout->setContentsMargins( 10, 10, 10, 10 );
-	mainLayout->setSpacing( 5 );
+	mainLayout->setSpacing( 8 ); // Увеличили расстояние между элементами
 
-	// Первая строка - заголовок (имя и тип)
+	// Первая строка - заголовок
 	auto	headerLayout = new QHBoxLayout();
 
 	// Иконка типа
@@ -272,27 +273,36 @@ alerts_page::_add_alert_to_list_widget( const std::shared_ptr< alert >& alert_pt
 	typeIcon->setPixmap( QPixmap( iconPath ).scaled( 20, 20 ) );
 	headerLayout->addWidget( typeIcon );
 
-	// Название alert (жирным)
+	// Название alert
 	auto nameLabel = new QLabel(
 		QString( "<b>%1</b>" ).arg( QString::fromStdString( alert_ptr->get_name() ) ) );
 	nameLabel->setStyleSheet( "font-size: 12pt;" );
 	headerLayout->addWidget( nameLabel );
+
 	headerLayout->addStretch();
 
-	// Время (серым цветом)
+	// Время
 	auto timeLabel = new QLabel( QString::fromStdString( alert_ptr->get_timepoint() ) );
-	timeLabel->setStyleSheet( "color: #666666; font-size: 10pt;" );
+	timeLabel->setStyleSheet( "font-size: 10pt;" );
 	headerLayout->addWidget( timeLabel );
 
 	mainLayout->addLayout( headerLayout );
 
-	// Текст alert
+	// Вторая строка - текст alert
 	auto textLabel = new QLabel( QString::fromStdString( alert_ptr->get_text() ) );
 	textLabel->setWordWrap( true );
 	textLabel->setStyleSheet( "font-size: 11pt; margin-top: 5px;" );
 	mainLayout->addWidget( textLabel );
 
-	// Третья строка - теги (если есть)
+	// Третья строка - alertist name
+	auto alertistLabel = new QLabel(
+		QString( "Alertist: %1" )
+			.arg( QString::fromStdString( alert_ptr->get_alertist_name() ) ) );
+	alertistLabel->setStyleSheet(
+		"font-size: 10pt; font-style: italic; margin-top: 5px;" );
+	mainLayout->addWidget( alertistLabel );
+
+	// Четвертая строка - теги
 	if ( !alert_ptr->get_tags().empty() )
 		{
 			auto tagsLayout = new QHBoxLayout();
@@ -301,7 +311,7 @@ alerts_page::_add_alert_to_list_widget( const std::shared_ptr< alert >& alert_pt
 			for ( const auto& tag : alert_ptr->get_tags() )
 				{
 					auto tagLabel = new QLabel( QString::fromStdString( tag ) );
-					tagLabel->setStyleSheet( "background: #f0f0f0;"
+					tagLabel->setStyleSheet( "background: rgba(255,255,255,0.2);"
 											 "border-radius: 3px;"
 											 "padding: 2px 5px;"
 											 "margin-right: 5px;" );
@@ -312,12 +322,11 @@ alerts_page::_add_alert_to_list_widget( const std::shared_ptr< alert >& alert_pt
 			mainLayout->addLayout( tagsLayout );
 		}
 
-	// Создаем элемент списка
+	// Создаем элемент списка с достаточным вертикальным отступом
 	auto item = new QListWidgetItem();
-	item->setSizeHint( frame->sizeHint() );
-	item->setData(
-		Qt::UserRole,
-		QString::fromStdString( alert_ptr->get_name() ) ); // Сохраняем имя для поиска
+	item->setSizeHint( QSize( frame->sizeHint().width(),
+							  frame->sizeHint().height() + 10 ) ); // +10px отступ
+	item->setData( Qt::UserRole, QString::fromStdString( alert_ptr->get_name() ) );
 
 	_lst_wgt->addItem( item );
 	_lst_wgt->setItemWidget( item, frame );
