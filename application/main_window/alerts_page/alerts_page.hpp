@@ -7,6 +7,7 @@
 #include <QListWidget>
 #include <QScrollArea>
 #include <QToolBar>
+#include <functional>
 #include <unordered_map>
 
 class alerts_page : public page
@@ -25,24 +26,25 @@ public:
 	static void
 	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
-	// /////////////////////////////////////////////////////////////////
 
 	std::multimap< std::string, sol::object >
 	get_alerts();
 	// TODO! mb add alert id as return to unique identifing (to store into alertist to
 	// faster and convinient deletion)
 	void
-	add_alert( const alert& a ); // TODO! mb create static function in alert class to
-								 // create pointer and change this add_alert function to
-								 // accept only pointer
+	add_alert( const alert& a ); 
 
 	void
 	remove_alert( const std::string& alert_name, const std::string& alertist_name );
 
+	using comparator = std::function< bool( const alert& lhs, const alert& rhs ) >;
 	void
-	sort() { };					 // TODO! implement sorting (by name, tags, type, ... )
+	sort( comparator cmpr );	 // TODO! implement sorting (by name, tags, type, ... )
 
 private:
+	void
+	_add_alert_to_list_widget( const std::shared_ptr< alert >& alert_ptr );
+
 	struct _c_c_d_t
 	{
 		QAction*	_qaction{};
