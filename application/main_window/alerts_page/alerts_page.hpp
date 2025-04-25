@@ -27,23 +27,24 @@ public:
 	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
 
-	std::multimap< std::string, sol::object >
+	std::vector< sol::object >
 	get_alerts();
 	// TODO! mb add alert id as return to unique identifing (to store into alertist to
 	// faster and convinient deletion)
 	void
-	add_alert( const alert& a ); 
+	add_alert( const alert& a );
 
 	void
 	remove_alert( const std::string& alert_name, const std::string& alertist_name );
 
 	using comparator = std::function< bool( const alert& lhs, const alert& rhs ) >;
 	void
-	sort( comparator cmpr );	 // TODO! implement sorting (by name, tags, type, ... )
+	sort_alerts( std::optional< comparator > cmpr_opt = std::nullopt );
 
 private:
+	
 	void
-	_add_alert_to_list_widget( const std::shared_ptr< alert >& alert_ptr );
+	_update_list_widget();
 
 	struct _c_c_d_t
 	{
@@ -56,6 +57,6 @@ private:
 	QToolBar*	 _tl_bar{};
 	QListWidget* _lst_wgt{}; // TODO Mb change to QListView later
 
-	std::multimap< std::string, std::shared_ptr< alert > > _alerts;
-	std::shared_ptr< _nd_t >							   _actions_tree_root{};
+	std::vector< std::shared_ptr< alert > > _alerts;
+	std::shared_ptr< _nd_t >				_actions_tree_root{};
 };

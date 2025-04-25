@@ -1,10 +1,9 @@
 page = cascade_client.main_window.system_pages["sensors"];
 cascade_client.main_window:set_current_page(page);
 -----
-page = cascade_client.main_window:get_pages()["alerts"]
-a = alert.new(alert.TYPE.INFO, "hello", "12-12-12", "test text str", "wowo")
-
-page:add_alert(a)
+page = cascade_client.main_window:get_pages()["alerts"];
+a = alert.new(alert.TYPE.INFO, "hello", "12-12-12", "test text str", "wowo");
+page:add_alert(a);
 -----
 tmp = cascade_client.clock:now()
 tmp:get_minutes()

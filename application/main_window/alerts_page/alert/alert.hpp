@@ -63,11 +63,18 @@ public:
 		return _tags;
 	}
 
+	bool
+	operator== ( const alert& a ) const
+	{
+		return _alert_name == a._alert_name
+		   and _alertist_name == a._alertist_name; // TODO! mb change in the future
+	}
+
 private:
 	const std::string				 _alert_name;
 	const TYPE						 _type;
 	const std::string				 _timepoint;
 	const std::string				 _text;
 	const std::string				 _alertist_name;
-	const std::vector< std::string > _tags; // like 'temperature', 'air', 'co2'
+	const std::vector< std::string > _tags;		   // like 'temperature', 'air', 'co2'
 };
