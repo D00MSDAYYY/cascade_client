@@ -13,11 +13,8 @@ public:
 	~settings_page() = default;
 
 	CLASS_NAME_AS_STRING(settings_page)
-
-
-
-	static void
-	register_in_lua( const scripting::engine::ptr& ngn_ptr );
+	MAKE_LUA_OBJECT_FROM_THIS()
+	STATIC_REGISTER_IN_LUA()
 
 private:
 };

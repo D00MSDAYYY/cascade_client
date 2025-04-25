@@ -7,8 +7,6 @@
 
 #include <QApplication>
 
-class main_window;
-
 class application
 	: public QApplication
 	, public scripting::object
@@ -20,9 +18,7 @@ public:
 	~application() = default;
 
 	CLASS_NAME_AS_STRING(application)
-
-	static void
-	register_in_lua( const scripting::engine::ptr& ngn_ptr );
+	STATIC_REGISTER_IN_LUA()
 
 private:
 	std::shared_ptr< main_window >	 _mn_wndw{};

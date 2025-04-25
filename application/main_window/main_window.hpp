@@ -20,6 +20,7 @@ public:
 	~main_window();
 
 	CLASS_NAME_AS_STRING(main_window)
+	STATIC_REGISTER_IN_LUA()
 
 	// /////////////////////////////////////////////////////////////////
 
@@ -32,10 +33,6 @@ public:
 	void
 	set_current_page( page* page );
 	// /////////////////////////////////////////////////////////////////
-
-
-	static void
-	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
 private:
 	struct _pg_d_t

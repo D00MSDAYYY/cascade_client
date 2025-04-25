@@ -16,12 +16,14 @@ public:
 					  QWidget*			  parent = nullptr );
 	~connections_page() = default;
 
+	CLASS_NAME_AS_STRING( connections_page )
+	MAKE_LUA_OBJECT_FROM_THIS()
+	STATIC_REGISTER_IN_LUA()
+
 	void
 	addConnection();
 	void
 	removeConnection();
-
-	CLASS_NAME_AS_STRING(connections_page)
 
 	void
 	add_connection();
@@ -31,9 +33,6 @@ public:
 	void //?
 	get_connections_creator();
 
-	static void
-	register_in_lua( const scripting::engine::ptr& ngn_ptr );
-
 private:
 	void
 				 _redistributeWidgets();
@@ -42,5 +41,4 @@ private:
 
 	QScrollArea* _scrl_area{};
 
-	QToolBar*	 _tl_bar{};
 };

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.31.5)
-project(page)
+project(chart)
 
 ####################### insert subdirectories here ##############################
 #################################################################################
@@ -19,8 +19,8 @@ PUBLIC
 
 target_link_libraries(${PROJECT_NAME}
 PUBLIC
-	Qt::Widgets
 	scripting
-	actions_tree
 )
+
+
 

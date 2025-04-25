@@ -7,7 +7,7 @@ alert::alert( const TYPE										type,
 			  const std::string&								alertist_name,
 			  std::optional< const std::vector< std::string > > tags )
 	: _type{ type }
-	, _alert_name{ alert_name }
+	, _name{ alert_name }
 	, _timepoint{ tp_str } // TODO! switch to timepoint class here
 	, _text{ text }
 	, _alertist_name{ alertist_name }

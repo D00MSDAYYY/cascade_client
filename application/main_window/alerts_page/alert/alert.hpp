@@ -23,9 +23,8 @@ public:
 	~alert() = default;
 
 	CLASS_NAME_AS_STRING( alert )
-
-	static void
-	register_in_lua( const scripting::engine::ptr& ngn_ptr );
+	MAKE_LUA_OBJECT_FROM_THIS()
+	STATIC_REGISTER_IN_LUA()
 
 	auto
 	get_type() const
@@ -48,7 +47,7 @@ public:
 	auto
 	get_name() const
 	{
-		return _alert_name;
+		return _name;
 	}
 
 	auto
@@ -66,12 +65,12 @@ public:
 	bool
 	operator== ( const alert& a ) const
 	{
-		return _alert_name == a._alert_name
+		return _name == a._name
 		   and _alertist_name == a._alertist_name; // TODO! mb change in the future
 	}
 
 private:
-	const std::string				 _alert_name;
+	const std::string				 _name;
 	const TYPE						 _type;
 	const std::string				 _timepoint;
 	const std::string				 _text;

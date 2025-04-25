@@ -18,6 +18,7 @@ public:
 	~sensor() = default;
 
 	CLASS_NAME_AS_STRING(sensor)
+	STATIC_REGISTER_IN_LUA()
 
 	void
 	on();
@@ -52,9 +53,6 @@ public:
 	{
 		return "default empty report";
 	}
-
-	static void
-	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
 	virtual void
 	on_on() { };

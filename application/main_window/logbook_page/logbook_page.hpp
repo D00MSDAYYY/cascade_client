@@ -13,13 +13,11 @@ public:
 	~logbook_page();
 
 	CLASS_NAME_AS_STRING( lobbook_page )
+	MAKE_LUA_OBJECT_FROM_THIS()
+	STATIC_REGISTER_IN_LUA()
 
 	void
 	add_log( const std::string& log ); //! TODO mb change to special log class
-
-	static void
-	register_in_lua( const scripting::engine::ptr& ngn_ptr );
-
 private:
 	;
 };

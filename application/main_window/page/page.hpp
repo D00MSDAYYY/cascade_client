@@ -1,8 +1,10 @@
 #pragma once
 
+#include "actions_tree.hpp"
 #include "scripting.hpp"
 
 #include <QMainWindow>
+#include <QToolBar>
 
 class page
 	: public QMainWindow
@@ -16,7 +18,16 @@ public:
 		  QWidget*					   parent = nullptr )
 		: QMainWindow( parent )
 		, scripting::object{ ngn_ptr }
-		, _name{ name } { };
+		, _name{ name }
+	{
+		_tl_bar = new QToolBar( "Toolbar" );
+		addToolBar( Qt::TopToolBarArea, _tl_bar );
+		_tl_bar->setIconSize( { 32, 32 } );
+		_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
+		_tl_bar->setMovable( false );
+		_tl_bar->addWidget(new QWidget{this});
+	};
+
 	~page() = default;
 
 	enum class WORKING_STATE
@@ -95,8 +106,19 @@ protected:
 	virtual void
 	on_suspend() { };
 
+	struct _c_c_d_t
+	{
+		QAction*	_qaction{};
+		std::string _script{};
+	};
+
+	using _nd_t = actions_tree::node< _c_c_d_t >;
+
+	std::shared_ptr< _nd_t > _actions_tree_root{};
+	QToolBar*				 _tl_bar{};
+
 private:
-	WORKING_STATE	  _wrkng_state{ WORKING_STATE::OFF };
+	WORKING_STATE _wrkng_state{ WORKING_STATE::OFF };
 };
 
 

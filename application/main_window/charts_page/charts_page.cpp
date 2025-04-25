@@ -7,13 +7,6 @@ charts_page::charts_page( const std::string&  name,
 {
 	Q_INIT_RESOURCE( charts_page );
 
-	_tl_bar = new QToolBar{ "Tool bar", this };
-
-
-	_tl_bar->setIconSize( { 32, 32 } );
-	_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
-	_tl_bar->setMovable( false );
-
 	for ( const auto& [ str, func ] :
 		  std::vector< std::pair< std::string, std::function< void() > > >{
 			{ "filter",	[]() { return; } },
@@ -39,7 +32,6 @@ charts_page::charts_page( const std::string&  name,
 				}
 		}
 
-	addToolBar( Qt::TopToolBarArea, _tl_bar );
 	register_in_lua(*_ngn_ptr);
 }
 

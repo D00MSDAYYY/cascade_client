@@ -19,15 +19,13 @@ public:
 	}
 
 	CLASS_NAME_AS_STRING(clock)
+	STATIC_REGISTER_IN_LUA()
 
 	timepoint
 	now()
 	{
 		return timepoint{  std::chrono::system_clock::now() };
 	}
-
-	static void
-	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
 };
 

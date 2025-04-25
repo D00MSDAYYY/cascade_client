@@ -61,7 +61,6 @@ connections_page::connections_page( const std::string&	name,
 
 	setCentralWidget( _scrl_area );
 
-	addToolBar( Qt::TopToolBarArea, _tl_bar );
 	register_in_lua(*_ngn_ptr);
 }
 

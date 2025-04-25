@@ -17,21 +17,19 @@ public:
 				  QWidget*			  parent = nullptr );
 	~sensors_page() ;
 
-// !
+	CLASS_NAME_AS_STRING( sensors_page )
+	MAKE_LUA_OBJECT_FROM_THIS()
+	STATIC_REGISTER_IN_LUA()
+
 	void
 	addSensor();
 	void
 	removeSensor();
 
-	CLASS_NAME_AS_STRING(sensors_page)
+
 
 	void add_sensor();
 	void remove_sensor();
-
-
-
-	static void
-	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
 private:
 	void
@@ -41,5 +39,4 @@ private:
 
 	QScrollArea* _scrl_area{};
 
-	QToolBar*	 _tl_bar{};
 };

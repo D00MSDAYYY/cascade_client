@@ -1,14 +1,12 @@
 #pragma once
 
-#include "actions_tree.hpp"
 #include "alert.hpp"
 #include "page.hpp"
 
 #include <QListWidget>
-#include <QScrollArea>
-#include <QToolBar>
+
 #include <functional>
-#include <unordered_map>
+#include <vector>
 
 class alerts_page : public page
 {
@@ -22,15 +20,14 @@ public:
 
 	CLASS_NAME_AS_STRING( alerts_page )
 	MAKE_LUA_OBJECT_FROM_THIS()
-
-	static void
-	register_in_lua( const scripting::engine::ptr& ngn_ptr );
+	STATIC_REGISTER_IN_LUA()
 
 
 	std::vector< sol::object >
 	get_alerts();
-	// TODO! mb add alert id as return to unique identifing (to store into alertist to
-	// faster and convinient deletion)
+	// TODO! mb add alert id as return to unique identifing (to store into
+	// alertist to faster and convinient deletion)
+
 	void
 	add_alert( const alert& a );
 
@@ -42,21 +39,10 @@ public:
 	sort_alerts( std::optional< comparator > cmpr_opt = std::nullopt );
 
 private:
-	
 	void
 	_update_list_widget();
 
-	struct _c_c_d_t
-	{
-		QAction*	_qaction{};
-		std::string _script{};
-	};
-
-	using _nd_t = actions_tree::node< _c_c_d_t >;
-
-	QToolBar*	 _tl_bar{};
-	QListWidget* _lst_wgt{}; // TODO Mb change to QListView later
+	QListWidget* _lst_wgt{}; 
 
 	std::vector< std::shared_ptr< alert > > _alerts;
-	std::shared_ptr< _nd_t >				_actions_tree_root{};
 };

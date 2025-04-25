@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.31.5)
 project(charts_page)
 
 ####################### insert subdirectories here ##############################
+add_subdirectory(chart)
 #################################################################################
 
 add_library(${PROJECT_NAME}  STATIC)
@@ -19,8 +20,9 @@ PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME}
-PRIVATE
+PUBLIC
 	Qt::Widgets
+	chart
 	page
 )
 

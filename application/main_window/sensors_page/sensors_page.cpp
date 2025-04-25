@@ -12,7 +12,6 @@ sensors_page::sensors_page( const std::string&	name,
 {
 	Q_INIT_RESOURCE( sensors_page );
 
-	_tl_bar	   = new QToolBar{ "Tool bar", this };
 	_snsrs_grd = new QGridLayout{};
 	_snsrs_pln = new QWidget{ this };
 	_scrl_area = new QScrollArea{ this };
@@ -31,9 +30,6 @@ sensors_page::sensors_page( const std::string&	name,
 	_scrl_area->setWidgetResizable( true );
 	_scrl_area->setWidget( _snsrs_pln );
 
-	_tl_bar->setIconSize( { 32, 32 } );
-	_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
-	_tl_bar->setMovable( false );
 
 	for ( const auto& [ str, func ] :
 		  std::vector< std::pair< std::string, std::function< void() > > >{
@@ -62,7 +58,6 @@ sensors_page::sensors_page( const std::string&	name,
 
 	setCentralWidget( _scrl_area );
 
-	addToolBar( Qt::TopToolBarArea, _tl_bar );
 	register_in_lua(*_ngn_ptr);
 }
 

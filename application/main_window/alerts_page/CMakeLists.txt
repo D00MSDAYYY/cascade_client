@@ -23,7 +23,6 @@ target_link_libraries(${PROJECT_NAME}
 PRIVATE
 	Qt::Widgets
 PUBLIC 
-	actions_tree
 	page
 	alert
 )

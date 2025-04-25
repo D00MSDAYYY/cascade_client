@@ -2,14 +2,11 @@
 #include "alerts_page.hpp"
 
 #include <QFrame>
-#include <QInputDialog>
 #include <QLabel>
 #include <QListWidgetItem>
 #include <QMenu>
-#include <QMessageBox>
 #include <QToolButton>
 #include <QVBoxLayout>
-
 
 static alerts_page::comparator compare_by_name{ []( const alert& lhs,
 													const alert& rhs ) -> bool {
@@ -34,13 +31,7 @@ alerts_page::alerts_page( const std::string&		   name,
 	Q_INIT_RESOURCE( alerts_page );
 	register_in_lua( *_ngn_ptr );
 
-	_tl_bar	 = new QToolBar{ "Tool bar", this };
 	_lst_wgt = new QListWidget{ this };
-
-	_tl_bar->setIconSize( { 32, 32 } );
-	_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
-	_tl_bar->setMovable( false );
-
 
 	auto bind_qaction_with_func = [ this ]( QAction* action, auto func ) -> QAction* {
 		connect( action, &QAction::triggered, [ func, action ]() { func( action ); } );
@@ -197,8 +188,7 @@ alerts_page::alerts_page( const std::string&		   name,
 		}
 
 	setCentralWidget( _lst_wgt );
-	addToolBar( Qt::TopToolBarArea, _tl_bar );
-
+	
 
 	add_alert( alert{ alert::TYPE::INFO,
 					  "a_alert",

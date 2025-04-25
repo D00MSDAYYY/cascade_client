@@ -19,15 +19,11 @@ public:
 	{
 	}
 
-	timepoint( timepoint&& other ) = default;
+	CLASS_NAME_AS_STRING( timepoint )
+	STATIC_REGISTER_IN_LUA()
 
 	std::string
 	to_string() const;
-
-	CLASS_NAME_AS_STRING( timepoint )
-
-	static void
-	register_in_lua( const scripting::engine::ptr& ngn_ptr );
 
 private:
 	std::chrono::system_clock::time_point _timepoint;
