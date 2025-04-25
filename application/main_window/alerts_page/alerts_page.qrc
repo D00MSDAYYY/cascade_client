@@ -2,7 +2,7 @@
     <qresource prefix="/alerts_page">
 		<file>icons/filter.png</file>
 		<file>icons/remove.png</file>
-		<file>icons/select.png</file>
+		<file>icons/sort.png</file>
 		<file>icons/info.png</file>
 		<file>icons/alarm.png</file>
 		<file>icons/warning.png</file>

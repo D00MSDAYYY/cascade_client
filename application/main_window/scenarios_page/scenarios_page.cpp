@@ -12,31 +12,26 @@ scenarios_page::scenarios_page( const std::string&	   name,
 	Q_INIT_RESOURCE( scenarios_page );
 	register_in_lua( *_ngn_ptr );
 
-	for ( const auto& [ str, func ] :
-		  std::vector< std::pair< std::string, std::function< void() > > >{
-			{ "filter",	[]() { return; } },
-			{ "|",	   []() { return; } },
-			{ "add",	 []() { return; } },
-			{ "remove",	[]() { return; } },
-			{ "select",	[]() { return; } },
-			{ "|",	   []() { return; } },
-			{ "resume",	[]() { return; } },
-			{ "suspend", []() { return; } }
-	} )
-		{
-			if ( str == "|" ) { _tl_bar->addSeparator(); }
-			else
-				{
-					auto path{ ":/scenarios_page/icons/" + str + ".png" };
-					auto action{ _tl_bar->addAction(
-						QIcon{ QPixmap{ path.c_str() }.scaled(
-							_tl_bar->iconSize(),
-							Qt::AspectRatioMode::KeepAspectRatio ) },
-						str.c_str() ) };
-					connect( action, &QAction::triggered, this, func );
-				}
-		}
-	
+	_lst_wgt = new QListWidget{ this };
+
+	using _nd_t		   = page::_nd_t;
+	_actions_tree_root = std::make_shared< _nd_t >( _nd_t{
+	  { .name		 = "_root_node",
+		.description = "don't use this node ",
+		.children	 = { _nd_t{ { .name = "sort" } },
+						 _nd_t{ {
+						   .name = "|",
+						 } },
+						 _nd_t{ { .name = "add" } },
+						 _nd_t{ { .name = "remove" } },
+						 _nd_t{ { .name = "|" } },
+						 _nd_t{ { .name = "suspend" } },
+						 _nd_t{ { .name = "resume" } } } }
+	} );
+
+	_init_toolbar();
+
+	setCentralWidget( _lst_wgt );
 }
 
 scenarios_page::~scenarios_page() { Q_CLEANUP_RESOURCE( scenarios_page ); }

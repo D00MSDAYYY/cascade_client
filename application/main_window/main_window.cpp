@@ -23,45 +23,49 @@ main_window::main_window( const scripting::engine::ptr ngn_ptr, QWidget* parent 
 	_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
 	_tl_bar->setMovable( false );
 
+	_tl_bar->setStyleSheet( R"(
+    QToolButton:checked {
+        background-color: palette(highlight);
+    }
+)" );
+
 	addToolBar( Qt::LeftToolBarArea, _tl_bar );
 	setCentralWidget( _stkd_wdgt );
 
 	_pages_tree_root = std::make_shared< _nd_t >( _nd_t{
 	  { .name		 = "",
 		.description = "don't use this node ",
-		.children
-		= { _nd_t{
-			  { .name = "alerts",
-				.data = { ._page_ptr = new alerts_page{ "alerts", *_ngn_ptr, this } } } },
-			_nd_t{ { .name = "sensors",
-					 .data
-					 = { ._page_ptr = new sensors_page{ "sensors", *_ngn_ptr, this } } } },
-			_nd_t{
-			  { .name = "connections",
-				.data = { ._page_ptr
-						  = new connections_page{ "connections", *_ngn_ptr, this } } } },
-			_nd_t{
-			  { .name = "charts",
-				.data = { ._page_ptr = new charts_page{ "charts", *_ngn_ptr, this } } } },
-			_nd_t{ { .name = "logbook",
-					 .data
-					 = { ._page_ptr = new logbook_page{ "logbook", *_ngn_ptr, this } } } },
-			_nd_t{ { .name = "scenarios",
-					 .data = { ._page_ptr
-							   = new scenarios_page{ "scenarios", *_ngn_ptr, this } } } },
-			_nd_t{
-			  { .name = "settings",
-				.data = { ._page_ptr
-						  = new settings_page{ "settings", *_ngn_ptr, this } } } } } }
-	  } );
+		.children	 = {
+			 _nd_t{
+			   { .name = "alerts",
+				 .data = { ._page_ptr = new alerts_page{ "alerts", *_ngn_ptr, this } } } },
+			 _nd_t{
+			   { .name = "sensors",
+				 .data = { ._page_ptr = new sensors_page{ "sensors", *_ngn_ptr, this } } } },
+			 _nd_t{
+			   { .name = "connections",
+				 .data = { ._page_ptr
+						   = new connections_page{ "connections", *_ngn_ptr, this } } } },
+			 _nd_t{
+			   { .name = "charts",
+				 .data = { ._page_ptr = new charts_page{ "charts", *_ngn_ptr, this } } } },
+			 _nd_t{
+			   { .name = "logbook",
+				 .data = { ._page_ptr = new logbook_page{ "logbook", *_ngn_ptr, this } } } },
+			 _nd_t{ { .name = "scenarios",
+					  .data = { ._page_ptr
+								= new scenarios_page{ "scenarios", *_ngn_ptr, this } } } },
+			 _nd_t{
+			   { .name = "settings",
+				 .data = { ._page_ptr
+						   = new settings_page{ "settings", *_ngn_ptr, this } } } } } }
+	 } );
 
 	std::function< void( _nd_t& ) > traverse_nodes{};
 
 	traverse_nodes = [ this, &traverse_nodes ]( _nd_t& node ) -> void {
 		for ( auto& child : node._children )
 			{
-				_stkd_wdgt->addWidget( child._data._page_ptr );
-
 				auto icon{ QIcon(
 					QPixmap{ std::string{ ":/main_window/icons/"
 										  + child.get_full_path_name() + ".png" }
@@ -70,22 +74,29 @@ main_window::main_window( const scripting::engine::ptr ngn_ptr, QWidget* parent 
 								 Qt::AspectRatioMode::KeepAspectRatio ) ) };
 
 				auto action_ptr{ _tl_bar->addAction( icon, child._name.c_str() ) };
+				action_ptr->setCheckable( true );
+
 				auto page_name{ child.get_full_path_name() };
+				_stkd_wdgt->addWidget( child._data._page_ptr );
 
-				QObject::connect( action_ptr,
-								  &QAction::triggered,
-								  [ this, page_ptr = child._data._page_ptr ]() {
-									  set_current_page( page_ptr );
-								  } );
-
-				_pages.insert( { page_name, child._data._page_ptr } );
+				QObject::connect(
+					action_ptr,
+					&QAction::triggered,
+					[ this, page_ptr = child._data._page_ptr, action_ptr ]() {
+						for ( const auto& action : _tl_bar->actions() )
+							{
+								action->setChecked( false );
+							}
+						action_ptr->setChecked( true );
+						set_current_page( page_ptr );
+					} );
+				action_ptr->trigger();
+				// _pages.insert( { page_name, child._data._page_ptr } );
 
 				traverse_nodes( child );
 			}
 	};
 	traverse_nodes( *_pages_tree_root );
-
-
 }
 
 main_window::~main_window() { Q_CLEANUP_RESOURCE( main_window ); }
@@ -96,11 +107,11 @@ main_window::get_pages()
 	std::map< std::string, sol::object > tmp{};
 	for ( int i = 0; i < _stkd_wdgt->count(); ++i )
 		{
-			auto wgt { _stkd_wdgt->widget( i )}; 
-			auto page_ptr{qobject_cast<page*>(wgt)};
+			auto wgt{ _stkd_wdgt->widget( i ) };
+			auto page_ptr{ qobject_cast< page* >( wgt ) };
 			tmp.insert( { page_ptr->_name, page_ptr->make_lua_object_from_this() } );
 		}
-		return tmp;
+	return tmp;
 }
 
 void
@@ -125,19 +136,19 @@ main_window::set_current_page( page* page )
 }
 
 void
-main_window::register_in_lua(const scripting::engine::ptr& ngn_ptr)
+main_window::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 {
-	if ( can_register_in_lua<main_window>(ngn_ptr) )
+	if ( can_register_in_lua< main_window >( ngn_ptr ) )
 		{
 			auto type{ ngn_ptr->new_usertype< main_window >( _class_name ) };
 
 			type [ "get_pages" ] = &main_window::get_pages;
 
-			type [ "add_page" ]		= []( main_window* self, const sol::object obj ) {
-				if ( auto page_ptr{ obj.as< sol::optional< page* > >() }; page_ptr )
-					{
-						self->add_page( *page_ptr );
-					}
+			type [ "add_page" ]	 = []( main_window* self, const sol::object obj ) {
+				 if ( auto page_ptr{ obj.as< sol::optional< page* > >() }; page_ptr )
+					 {
+						 self->add_page( *page_ptr );
+					 }
 			};
 			type [ "remove_page" ] = []( main_window* self, const sol::object obj ) {
 				if ( auto page_ptr{ obj.as< sol::optional< page* > >() }; page_ptr )

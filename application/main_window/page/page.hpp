@@ -4,7 +4,9 @@
 #include "scripting.hpp"
 
 #include <QMainWindow>
+#include <QMenu>
 #include <QToolBar>
+#include <QToolButton>
 
 class page
 	: public QMainWindow
@@ -15,18 +17,7 @@ class page
 public:
 	page( const std::string&		   name,
 		  const scripting::engine::ptr ngn_ptr,
-		  QWidget*					   parent = nullptr )
-		: QMainWindow( parent )
-		, scripting::object{ ngn_ptr }
-		, _name{ name }
-	{
-		_tl_bar = new QToolBar( "Toolbar" );
-		addToolBar( Qt::TopToolBarArea, _tl_bar );
-		_tl_bar->setIconSize( { 32, 32 } );
-		_tl_bar->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
-		_tl_bar->setMovable( false );
-		_tl_bar->addWidget(new QWidget{this});
-	};
+		  QWidget*					   parent = nullptr );
 
 	~page() = default;
 
@@ -96,16 +87,6 @@ public:
 
 	const std::string _name;
 
-protected:
-	virtual void
-	on_on() { };
-	virtual void
-	on_off() { };
-	virtual void
-	on_resume() { };
-	virtual void
-	on_suspend() { };
-
 	struct _c_c_d_t
 	{
 		QAction*	_qaction{};
@@ -114,11 +95,31 @@ protected:
 
 	using _nd_t = actions_tree::node< _c_c_d_t >;
 
+protected:
+	void
+	_init_toolbar();
+
+	virtual void
+	on_on() { };
+	virtual void
+	on_off() { };
+	virtual void
+	on_resume() { };
+	virtual void
+							 on_suspend() { };
+
 	std::shared_ptr< _nd_t > _actions_tree_root{};
 	QToolBar*				 _tl_bar{};
 
 private:
 	WORKING_STATE _wrkng_state{ WORKING_STATE::OFF };
+};
+
+auto bind_qaction_with_func = []( QAction* action, auto func ) -> QAction* {
+	QObject::connect( action, &QAction::triggered, [ func, action ]() {
+		func( action );
+	} );
+	return action;
 };
 
 

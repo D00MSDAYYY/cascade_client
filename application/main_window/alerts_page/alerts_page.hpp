@@ -4,7 +4,6 @@
 #include "page.hpp"
 
 #include <QListWidget>
-
 #include <functional>
 #include <vector>
 
@@ -40,9 +39,8 @@ public:
 
 private:
 	void
-	_update_list_widget();
+											_update_list_widget();
 
-	QListWidget* _lst_wgt{}; 
-
+	QListWidget*							_lst_wgt{};
 	std::vector< std::shared_ptr< alert > > _alerts;
 };

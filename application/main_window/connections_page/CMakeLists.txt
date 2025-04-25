@@ -20,11 +20,10 @@ PUBLIC
 )
 
 target_link_libraries(${PROJECT_NAME}
-PRIVATE
+PUBLIC
 	Qt::Widgets
 	page
-PUBLIC 
-	# tcp_connection
+	# connection
 )
 
 
