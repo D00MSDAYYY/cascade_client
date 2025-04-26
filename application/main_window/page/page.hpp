@@ -76,6 +76,12 @@ public:
 		on_resume();
 	};
 
+	auto
+	get_name() const
+	{
+		return _name;
+	}
+
 	WORKING_STATE
 	get_state() const { return _wrkng_state; };
 
@@ -85,8 +91,6 @@ public:
 		return "default empty report";
 	}
 
-	const std::string _name;
-
 	struct _c_c_d_t
 	{
 		QAction*	_qaction{};
@@ -94,6 +98,15 @@ public:
 	};
 
 	using _nd_t = actions_tree::node< _c_c_d_t >;
+
+	static QAction*
+	_bind_qaction_with_func( QAction* action, auto func )
+	{
+		QObject::connect( action, &QAction::triggered, [ func, action ]() {
+			func( action );
+		} );
+		return action;
+	};
 
 protected:
 	void
@@ -112,14 +125,8 @@ protected:
 	QToolBar*				 _tl_bar{};
 
 private:
-	WORKING_STATE _wrkng_state{ WORKING_STATE::OFF };
-};
-
-auto bind_qaction_with_func = []( QAction* action, auto func ) -> QAction* {
-	QObject::connect( action, &QAction::triggered, [ func, action ]() {
-		func( action );
-	} );
-	return action;
+	WORKING_STATE	  _wrkng_state{ WORKING_STATE::OFF };
+	const std::string _name;
 };
 
 

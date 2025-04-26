@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.31.5)
+cmake_minimum_required(VERSION 3.25.1)
 project(application)
 
 ####################### insert subdirectories here ##############################
@@ -13,6 +13,7 @@ target_sources(${PROJECT_NAME}
 PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}.qrc
 )
 
 target_include_directories(${PROJECT_NAME}

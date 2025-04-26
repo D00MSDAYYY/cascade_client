@@ -1,12 +1,30 @@
 #include "application.hpp"
 
+#include <QFile>
+
 application::application( int& argc, char** argv )
 	: QApplication{ argc, argv }
 	, scripting::object{ scripting::engine::make_real_engine() }
 {
+	Q_INIT_RESOURCE( application );
 	setStyle( "Fusion" );
 
 	( *_ngn_ptr )->open_libraries( sol::lib::base );
+
+
+	if ( QFile file( ":/application/scripts/aux_functions.lua" );
+		 file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+		{
+			QTextStream in{ &file };
+			auto		str{ in.readAll().toStdString() };
+			( *_ngn_ptr )->script( str );
+			file.close();
+		}
+	else
+		{
+			std::cout << "can't open file aux_functions.lua" << std::endl;
+			file.close();
+		}
 
 	register_in_lua( *_ngn_ptr );
 
@@ -28,6 +46,8 @@ application::application( int& argc, char** argv )
 	_dbg_wndw->resize( 500, 400 );
 	_dbg_wndw->setMinimumSize( 400, 300 );
 }
+
+application::~application() { Q_CLEANUP_RESOURCE( application ); }
 
 void
 application::register_in_lua( const scripting::engine::ptr& ngn_ptr )

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.31.5)
+cmake_minimum_required(VERSION 3.25.1)
 project(libraries)
 
 include(FetchContent)
@@ -20,44 +20,18 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(${DEP_NAME})
 
 
+set(DEP_NAME "lua")
+set(REMOTE_REPO "https://github.com/lubgr/lua-cmake.git")
+set(TAG "master")
+set(DEP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${DEP_NAME}")
 
-# # another way to use dependency
-# cmake_minimum_required(VERSION 3.31.5)
-# project(libraries)
+FetchContent_Declare(
+    ${DEP_NAME}
+    GIT_REPOSITORY ${REMOTE_REPO}
+    GIT_TAG ${TAG}
+    GIT_SUBMODULES_RECURSE YES
+    GIT_SHALLOW TRUE
+    SOURCE_DIR "${DEP_DIR}" 
+)
 
-# # include(FetchContent)
-
-# set(DEP_NAME ${PROJECT_NAME})
-# set(REMOTE_REPO "https://github.com/D00MSDAYYY/common_libraries.git")
-# set(TAG "main")  
-# set(DEP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${DEP_NAME}")
-
-# if(EXISTS "${DEP_DIR}/.git")
-#     execute_process(
-#         COMMAND ${GIT_EXECUTABLE} fetch --dry-run
-#         WORKING_DIRECTORY ${DEP_DIR}
-#         OUTPUT_VARIABLE GIT_CHANGES
-#         RESULT_VARIABLE GIT_RESULT
-#         OUTPUT_QUIET  
-#     )
-
-#     if(GIT_RESULT EQUAL 0 AND NOT GIT_CHANGES STREQUAL "")
-#         execute_process(
-#             COMMAND ${GIT_EXECUTABLE} pull origin ${TAG}
-#             WORKING_DIRECTORY ${DEP_DIR}
-#             COMMAND_ERROR_IS_FATAL ANY
-#         )
-#         message(STATUS "Dependency '${DEP_NAME}' updated ")
-#     else()
-#         message(STATUS "Dependency '${DEP_NAME}' is up to date")
-#     endif()
-# else()
-#     execute_process(
-#         COMMAND ${GIT_EXECUTABLE} clone --branch ${TAG} ${REMOTE_REPO} ${DEP_NAME}
-#         WORKING_DIRECTORY ${DEP_DIR}
-#         COMMAND_ERROR_IS_FATAL ANY
-#     )
-# endif()
-
-# add_subdirectory(${DEP_DIR})
-
+FetchContent_MakeAvailable(${DEP_NAME})

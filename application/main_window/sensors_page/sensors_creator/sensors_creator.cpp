@@ -123,7 +123,7 @@ sensors_creator::sensors_creator( QWidget* parent )
 		new QPushButton{ "Create", this }
 	};
 	connect( crt_btn, &QPushButton::clicked, this, [ this ]() {
-		emit sensorCreated( new QWidget{ this } );
+		emit sensor_created( new QWidget{ this } );
 		close();
 	} );
 	auto cncl_btn{

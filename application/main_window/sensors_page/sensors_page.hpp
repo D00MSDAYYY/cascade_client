@@ -1,42 +1,42 @@
 #pragma once
 
 #include "page.hpp"
+#include "sensor.hpp"
 
-#include <QGridLayout>
-#include <QScrollArea>
-#include <QToolBar>
+#include <QListWidget>
 
-class sensors_page
-	: public page
+class sensors_page : public page
 {
 	Q_OBJECT
 
 public:
-	sensors_page( const std::string&  name,
+	sensors_page( const std::string&		   name,
 				  const scripting::engine::ptr ngn_ptr,
-				  QWidget*			  parent = nullptr );
-	~sensors_page() ;
+				  QWidget*					   parent = nullptr );
+	~sensors_page();
 
 	CLASS_NAME_AS_STRING( sensors_page )
 	MAKE_LUA_OBJECT_FROM_THIS()
 	STATIC_REGISTER_IN_LUA()
 
+
+	std::vector< sol::object >
+	get_sensors();
+
 	void
-	addSensor();
+	add_sensor( std::shared_ptr<sensor> sensor_ptr );
+
 	void
-	removeSensor();
+	remove_sensor( const std::string& sensor_name );
 
-
-
-	void add_sensor();
-	void remove_sensor();
+	using comparator = std::function< bool( const sensor& lhs, const sensor& rhs ) >;
+	void
+	sort_sensors( std::optional< comparator > cmpr_opt = std::nullopt );
 
 private:
 	void
-				 _redistributeWidgets();
-	QGridLayout* _snsrs_grd{};
-	QWidget*	 _snsrs_pln{};
+											 _update_list_widget();
 
-	QScrollArea* _scrl_area{};
-
+	QListWidget*							 _lst_wgt{};
+	std::vector< std::shared_ptr< sensor > > _sensors;
 };

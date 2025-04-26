@@ -17,26 +17,56 @@ public:
 			QWidget*			   parent = nullptr );
 	~sensor() = default;
 
-	CLASS_NAME_AS_STRING(sensor)
+	CLASS_NAME_AS_STRING( sensor )
+	MAKE_LUA_OBJECT_FROM_THIS()
 	STATIC_REGISTER_IN_LUA()
 
 	void
-	on();
-	void
-	off();
-	void
-	suspend();
-	void
-	resume();
+	on();		 //! readonly function
+	virtual void
+	on_on() { }; //! redefined function
 
 	void
-	add_widget();
+	off();
+	virtual void
+	on_off() { };
+
 	void
-	subscribe();
+	suspend();
+	virtual void
+	on_suspend() { };
+
 	void
-	unsubscribe();
+	resume();
+	virtual void
+	on_resume() { };
+
 	void
-	update(); // ! TODO mb use qt signals?
+	update();
+	virtual void
+	on_update() { };
+
+	void
+	add_subscriber(sol::object obj );
+	void
+	remove_subscriber( sol::object obj );
+
+	void
+	add_sender(const std::string& name, sol::object obj );
+	void
+	remove_sender( sol::object obj );
+
+
+	std::map< std::string, sol::object >
+	get_senders();
+	std::map< std::string, sol::object >
+	get_subscribers();
+
+	auto
+	get_name() const
+	{
+		return _name;
+	}
 
 	enum class WORKING_STATE
 	{
@@ -54,18 +84,20 @@ public:
 		return "default empty report";
 	}
 
-	virtual void
-	on_on() { };
-	virtual void
-	on_off() { };
-	virtual void
-	on_resume() { };
-	virtual void
-	on_suspend() { };
+	bool
+	operator== ( const sensor& s ) const
+	{
+		return _name == s._name; // TODO! mb change in the future
+	}
 
 private:
-	QHBoxLayout*	  layout;
+	QHBoxLayout*						 _layout;
+	std::map< std::string, sol::object > _widgets;
 
-	WORKING_STATE	  _wrkng_state{ WORKING_STATE::OFF };
-	const std::string _name;
+	std::vector< sol::object > _subscribers;
+	std::map< std::string, sol::object > _senders;
+
+
+	WORKING_STATE						 _wrkng_state{ WORKING_STATE::OFF };
+	const std::string					 _name;
 };

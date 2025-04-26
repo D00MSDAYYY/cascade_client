@@ -16,5 +16,5 @@ public:
 
 signals:
 	void
-	sensorCreated( QWidget* sensor );
+	sensor_created( QWidget* sensor_wgt );
 };

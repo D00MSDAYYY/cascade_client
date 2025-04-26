@@ -3,7 +3,7 @@
 #include "alert.hpp"
 #include "page.hpp"
 
-#include <QListWidget>
+#include <QListWidget> // TODO! mb add _lst_wgt to base class (page) coz i use it so often std::optional<>?
 #include <functional>
 #include <vector>
 
@@ -28,7 +28,7 @@ public:
 	// alertist to faster and convinient deletion)
 
 	void
-	add_alert( const alert& a );
+	add_alert( std::shared_ptr<alert> alert_ptr );
 
 	void
 	remove_alert( const std::string& alert_name, const std::string& alertist_name );

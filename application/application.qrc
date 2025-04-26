@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/application">
+		<file>scripts/aux_functions.lua</file>
+    </qresource>
+</RCC>

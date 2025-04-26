@@ -5,182 +5,203 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
-sensors_page::sensors_page( const std::string&	name,
+
+static sensors_page::comparator compare_by_name{ []( const sensor& lhs,
+													 const sensor& rhs ) -> bool {
+	return lhs.get_name() < rhs.get_name();
+} };
+
+sensors_page::sensors_page( const std::string&	   name,
 							scripting::engine::ptr ngn_ptr,
-							QWidget*			parent )
-	: page{name, ngn_ptr, parent}
+							QWidget*			   parent )
+	: page{ name, ngn_ptr, parent }
 {
 	Q_INIT_RESOURCE( sensors_page );
+	register_in_lua( *_ngn_ptr );
 
-	_snsrs_grd = new QGridLayout{};
-	_snsrs_pln = new QWidget{ this };
-	_scrl_area = new QScrollArea{ this };
+	_lst_wgt		   = new QListWidget{ this };
 
-	_snsrs_grd->setSpacing( 5 );
-	_snsrs_grd->setContentsMargins( 5, 5, 5, 5 );
+	using _nd_t		   = page::_nd_t;
+	_actions_tree_root = std::make_shared< _nd_t >( _nd_t{
+	  { .name		 = "_root_node",
+		.description = "don't use this node ",
+		.children	 = {
+			 _nd_t{ { .name = "sort" } },
+			 _nd_t{ {
+			   .name = "|",
+			 } },
+			 _nd_t{
+			   { .name = "add",
+				 .data = { ._qaction = _bind_qaction_with_func( new QAction{ this },
+															   [ this ]( auto add_action ) {
+																   ;
+																   ;
+																   ;
+															   } ) } } },
+			 _nd_t{
+			   { .name = "remove",
+				 .data
+				 = { ._qaction = _bind_qaction_with_func(
+						 new QAction{ this },
+						 [ this ]( auto remove_action ) {
+							 auto con{ connect(
+								 _lst_wgt,
+								 &QListWidget::itemClicked,
+								 [ this, remove_action ]( QListWidgetItem* item ) {
+									 if ( auto frame_ptr{ qobject_cast< QFrame* >(
+											  _lst_wgt->itemWidget( item ) ) } )
+										 {
+											 auto sensor_ptr{
+												 frame_ptr->property( "sensor" )
+													 .value< std::shared_ptr< sensor > >()
+											 };
+											 remove_sensor( sensor_ptr->get_name() );
+											 sort_sensors();
+										 }
+								 } ) };
 
-	_snsrs_grd->setColumnStretch( 0, 1 );
-	_snsrs_grd->setColumnStretch( 1, 1 );
+							 QList< QAction* > saved_actions{};
+							 for ( const auto& action_ptr : _tl_bar->actions() )
+								 {
+									 saved_actions.append( action_ptr );
+								 }
 
-	_snsrs_grd->setRowStretch( 0, 1 );
-	_snsrs_grd->setRowStretch( 1, 1 );
+							 auto exit_action{
+								 new QAction{
+	   QIcon( QPixmap{
+									 std::string{ ":sensors_page/icons/exit.png" }.c_str() }
+											  .scaled(
+												  iconSize(),
+		  Qt::AspectRatioMode::KeepAspectRatio ) ),
+	   "exit", this }
+							 };
+							 connect( exit_action,
+									  &QAction::triggered,
+									  [ this, saved_actions, con ]() {
+										  _tl_bar->clear();
+										  _tl_bar->addActions( { saved_actions.begin(),
+																 saved_actions.end() } );
+										  disconnect( con );
+									  } );
+							 _tl_bar->clear();
+							 _tl_bar->addAction( exit_action );
+						 } ) } } },
+			 _nd_t{ { .name = "|" } },
+			 _nd_t{ { .name = "suspend" } },
+			 _nd_t{ { .name = "resume" } } } }
+	} );
 
-	_snsrs_pln->setLayout( _snsrs_grd );
+	_init_toolbar();
 
-	_scrl_area->setWidgetResizable( true );
-	_scrl_area->setWidget( _snsrs_pln );
-
-
-	for ( const auto& [ str, func ] :
-		  std::vector< std::pair< std::string, std::function< void() > > >{
-			{ "filter", []() { return; } },
-			{ "|", []() { return; } },
-			{ "add", std::bind( &sensors_page::addSensor, this ) },
-			{ "remove", std::bind( &sensors_page::removeSensor, this ) },
-			{ "select", []() { return; } },
-			{ "|", []() { return; } },
-			{ "resume", []() { return; } },
-			{ "suspend", []() { return; } }
-	} )
-		{
-			if ( str == "|" ) { _tl_bar->addSeparator(); }
-			else
-				{
-					auto path{ ":/sensors_page/icons/" + str + ".png" };
-					auto action{ _tl_bar->addAction(
-						QIcon{ QPixmap{ path.c_str() }.scaled(
-							_tl_bar->iconSize(),
-							Qt::AspectRatioMode::KeepAspectRatio ) },
-						str.c_str() ) };
-					connect( action, &QAction::triggered, this, func );
-				}
-		}
-
-	setCentralWidget( _scrl_area );
-
-	register_in_lua(*_ngn_ptr);
+	setCentralWidget( _lst_wgt );
 }
 
 sensors_page::~sensors_page() { Q_CLEANUP_RESOURCE( sensors_page ); }
 
 void
-sensors_page::addSensor()
+sensors_page::add_sensor( std::shared_ptr< sensor > sensor_ptr )
 {
-	auto creator{ new sensors_creator{ this } };
-
-	connect( creator,
-			 &sensors_creator::sensorCreated,
-			 this,
-			 [ this ]( QWidget* new_snsr ) {
-				 new_snsr->setStyleSheet( "background-color: gray ;" );
-
-				 new_snsr->setMinimumSize( 200, 100 );
-
-				 auto count{ _snsrs_grd->count() };
-				 new_snsr->setObjectName( "Виджет " + QString::number( count ) );
-
-				 new_snsr->setSizePolicy( QSizePolicy::Expanding,
-										  QSizePolicy::Expanding );
-
-				 int row = count / 2;
-				 int col = count % 2;
-
-				 _snsrs_grd->addWidget( new_snsr, row, col );
-
-
-				 _snsrs_grd->setRowStretch( row, 1 );
-			 } );
-	creator->exec();
+	if ( !std::any_of( _sensors.begin(),
+					   _sensors.end(),
+					   [ sensor_ptr ]( const auto& elem_ptr ) {
+						   return *elem_ptr == *sensor_ptr;
+					   } ) )
+		{
+			_sensors.push_back( sensor_ptr );
+			sort_sensors();
+			_update_list_widget();
+		}
+	else
+		{
+			std::cout << "'sensor name' have to be unique";
+		} // TODO! change this cout str to more consistent
 }
 
 void
-sensors_page::removeSensor()
+sensors_page::remove_sensor( const std::string& sensor_name )
 {
-	int count = _snsrs_grd->count();
+	auto it{ std::find_if( _sensors.begin(), _sensors.end(), [ & ]( const auto& elem ) {
+		return elem->get_name() == sensor_name;
+	} ) };
 
-	if ( count == 0 )
-		{
-			QMessageBox::information( this, "Информация", "Нет виджетов для удаления." );
-			return;
-		}
-
-	QStringList widgetNames;
-	for ( int i = 0; i < count; ++i )
-		{
-			QLayoutItem* item = _snsrs_grd->itemAt( i );
-			if ( item && item->widget() )
-				{
-					widgetNames.append( item->widget()->objectName() );
-				}
-		}
-
-	QInputDialog dialog( this );
-	dialog.setWindowTitle( "Удаление виджета" );
-	dialog.setLabelText( "Выберите виджет для удаления:" );
-	dialog.setComboBoxItems( widgetNames );
-	dialog.setComboBoxEditable( false );
-	dialog.setWindowFlags( dialog.windowFlags() & ~Qt::WindowCloseButtonHint );
-
-	if ( dialog.exec() != QDialog::Accepted ) { return; }
-
-	auto selectedWidgetText = dialog.textValue();
-
-	for ( int i = 0; i < count; ++i )
-		{
-			QLayoutItem* item = _snsrs_grd->itemAt( i );
-			if ( item && item->widget()
-				 && item->widget()->objectName() == selectedWidgetText )
-				{
-					QWidget* widget = item->widget();
-
-					_snsrs_grd->removeWidget( widget );
-
-					delete widget;
-
-					_snsrs_pln->adjustSize();
-					break;
-				}
-		}
-	_redistributeWidgets();
+	if ( it != _sensors.end() ) { _sensors.erase( it ); }
 }
 
+void
+sensors_page::sort_sensors( std::optional< comparator > cmpr_opt )
+{
+	if ( cmpr_opt )
+		{
+			_lst_wgt->setProperty( "default_cmpr", QVariant::fromValue( *cmpr_opt ) );
+		}
+	else if ( auto v{ _lst_wgt->property( "default_cmpr" ) }; v.isValid() )
+		{
+			cmpr_opt = v.value< comparator >();
+		}
+	else { cmpr_opt = compare_by_name; }
+
+	std::sort( _sensors.begin(),
+			   _sensors.end(),
+			   [ cmpr = *cmpr_opt ]( const auto& lhs, const auto& rhs ) {
+				   return cmpr( *lhs, *rhs );
+			   } );
+
+	_update_list_widget();
+}
+
+void
+sensors_page::_update_list_widget()
+{
+	_lst_wgt->clear();
+	for ( const auto& sensor_ptr : _sensors )
+		{
+			auto frame = new QFrame();
+			frame->setFrameShape( QFrame::StyledPanel );
+			frame->setMinimumHeight( 100 ); // Увеличили высоту для всех данных
+		}
+}
+
+// void
+// sensors_page::add_sensor()
+// {
+// 	auto creator{ new sensors_creator{ this } };
+
+// 	connect( creator,
+// 			 &sensors_creator::sensor_created,
+// 			 this,
+// 			 [ this ]( QWidget* new_snsr ) {
+// 				 new_snsr->setStyleSheet( "background-color: gray ;" );
+
+// 				 new_snsr->setMinimumSize( 200, 100 );
+
+// 				 auto count{ _snsrs_grd->count() };
+// 				 new_snsr->setObjectName( "Виджет " + QString::number( count ) );
+
+// 				 new_snsr->setSizePolicy( QSizePolicy::Expanding,
+// 										  QSizePolicy::Expanding );
+
+// 				 int row = count / 2;
+// 				 int col = count % 2;
+
+// 				 _snsrs_grd->addWidget( new_snsr, row, col );
+
+
+// 				 _snsrs_grd->setRowStretch( row, 1 );
+// 			 } );
+// 	creator->exec();
+// }
 
 
 void
-sensors_page::register_in_lua(const scripting::engine::ptr& ngn_ptr)
+sensors_page::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 {
-	if ( can_register_in_lua<sensors_page>(ngn_ptr) )
+	if ( can_register_in_lua< sensors_page >( ngn_ptr ) )
 		{
 			auto type{ ngn_ptr->new_usertype< sensors_page >( _class_name,
-															   sol::base_classes,
-															   sol::bases< page >() ) };
+															  sol::base_classes,
+															  sol::bases< page >() ) };
 		}
 	std::cout << _class_name << "\t is registered" << std::endl;
 }
 
-void
-sensors_page::_redistributeWidgets()
-{
-	QList< QWidget* > widgets;
-	for ( int i = 0; i < _snsrs_grd->count(); ++i )
-		{
-			QLayoutItem* item = _snsrs_grd->itemAt( i );
-			if ( item && item->widget() ) { widgets.append( item->widget() ); }
-		}
-	while ( _snsrs_grd->count() > 0 )
-		{
-			QLayoutItem* item = _snsrs_grd->takeAt( 0 );
-			if ( item && item->widget() ) { _snsrs_grd->removeWidget( item->widget() ); }
-			delete item;
-		}
-	for ( int i = 0; i < widgets.size(); ++i )
-		{
-			int row = i / 2;
-			int col = i % 2;
-			_snsrs_grd->addWidget( widgets [ i ], row, col );
-		}
-	for ( int row = 0; row <= widgets.size() / 2; ++row )
-		{
-			_snsrs_grd->setRowStretch( row, 1 );
-		}
-}
+

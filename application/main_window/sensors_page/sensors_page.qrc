@@ -6,5 +6,6 @@
 		<file>icons/sort.png</file>
 		<file>icons/suspend.png</file>
 		<file>icons/resume.png</file>
+		<file>icons/exit.png</file>
     </qresource>
 </RCC>

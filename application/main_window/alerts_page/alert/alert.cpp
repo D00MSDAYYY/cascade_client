@@ -20,21 +20,23 @@ alert::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 {
 	if ( can_register_in_lua< alert >( ngn_ptr ) )
 		{
-			auto	   type{ ngn_ptr->new_usertype< alert >(
-				  _class_name,
-				  sol::constructors< alert(
-					  const TYPE,
-					  const std::string&,
-					  const std::string&,
-					  const std::string&,
-					  const std::string&,
-					  std::optional< const std::vector< std::string > > ) >() ) };
+			auto type{ ngn_ptr->new_usertype< alert >(
+				_class_name,
+				sol::factories( []( const TYPE		   type,
+									const std::string& alert_name,
+									const std::string& tp_str,
+									const std::string& text,
+									const std::string& alertist_name,
+									std::optional< const std::vector< std::string > > tags
+									= std::nullopt ) {
+					return std::shared_ptr< alert >( new alert{type, alert_name, tp_str, text, alertist_name, tags} );
+				} ) ) };
 
 			sol::table alert_type{ ngn_ptr->lua_state(), sol::create };
-			type["TYPE"] = alert_type;
-			alert_type [ "ALARM" ]	 = alert::TYPE::ALARM;
-			alert_type [ "WARNING" ] = alert::TYPE::WARNING;
-			alert_type [ "INFO" ]	 = alert::TYPE::INFO;
+			type [ "TYPE" ]				 = alert_type;
+			alert_type [ "ALARM" ]		 = alert::TYPE::ALARM;
+			alert_type [ "WARNING" ]	 = alert::TYPE::WARNING;
+			alert_type [ "INFO" ]		 = alert::TYPE::INFO;
 
 
 			// !TODO mb create getter-setter pairs ( or no coz readonly stuff should be)

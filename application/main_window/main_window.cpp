@@ -49,12 +49,12 @@ main_window::main_window( const scripting::engine::ptr ngn_ptr, QWidget* parent 
 			 _nd_t{
 			   { .name = "charts",
 				 .data = { ._page_ptr = new charts_page{ "charts", *_ngn_ptr, this } } } },
-			 _nd_t{
-			   { .name = "logbook",
-				 .data = { ._page_ptr = new logbook_page{ "logbook", *_ngn_ptr, this } } } },
 			 _nd_t{ { .name = "scenarios",
 					  .data = { ._page_ptr
 								= new scenarios_page{ "scenarios", *_ngn_ptr, this } } } },
+			 _nd_t{
+			   { .name = "logbook",
+				 .data = { ._page_ptr = new logbook_page{ "logbook", *_ngn_ptr, this } } } },
 			 _nd_t{
 			   { .name = "settings",
 				 .data = { ._page_ptr
@@ -109,7 +109,7 @@ main_window::get_pages()
 		{
 			auto wgt{ _stkd_wdgt->widget( i ) };
 			auto page_ptr{ qobject_cast< page* >( wgt ) };
-			tmp.insert( { page_ptr->_name, page_ptr->make_lua_object_from_this() } );
+			tmp.insert( { page_ptr->get_name(), page_ptr->make_lua_object_from_this() } );
 		}
 	return tmp;
 }

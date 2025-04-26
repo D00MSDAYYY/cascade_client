@@ -40,19 +40,19 @@ alerts_page::alerts_page( const std::string&		   name,
 		= { _nd_t{
 			  { .name	  = "sort",
 				.children = { _nd_t{ { .name = "by name",
-									   .data = { ._qaction = bind_qaction_with_func(
+									   .data = { ._qaction = _bind_qaction_with_func(
 													 new QAction{ this },
 													 [ this ]( auto _ ) {
 														 sort_alerts( compare_by_name );
 													 } ) } } },
 							  _nd_t{ { .name = "by date",
-									   .data = { ._qaction = bind_qaction_with_func(
+									   .data = { ._qaction = _bind_qaction_with_func(
 													 new QAction{ this },
 													 [ this ]( auto _ ) {
 														 sort_alerts( compare_by_date );
 													 } ) } } },
 							  _nd_t{ { .name = "by type",
-									   .data = { ._qaction = bind_qaction_with_func(
+									   .data = { ._qaction = _bind_qaction_with_func(
 													 new QAction{ this },
 													 [ this ]( auto _ ) {
 														 sort_alerts( compare_by_type );
@@ -63,7 +63,7 @@ alerts_page::alerts_page( const std::string&		   name,
 			_nd_t{
 			  { .name = "remove",
 				.data = {
-				  ._qaction = bind_qaction_with_func(
+				  ._qaction = _bind_qaction_with_func(
 					  new QAction{ this },
 					  [ this ]( auto remove_action ) {
 						  auto con{ connect(
@@ -115,21 +115,21 @@ alerts_page::alerts_page( const std::string&		   name,
 
 	setCentralWidget( _lst_wgt );
 
-	add_alert( alert{ alert::TYPE::INFO,
-					  "a_alert",
-					  "00-00-01",
-					  "some_text",
-					  "temperature sensor" } );
-	add_alert( alert{ alert::TYPE::WARNING,
-					  "c_alert",
-					  "00-00-02",
-					  "some_some_text",
-					  "CO2 sensor" } );
-	add_alert( alert{ alert::TYPE::ALARM,
-					  "b_alert",
-					  "00-00-03",
-					  "some_some_some_text",
-					  "light sensor" } );
+	add_alert( std::make_shared< alert >( alert::TYPE::INFO,
+										  "a_alert",
+										  "00-00-01",
+										  "some_text",
+										  "temperature sensor" ) );
+	add_alert( std::make_shared< alert >( alert::TYPE::WARNING,
+										  "c_alert",
+										  "00-00-02",
+										  "some_some_text",
+										  "CO2 sensor" ) );
+	add_alert( std::make_shared< alert >( alert::TYPE::ALARM,
+										  "b_alert",
+										  "00-00-03",
+										  "some_some_some_text",
+										  "light sensor" ) );
 
 	// auto a = ( *_ngn_ptr )
 	// 			 ->script( "return alert.new(alert.TYPE.INFO, 'hell', "
@@ -142,13 +142,13 @@ alerts_page::alerts_page( const std::string&		   name,
 }
 
 void
-alerts_page::add_alert( const alert& a )
+alerts_page::add_alert( std::shared_ptr< alert > alert_ptr )
 {
-	if ( !std::any_of( _alerts.begin(), _alerts.end(), [ &a ]( const auto& elem_ptr ) {
-			 return *elem_ptr == a;
-		 } ) )
+	if ( !std::any_of(
+			 _alerts.begin(),
+			 _alerts.end(),
+			 [ alert_ptr ]( const auto& elem_ptr ) { return *elem_ptr == *alert_ptr; } ) )
 		{
-			auto alert_ptr{ std::shared_ptr< alert >( new alert( std::move( a ) ) ) };
 			_alerts.push_back( alert_ptr );
 			sort_alerts();
 			_update_list_widget();
@@ -168,7 +168,11 @@ alerts_page::remove_alert( const std::string& alert_name,
 		   and elem->get_alertist_name() == alertist_name;
 	} ) };
 
-	if ( it != _alerts.end() ) { _alerts.erase( it ); }
+	if ( it != _alerts.end() )
+		{
+			_alerts.erase( it );
+			sort_alerts();
+		}
 }
 
 void

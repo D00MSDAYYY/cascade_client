@@ -1,9 +1,9 @@
 #include "sensor.hpp"
 
 sensor::sensor( const std::string& name, scripting::engine::ptr ngn_ptr, QWidget* parent )
-	: QWidget{ parent }
-	, _name{ name }
+	: _name{ name }
 	, scripting::object{ ngn_ptr }
+	, QWidget{ parent }
 {
 }
 
@@ -58,7 +58,7 @@ sensor::resume()
 void
 sensor::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 {
-	if ( can_register_in_lua< sensor >(ngn_ptr) )
+	if ( can_register_in_lua< sensor >( ngn_ptr ) )
 		{
 			auto type{ ngn_ptr->new_usertype< sensor >( _class_name ) };
 
@@ -69,3 +69,13 @@ sensor::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 		}
 	std::cout << _class_name << "\t is registered" << std::endl;
 }
+
+void
+sensor::update()
+{
+	if ( _wrkng_state != WORKING_STATE::SUSPENDED or _wrkng_state != WORKING_STATE::OFF )
+		{
+			on_update();
+		}
+}
+

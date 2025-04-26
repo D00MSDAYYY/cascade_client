@@ -15,7 +15,7 @@ class application
 
 public:
 	application( int& argc, char** argv );
-	~application() = default;
+	~application();
 
 	CLASS_NAME_AS_STRING(application)
 	STATIC_REGISTER_IN_LUA()
