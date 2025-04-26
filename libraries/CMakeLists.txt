@@ -12,25 +12,8 @@ FetchContent_Declare(
     ${DEP_NAME}
     GIT_REPOSITORY ${REMOTE_REPO}
     GIT_TAG ${TAG}
-    GIT_SUBMODULES_RECURSE YES
     GIT_SHALLOW TRUE
-    SOURCE_DIR "${DEP_DIR}" 
-)
-
-FetchContent_MakeAvailable(${DEP_NAME})
-
-
-set(DEP_NAME "lua")
-set(REMOTE_REPO "https://github.com/lubgr/lua-cmake.git")
-set(TAG "master")
-set(DEP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${DEP_NAME}")
-
-FetchContent_Declare(
-    ${DEP_NAME}
-    GIT_REPOSITORY ${REMOTE_REPO}
-    GIT_TAG ${TAG}
-    GIT_SUBMODULES_RECURSE YES
-    GIT_SHALLOW TRUE
+	GIT_SUBMODULES  ""
     SOURCE_DIR "${DEP_DIR}" 
 )
 
