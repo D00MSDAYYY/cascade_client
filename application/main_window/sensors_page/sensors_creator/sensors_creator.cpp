@@ -1,12 +1,18 @@
 #include "sensors_creator.hpp"
 
 #include <QComboBox>
+#include <QFile>
 #include <QGroupBox>
 #include <QHBoxLayout>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSplitter>
+#include <QStandardItem>
 #include <QTextEdit>
+#include <QTreeView>
 #include <QVBoxLayout>
 
 sensors_creator::sensors_creator( QWidget* parent )
@@ -15,12 +21,114 @@ sensors_creator::sensors_creator( QWidget* parent )
 	Q_INIT_RESOURCE( sensors_creator );
 
 	// start templates group //
-	auto templates_combobox{ new QComboBox{ this } }; // TODO! change to tree-like view
-	templates_combobox->addItem( "BLANK" );
-	templates_combobox->addItem( "CO2" );
-	templates_combobox->addItem( "Light" );
-	templates_combobox->addItem( "Air" );
-	templates_combobox->addItem( "Video" );
+
+	auto templates_group_layout{ new QVBoxLayout{} };
+
+	if ( QFile file( ":/sensors_creator/sensors_templates.json" );
+		 file.open( QIODevice::ReadOnly ) )
+		{
+			auto json_data = file.readAll();
+			file.close(); // Всегда закрывайте файл после чтения
+
+			QJsonParseError error;
+			auto			doc = QJsonDocument::fromJson( json_data, &error );
+			if ( error.error != QJsonParseError::NoError )
+				{
+					std::cerr << "JSON parse error: " << error.errorString().toStdString()
+							  << " at offset: " << error.offset << std::endl;
+					return;
+				}
+
+			if ( !doc.isObject() )
+				{
+					std::cerr << "Document is not a JSON object" << std::endl;
+					return;
+				}
+
+			// Выводим сырые данные для отладки
+			std::cout << "Raw JSON:\n" << json_data.constData() << std::endl;
+
+			auto root{ doc.object() };
+			auto templates = root [ "templates" ]
+								 .toArray(); //! don't change to auto templates{ ... } coz
+											 //! it will coz a bug with templates.size()
+
+			std::cout << "Correct size = " << templates.size() << std::endl;
+
+			enum TEMPLATE_FIELDS
+			{
+				IS_FOLDER = 0,
+				IS_MODIFIABLE,
+				SCRIPT
+			};
+
+			std::function< void( const QJsonObject&, QStandardItem* ) > parse_json;
+			parse_json = [ &parse_json ]( const QJsonObject& obj,
+										  QStandardItem* parent ) {
+				auto item{ new QStandardItem( obj [ "name" ].toString() ) };
+
+				auto is_folder{ obj.contains( "children" )
+								&& !obj [ "children" ].toArray().isEmpty() };
+
+				item->setIcon(
+					QIcon( is_folder ? ":/icons/folder.png" : ":/icons/blueprint.png" ) );
+				item->setText( obj [ "name" ].toString() );
+					item->setData( is_folder, TEMPLATE_FIELDS::IS_FOLDER );
+				item->setData( obj [ "modifiable" ].toBool( false ),
+							   TEMPLATE_FIELDS::IS_MODIFIABLE );
+				item->setData( obj [ "script" ].toString(), TEMPLATE_FIELDS::SCRIPT );
+				// TODO! should i add item->setData( obj [ "children" ].toArray(),
+				// TEMPLATE_FIELDS::CHILDREN );
+
+				if ( is_folder )
+					{
+						auto children{ obj [ "children" ].toArray() };
+						for ( const auto& child : children )
+							{
+								parse_json( child.toObject(), item );
+							}
+					}
+
+				parent->appendRow( item );
+			};
+
+
+			auto model{ new QStandardItemModel() };
+			model->setHorizontalHeaderLabels( { "Templates" } );
+
+			for ( const auto& t : templates )
+				{
+					parse_json( t.toObject(), model->invisibleRootItem() );
+				}
+
+			auto tree_view{ new QTreeView() };
+			tree_view->setModel( model );
+			tree_view->setHeaderHidden( true );
+			tree_view->expandAll();
+
+			// Добавьте эти строки:
+			tree_view->setStyleSheet( "QTreeView { color: black; font: 12px; }" );
+			tree_view->setColumnWidth( 0, 200 ); // Ширина колонки
+			tree_view->setIndentation( 20 );
+
+			templates_group_layout->addWidget( tree_view );
+			std::cout << "ALL IS OK" << std::endl;
+			std::cout << "Model row count:" << model->rowCount() << std::endl;
+			for ( int i = 0; i < model->rowCount(); ++i )
+				{
+					auto item = model->item( i );
+					std::cout << "Top level item:" << item->text().toStdString();
+					if ( item->hasChildren() )
+						{
+							std::cout << "Has children:" << item->rowCount();
+						}
+				}
+		}
+	else
+		{
+			std::cout << "can't open json file for tree-view " << std::endl;
+			file.close();
+		}
 
 	auto templates_btns_layout{ new QHBoxLayout{} };
 	templates_btns_layout->setContentsMargins( 0, 0, 0, 0 );
@@ -40,8 +148,8 @@ sensors_creator::sensors_creator( QWidget* parent )
 	auto templates_group{
 		new QGroupBox{ "Templates", this }
 	};
-	auto templates_group_layout{ new QVBoxLayout{} };
-	templates_group_layout->addWidget( templates_combobox );
+
+
 	templates_group_layout->addLayout( templates_btns_layout );
 	templates_group->setLayout( templates_group_layout );
 	// end templates group //
@@ -84,7 +192,7 @@ sensors_creator::sensors_creator( QWidget* parent )
 	edit_area->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
 	auto edit_btns_layout{ new QHBoxLayout{} };
-	for ( const QString& str : { "refresh","save", "|", "to default" } )
+	for ( const QString& str : { "refresh", "save", "|", "to default" } )
 		{
 			if ( str == "|" ) { edit_btns_layout->addStretch( 1 ); }
 			else

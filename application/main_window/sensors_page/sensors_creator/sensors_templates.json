@@ -37,6 +37,7 @@
 			"children": [
 				{
 					"name": "my_temp_sensor",
+					"modifiable": true,
 					"script": ""
 				}
 			]

@@ -19,7 +19,7 @@ public:
 	main_window( const scripting::engine::ptr ngn_ptr, QWidget* parent = nullptr );
 	~main_window();
 
-	CLASS_NAME_AS_STRING(main_window)
+	CLASS_NAME_AS_STRING( main_window )
 	STATIC_REGISTER_IN_LUA()
 
 	// /////////////////////////////////////////////////////////////////
@@ -42,6 +42,7 @@ private:
 
 	using _nd_t = actions_tree::node< _pg_d_t >;
 
+
 	QToolBar*					   _tl_bar{};
 	QStackedWidget*				   _stkd_wdgt{};
 
@@ -49,5 +50,4 @@ private:
 
 	std::map< std::string, page* > _pages;
 };
-
 

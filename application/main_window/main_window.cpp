@@ -32,34 +32,25 @@ main_window::main_window( const scripting::engine::ptr ngn_ptr, QWidget* parent 
 	addToolBar( Qt::LeftToolBarArea, _tl_bar );
 	setCentralWidget( _stkd_wdgt );
 
+	auto _fast_fill_node{ [this]< typename T >( const std::string& name ) {
+		return _nd_t{
+			{ .name = name, .data = { ._page_ptr = new T{ name, _ngn_ptr.value(), this } } }
+		};
+	} };
+
 	_pages_tree_root = std::make_shared< _nd_t >( _nd_t{
 	  { .name		 = "",
 		.description = "don't use this node ",
 		.children	 = {
-			 _nd_t{
-			   { .name = "alerts",
-				 .data = { ._page_ptr = new alerts_page{ "alerts", *_ngn_ptr, this } } } },
-			 _nd_t{
-			   { .name = "sensors",
-				 .data = { ._page_ptr = new sensors_page{ "sensors", *_ngn_ptr, this } } } },
-			 _nd_t{
-			   { .name = "connections",
-				 .data = { ._page_ptr
-						   = new connections_page{ "connections", *_ngn_ptr, this } } } },
-			 _nd_t{
-			   { .name = "charts",
-				 .data = { ._page_ptr = new charts_page{ "charts", *_ngn_ptr, this } } } },
-			 _nd_t{ { .name = "scenarios",
-					  .data = { ._page_ptr
-								= new scenarios_page{ "scenarios", *_ngn_ptr, this } } } },
-			 _nd_t{
-			   { .name = "logbook",
-				 .data = { ._page_ptr = new logbook_page{ "logbook", *_ngn_ptr, this } } } },
-			 _nd_t{
-			   { .name = "settings",
-				 .data = { ._page_ptr
-						   = new settings_page{ "settings", *_ngn_ptr, this } } } } } }
-	 } );
+			 _fast_fill_node.operator()< alerts_page >( "alerts" ),
+			 _fast_fill_node.operator()< sensors_page >( "sensors" ),
+			 _fast_fill_node.operator()< connections_page >( "connections" ),
+			 _fast_fill_node.operator()< charts_page >( "charts" ),
+			 _fast_fill_node.operator()< scenarios_page >( "scenarios" ),
+			 _fast_fill_node.operator()< logbook_page >( "logbook" ),
+			 _fast_fill_node.operator()< settings_page >( "settings" ),
+		   } }
+	} );
 
 	std::function< void( _nd_t& ) > traverse_nodes{};
 
