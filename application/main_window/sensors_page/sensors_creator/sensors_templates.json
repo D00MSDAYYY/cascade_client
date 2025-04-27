@@ -1,0 +1,45 @@
+{
+	"templates": [
+		{
+			"name": "BLANK",
+			"modifiable": false,
+			"script": ""
+		},
+		{
+			"name": "Standard",
+			"children": [
+				{
+					"name": "CO2",
+					"modifiable": false,
+					"script": "",
+					"children": [
+						{
+							"name": "default",
+							"modifiable": false,
+							"script": ""
+						}
+					]
+				},
+				{
+					"name": "Temperature",
+					"children": [
+						{
+							"name": "default",
+							"modifiable": false,
+							"script": ""
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "User-Defined",
+			"children": [
+				{
+					"name": "my_temp_sensor",
+					"script": ""
+				}
+			]
+		}
+	]
+}

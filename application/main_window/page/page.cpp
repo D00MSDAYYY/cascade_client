@@ -27,10 +27,11 @@ page::_init_toolbar()
 
 				auto old_action{ child._data._qaction };
 
+				auto path_str{ QString{ ":" } + _name.c_str() + "_page/icons/"
+							   + child._name.c_str() + ".png" };
+
 				child._data._qaction = new QAction{
-					QIcon( QPixmap{
-					  std::string{ ":" + _name + "_page/icons/" + child._name + ".png" }
-						  .c_str() }
+					QIcon( QPixmap{path_str }
 							   .scaled( iconSize(),
 										Qt::AspectRatioMode::KeepAspectRatio ) ),
 					child._name.c_str(),

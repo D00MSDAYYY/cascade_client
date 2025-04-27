@@ -66,12 +66,11 @@ main_window::main_window( const scripting::engine::ptr ngn_ptr, QWidget* parent 
 	traverse_nodes = [ this, &traverse_nodes ]( _nd_t& node ) -> void {
 		for ( auto& child : node._children )
 			{
-				auto icon{ QIcon(
-					QPixmap{ std::string{ ":/main_window/icons/"
-										  + child.get_full_path_name() + ".png" }
-								 .c_str() }
-						.scaled( _tl_bar->iconSize(),
-								 Qt::AspectRatioMode::KeepAspectRatio ) ) };
+				auto path_str{ QString{ ":/main_window/icons/" }
+							   + child.get_full_path_name().c_str() + ".png" };
+				auto icon{ QIcon( QPixmap{ path_str }.scaled(
+					_tl_bar->iconSize(),
+					Qt::AspectRatioMode::KeepAspectRatio ) ) };
 
 				auto action_ptr{ _tl_bar->addAction( icon, child._name.c_str() ) };
 				action_ptr->setCheckable( true );
