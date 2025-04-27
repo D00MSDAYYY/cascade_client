@@ -1,161 +1,133 @@
 #include "sensors_creator.hpp"
 
-#include <QButtonGroup>
 #include <QComboBox>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSplitter>
+#include <QTextEdit>
 #include <QVBoxLayout>
 
 sensors_creator::sensors_creator( QWidget* parent )
-	: QDialog( parent )
+	: QWidget( parent )
 {
 	Q_INIT_RESOURCE( sensors_creator );
 
-	auto main_lyt{ new QHBoxLayout{} };
-	auto main_splttr{ new QSplitter{ this } };
+	// start templates group //
+	auto templates_combobox{ new QComboBox{ this } }; // TODO! change to tree-like view
+	templates_combobox->addItem( "BLANK" );
+	templates_combobox->addItem( "CO2" );
+	templates_combobox->addItem( "Light" );
+	templates_combobox->addItem( "Air" );
+	templates_combobox->addItem( "Video" );
 
-	auto lft_grp{
+	auto templates_btns_layout{ new QHBoxLayout{} };
+	templates_btns_layout->setContentsMargins( 0, 0, 0, 0 );
+
+	for ( const QString& str : { "derive", "edit", "remove" } )
+		{
+			auto path_str{ ( ":/sensors_creator/icons/" + str ) + ".png" };
+			auto templates_btn{
+				new QPushButton{ QIcon{ QPixmap{ path_str } }, "", this }
+			};
+			templates_btn->setFixedSize( 32, 32 );
+			templates_btns_layout->addWidget( templates_btn );
+		}
+	templates_btns_layout->addStretch( 1 );
+
+
+	auto templates_group{
 		new QGroupBox{ "Templates", this }
 	};
-	auto lft_lyt{ new QVBoxLayout{ this } };
+	auto templates_group_layout{ new QVBoxLayout{} };
+	templates_group_layout->addWidget( templates_combobox );
+	templates_group_layout->addLayout( templates_btns_layout );
+	templates_group->setLayout( templates_group_layout );
+	// end templates group //
 
-	auto lft_up_grp{
-		new QGroupBox{ "Standard", this }
-	};
-	auto lft_up_lyt{ new QVBoxLayout{} };
-	auto stndrd_tmplts_cmb{ new QComboBox{ this } };
-	// /////////////////////////////////////////////////
-	stndrd_tmplts_cmb->addItem(
-		"Temperature" ); // TODO change qcombobox to tree-like (directory) structure
-	stndrd_tmplts_cmb->addItem( "CO2" );
-	stndrd_tmplts_cmb->addItem( "Light" );
-	stndrd_tmplts_cmb->addItem( "Air" );
-	stndrd_tmplts_cmb->addItem( "Video" );
-	stndrd_tmplts_cmb->addItem( "Audio" );
-	stndrd_tmplts_cmb->addItem( "Analog" );
-	stndrd_tmplts_cmb->addItem( "Discrete" );
-	stndrd_tmplts_cmb->addItem( "Bool Flag" );
-	// /////////////////////////////////////////////////
-	auto stndrd_btns_grp{ new QGroupBox{ this } };
-	auto stndrd_btns_lyt{ new QHBoxLayout{} };
-	auto stndrd_derive_btn{ new QPushButton{ this } };
-	stndrd_derive_btn->setFixedSize( 32, 32 );
-	stndrd_derive_btn->setIcon( QIcon( QPixmap( ":/icons/derive.png" ) ) );
-	stndrd_btns_lyt->addWidget( stndrd_derive_btn );
-	stndrd_btns_lyt->addStretch( 1 );
-	stndrd_btns_lyt->setContentsMargins( 0, 0, 0, 0 );
-	stndrd_btns_grp->setLayout( stndrd_btns_lyt );
-	stndrd_btns_grp->setFlat( true );
+	// start preview group //
+	auto preview_window{ new QWidget{ this } };
+	preview_window->setMinimumSize( 100, 100 );
+	preview_window->setStyleSheet( "background-color: red ;" );
 
-	lft_up_lyt->addWidget( stndrd_tmplts_cmb );
-	lft_up_lyt->addWidget( stndrd_btns_grp );
-	lft_up_lyt->addStretch( 1 );
-	lft_up_grp->setLayout( lft_up_lyt );
-	// ///////////////////////////////////////////////
-	auto lft_btm_grp{
-		new QGroupBox{ "User-defined", this }
-	};
-	auto lft_btm_lyt{ new QVBoxLayout{} };
-	auto usr_tmplts_cmb{ new QComboBox{ this } };
+	auto preview_group_layout{ new QVBoxLayout{} };
+	preview_group_layout->addWidget( preview_window );
 
-	auto usr_btns_grp{ new QGroupBox{ this } };
-	auto usr_btns_lyt{ new QHBoxLayout{} };
-
-	for ( const auto& [ str, func ] :
-		  std::vector< std::pair< std::string, std::function< void() > > >{
-			{ "add",	 []() { return; } },
-			{ "remove", []() { return; } },
-			{ "edit",	  []() { return; } },
-			{ "derive", []() { return; } }
-	   } )
-		{
-			auto usr_btn{ new QPushButton{ this } };
-			usr_btn->setFixedSize( 32, 32 );
-			auto path{ ":/sensors_creator/icons/" + str + ".png" };
-			usr_btn->setIcon( QIcon( QPixmap( path.c_str() ) ) );
-			usr_btns_lyt->addWidget( usr_btn );
-		}
-	// /////
-	usr_btns_lyt->addStretch( 1 );
-	usr_btns_lyt->setContentsMargins( 0, 0, 0, 0 );
-	usr_btns_grp->setLayout( usr_btns_lyt );
-	usr_btns_grp->setFlat( true );
-	lft_btm_lyt->addWidget( usr_tmplts_cmb );
-	lft_btm_lyt->addWidget( usr_btns_grp );
-	lft_btm_lyt->addStretch( 1 );
-	lft_btm_grp->setLayout( lft_btm_lyt );
-
-	lft_lyt->addWidget( lft_up_grp );
-	lft_lyt->addWidget( lft_btm_grp );
-	lft_grp->setLayout( lft_lyt );
-
-	auto rght_pln{ new QWidget{ this } };
-	auto rght_lyt{ new QVBoxLayout{} };
-	auto prvw_grp{
+	auto preview_group{
 		new QGroupBox{ "Preview", this }
 	};
-	auto prvw_lyt{ new QVBoxLayout{} };
+	preview_group->setLayout( preview_group_layout );
+	// end preview group //
 
-	auto rght_cntr_lyt{ new QVBoxLayout{} };
-	auto prvw_wndw{ new QWidget{ this } };
-	prvw_wndw->setStyleSheet( "background-color: red ;" );
-	prvw_wndw->setMinimumSize( 100, 100 );
-	prvw_wndw->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-
-	auto prvw_swtchr_grp{
-		new QGroupBox{ "Mode", this }
+	// start parameters group //
+	auto parameters_group{
+		new QGroupBox{ "Parameters", this }
 	};
-	auto prvw_swtchr_lyt{ new QVBoxLayout{} };
-	auto txt_md_btn{
-		new QRadioButton{ "Text", this }
-	}; // TODO replace preview widget for sensor visualization by qscroll area for text
-	   // mode
+	auto parameters_window{ new QWidget{ this } };
+	parameters_window->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-	auto vsl_md_btn{
-		new QRadioButton{ "Visual", this }
+	auto parameters_group_layout{ new QVBoxLayout{} };
+	parameters_group_layout->addWidget( parameters_window );
+	parameters_group->setLayout( parameters_group_layout );
+	// end parameters group //
+
+	// start left layout //
+	auto left_layout{ new QVBoxLayout{} };
+	left_layout->addWidget( templates_group );
+	left_layout->addWidget( preview_group );
+	left_layout->addWidget( parameters_group );
+	// end left layout //
+
+	// start edit group //
+	auto edit_area{ new QTextEdit{ this } };
+	edit_area->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+	auto edit_btns_layout{ new QHBoxLayout{} };
+	for ( const QString& str : { "refresh","save", "|", "to default" } )
+		{
+			if ( str == "|" ) { edit_btns_layout->addStretch( 1 ); }
+			else
+				{
+					auto path_str{ ( ":/sensors_creator/icons/" + str ) + ".png" };
+					auto edit_btn{
+						new QPushButton{ QIcon{ QPixmap{ path_str } }, "", this }
+					};
+					edit_btn->setFixedSize( 32, 32 );
+					edit_btns_layout->addWidget( edit_btn );
+				}
+		}
+
+	auto edit_group_layout{ new QVBoxLayout{} };
+	edit_group_layout->addWidget( edit_area );
+	edit_group_layout->addLayout( edit_btns_layout );
+
+	auto edit_group{
+		new QGroupBox{ "Edit", this }
 	};
 
-	auto fnsh_btns_lyt{ new QHBoxLayout{} };
-	auto crt_btn{
-		new QPushButton{ "Create", this }
-	};
-	connect( crt_btn, &QPushButton::clicked, this, [ this ]() {
-		emit sensor_created( new QWidget{ this } );
-		close();
-	} );
-	auto cncl_btn{
-		new QPushButton{ "Cancel", this }
-	};
-	connect( cncl_btn, &QPushButton::clicked, this, &QWidget::close );
+	edit_group->setLayout( edit_group_layout );
+	// end edit group //
 
-	fnsh_btns_lyt->addStretch( 1 );
-	fnsh_btns_lyt->addWidget( cncl_btn );
-	fnsh_btns_lyt->addWidget( crt_btn );
+	// start right layout //
+	auto right_layout{ new QVBoxLayout{} };
+	right_layout->addWidget( edit_group );
+	// end right layout //
 
-	prvw_swtchr_lyt->addWidget( vsl_md_btn );
-	prvw_swtchr_lyt->addWidget( txt_md_btn );
-	prvw_swtchr_lyt->addStretch( 1 );
-	prvw_swtchr_grp->setLayout( prvw_swtchr_lyt );
-	rght_cntr_lyt->addWidget( prvw_wndw );
-	rght_cntr_lyt->addWidget( prvw_swtchr_grp );
+	auto left_side{ new QWidget{ this } };
+	left_side->setLayout( left_layout );
 
-	prvw_lyt->addStretch( 1 );
-	prvw_lyt->addLayout( rght_cntr_lyt );
+	auto right_side{ new QWidget{ this } };
+	right_side->setLayout( right_layout );
 
-	prvw_grp->setLayout( prvw_lyt );
-	rght_lyt->addWidget( prvw_grp );
-	rght_lyt->addLayout( fnsh_btns_lyt );
-	rght_lyt->setContentsMargins( 0, 0, 0, 0 );
-	rght_pln->setLayout( rght_lyt );
+	auto central_splitter{ new QSplitter{ this } };
+	central_splitter->addWidget( left_side );
+	central_splitter->addWidget( right_side );
 
-	main_splttr->addWidget( lft_grp );
-	main_splttr->addWidget( rght_pln );
-	main_lyt->addWidget( main_splttr );
-	setLayout( main_lyt );
-	setFixedSize( 1'024 * 2 / 3, 600 * 2 / 3 );
+	auto main_layout{ new QVBoxLayout{} };
+	main_layout->addWidget( central_splitter );
+
+	setLayout( main_layout );
 }
 
 sensors_creator::~sensors_creator() { Q_CLEANUP_RESOURCE( sensors_creator ); }

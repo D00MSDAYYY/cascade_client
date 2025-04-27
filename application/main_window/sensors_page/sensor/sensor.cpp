@@ -16,7 +16,6 @@ sensor::on()
 			return;
 		}
 	_wrkng_state = WORKING_STATE::ON;
-	on_on();
 }
 
 void
@@ -28,7 +27,6 @@ sensor::off()
 			return;
 		}
 	_wrkng_state = WORKING_STATE::OFF;
-	on_off();
 }
 
 void
@@ -40,7 +38,6 @@ sensor::suspend()
 			return;
 		}
 	_wrkng_state = WORKING_STATE::SUSPENDED;
-	on_suspend();
 }
 
 void
@@ -52,7 +49,6 @@ sensor::resume()
 			return;
 		}
 	_wrkng_state = WORKING_STATE::SUSPENDED;
-	on_resume();
 };
 
 void
@@ -73,9 +69,6 @@ sensor::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 void
 sensor::update()
 {
-	if ( _wrkng_state != WORKING_STATE::SUSPENDED or _wrkng_state != WORKING_STATE::OFF )
-		{
-			on_update();
-		}
+	if ( _wrkng_state != sensor::WORKING_STATE::ON ) { return; }
 }
 

@@ -22,45 +22,35 @@ public:
 	STATIC_REGISTER_IN_LUA()
 
 	void
-	on();		 //! readonly function
-	virtual void
-	on_on() { }; //! redefined function
+	on();	 // TODO! i deleted on_... func mb it is a mistake? 	 
 
 	void
 	off();
-	virtual void
-	on_off() { };
 
 	void
 	suspend();
-	virtual void
-	on_suspend() { };
 
 	void
 	resume();
-	virtual void
-	on_resume() { };
 
 	void
 	update();
-	virtual void
-	on_update() { };
 
 	void
-	add_subscriber(sol::object obj );
+	subscribe_to( sol::object obj );
+	void
+	unsubscribe_from( sol::object obj );
+
+	void
+	add_subscriber( const std::string& name, sol::object obj );
 	void
 	remove_subscriber( sol::object obj );
 
-	void
-	add_sender(const std::string& name, sol::object obj );
-	void
-	remove_sender( sol::object obj );
 
-
-	std::map< std::string, sol::object >
-	get_senders();
 	std::map< std::string, sol::object >
 	get_subscribers();
+	std::map< std::string, sol::object >
+	get_subscriptions();
 
 	auto
 	get_name() const
@@ -94,8 +84,8 @@ private:
 	QHBoxLayout*						 _layout;
 	std::map< std::string, sol::object > _widgets;
 
-	std::vector< sol::object > _subscribers;
-	std::map< std::string, sol::object > _senders;
+	std::vector< sol::object >			 _subscribers;
+	std::map< std::string, sol::object > _subscriptions;
 
 
 	WORKING_STATE						 _wrkng_state{ WORKING_STATE::OFF };

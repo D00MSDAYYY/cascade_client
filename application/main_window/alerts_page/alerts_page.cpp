@@ -69,7 +69,7 @@ alerts_page::alerts_page( const std::string&		   name,
 						  auto con{ connect(
 							  _lst_wgt,
 							  &QListWidget::itemClicked,
-							  [ this, remove_action ]( QListWidgetItem* item ) {
+							  [ this ]( QListWidgetItem* item ) {
 								  if ( auto frame_ptr{ qobject_cast< QFrame* >(
 										   _lst_wgt->itemWidget( item ) ) } )
 									  {

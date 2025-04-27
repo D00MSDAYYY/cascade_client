@@ -1,8 +1,11 @@
 <RCC>
-    <qresource prefix="/sensors_creator">
-        <file>icons/add.png</file>
+	<qresource prefix="/sensors_creator">
+		<file>icons/add.png</file>
 		<file>icons/remove.png</file>
 		<file>icons/derive.png</file>
+		<file>icons/refresh.png</file>
+		<file>icons/to default.png</file>
 		<file>icons/edit.png</file>
-    </qresource>
+		<file>icons/save.png</file>
+	</qresource>
 </RCC>

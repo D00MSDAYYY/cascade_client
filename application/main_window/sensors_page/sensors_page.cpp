@@ -25,71 +25,99 @@ sensors_page::sensors_page( const std::string&	   name,
 	_actions_tree_root = std::make_shared< _nd_t >( _nd_t{
 	  { .name		 = "_root_node",
 		.description = "don't use this node ",
-		.children	 = {
-			 _nd_t{ { .name = "sort" } },
-			 _nd_t{ {
-			   .name = "|",
-			 } },
-			 _nd_t{
-			   { .name = "add",
-				 .data = { ._qaction = _bind_qaction_with_func( new QAction{ this },
-															   [ this ]( auto add_action ) {
-																   ;
-																   ;
-																   ;
-															   } ) } } },
-			 _nd_t{
-			   { .name = "remove",
-				 .data
-				 = { ._qaction = _bind_qaction_with_func(
-						 new QAction{ this },
-						 [ this ]( auto remove_action ) {
-							 auto con{ connect(
-								 _lst_wgt,
-								 &QListWidget::itemClicked,
-								 [ this, remove_action ]( QListWidgetItem* item ) {
-									 if ( auto frame_ptr{ qobject_cast< QFrame* >(
-											  _lst_wgt->itemWidget( item ) ) } )
-										 {
-											 auto sensor_ptr{
-												 frame_ptr->property( "sensor" )
-													 .value< std::shared_ptr< sensor > >()
-											 };
-											 remove_sensor( sensor_ptr->get_name() );
-											 sort_sensors();
-										 }
-								 } ) };
+		.children
+		= { _nd_t{ { .name = "sort" } },
+			_nd_t{ {
+			  .name = "|",
+			} },
+			_nd_t{
+			  { .name = "add",
+				.data
+				= { ._qaction = _bind_qaction_with_func(
+						new QAction{ this },
+						[ this ]( auto add_action ) {
+							std::cout << "check" << std::endl;
+							QList< QAction* > saved_actions{};
+							for ( const auto& action_ptr : _tl_bar->actions() )
+								{
+									saved_actions.append( action_ptr );
+								}
 
-							 QList< QAction* > saved_actions{};
-							 for ( const auto& action_ptr : _tl_bar->actions() )
-								 {
-									 saved_actions.append( action_ptr );
-								 }
+							auto exit_action{
+								new QAction{
+		  QIcon( QPixmap{
+									std::string{ ":sensors_page/icons/exit.png" }
+										.c_str() }
+											 .scaled(
+												 iconSize(),
+		 Qt::AspectRatioMode::KeepAspectRatio ) ),
+		  "exit", this }
+							};
+							connect( exit_action,
+									 &QAction::triggered,
+									 [ this, saved_actions ]() {
+										 _tl_bar->clear();
+										 _tl_bar->addActions( { saved_actions.begin(),
+																saved_actions.end() } );
+									 } );
+							_tl_bar->clear();
+							_tl_bar->addAction( exit_action );
+							auto creator{ new sensors_creator{ this } };
+							setCentralWidget( creator );
+						} ) } } },
+			_nd_t{
+			  { .name = "remove",
+				.data
+				= { ._qaction = _bind_qaction_with_func(
+						new QAction{ this },
+						[ this ]( auto remove_action ) {
+							auto con{ connect(
+								_lst_wgt,
+								&QListWidget::itemClicked,
+								[ this ]( QListWidgetItem* item ) {
+									if ( auto frame_ptr{ qobject_cast< QFrame* >(
+											 _lst_wgt->itemWidget( item ) ) } )
+										{
+											auto sensor_ptr{
+												frame_ptr->property( "sensor" )
+													.value< std::shared_ptr< sensor > >()
+											};
+											remove_sensor( sensor_ptr->get_name() );
+											sort_sensors();
+										}
+								} ) };
 
-							 auto exit_action{
-								 new QAction{
-	   QIcon( QPixmap{
-									 std::string{ ":sensors_page/icons/exit.png" }.c_str() }
-											  .scaled(
-												  iconSize(),
-		  Qt::AspectRatioMode::KeepAspectRatio ) ),
-	   "exit", this }
-							 };
-							 connect( exit_action,
-									  &QAction::triggered,
-									  [ this, saved_actions, con ]() {
-										  _tl_bar->clear();
-										  _tl_bar->addActions( { saved_actions.begin(),
-																 saved_actions.end() } );
-										  disconnect( con );
-									  } );
-							 _tl_bar->clear();
-							 _tl_bar->addAction( exit_action );
-						 } ) } } },
-			 _nd_t{ { .name = "|" } },
-			 _nd_t{ { .name = "suspend" } },
-			 _nd_t{ { .name = "resume" } } } }
-	} );
+							QList< QAction* > saved_actions{};
+							for ( const auto& action_ptr : _tl_bar->actions() )
+								{
+									saved_actions.append( action_ptr );
+								}
+
+							auto exit_action{
+								new QAction{
+		  QIcon( QPixmap{
+									std::string{ ":sensors_page/icons/exit.png" }
+										.c_str() }
+											 .scaled(
+												 iconSize(),
+		 Qt::AspectRatioMode::KeepAspectRatio ) ),
+		  "exit", this }
+							};
+							connect( exit_action,
+									 &QAction::triggered,
+									 [ this, saved_actions, con ]() {
+										 _tl_bar->clear();
+										 _tl_bar->addActions( { saved_actions.begin(),
+																saved_actions.end() } );
+										 disconnect( con );
+									 } );
+							_tl_bar->clear();
+							_tl_bar->addAction( exit_action );
+						} ) } } },
+			_nd_t{ { .name = "|" } },
+			_nd_t{ { .name = "suspend" } },
+			_nd_t{ { .name = "resume" } } } }
+	  } );
 
 	_init_toolbar();
 
