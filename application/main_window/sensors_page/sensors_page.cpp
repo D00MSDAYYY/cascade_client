@@ -21,7 +21,7 @@ sensors_page::sensors_page( const std::string&	   name,
 
 	_lst_wgt		   = new QListWidget{ this };
 
-// TODO! do something with this messy way of creation of buttons 
+	// TODO! do something with this messy way of creation of buttons
 	using _nd_t		   = page::_nd_t;
 	_actions_tree_root = std::make_shared< _nd_t >( _nd_t{
 	  { .name		 = "_root_node",
@@ -61,17 +61,19 @@ sensors_page::sensors_page( const std::string&	   name,
 									 } );
 							auto create_action{
 								new QAction{
- QIcon(
-									  QPixmap{ QString{ ":sensors_page/icons/create.png" } }
-										  .scaled(
-											  iconSize(),
- Qt::AspectRatioMode::KeepAspectRatio ) ),
- "create", this }
+		  QIcon( QPixmap{
+									QString{ ":sensors_page/icons/create.png" } }
+											 .scaled(
+												 iconSize(),
+		 Qt::AspectRatioMode::KeepAspectRatio ) ),
+		  "create", this }
 							};
-							
+
 							_tl_bar->clear();
-							_tl_bar->addActions( {exit_action,create_action});
-							auto creator{ new sensors_creator{ this } };
+							_tl_bar->addActions( { exit_action, create_action } );
+							auto creator{
+								new sensors_creator{ *_ngn_ptr, this }
+							};
 							setCentralWidget( creator );
 						} ) } } },
 			_nd_t{

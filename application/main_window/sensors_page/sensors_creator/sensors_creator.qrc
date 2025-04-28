@@ -10,6 +10,6 @@
 		<file>icons/folder.png</file>
 		<file>icons/blueprint.png</file>
 		
-		<file>sensors_templates.json</file>
+		<file>scripts/sensors_templates_json.lua</file>
 	</qresource>
 </RCC>

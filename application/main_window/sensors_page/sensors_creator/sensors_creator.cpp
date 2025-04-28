@@ -13,9 +13,11 @@
 #include <QTextEdit>
 #include <QTreeView>
 #include <QVBoxLayout>
+#include <sol/sol.hpp>
 
-sensors_creator::sensors_creator( QWidget* parent )
-	: QWidget( parent )
+sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget* parent )
+	: scripting::object{ ngn_ptr }
+	, QWidget( parent )
 {
 	Q_INIT_RESOURCE( sensors_creator );
 
@@ -37,7 +39,6 @@ sensors_creator::sensors_creator( QWidget* parent )
 
 	// Create ComboBox with TreeView
 	auto templates_combo{ new QComboBox( this ) };
-
 	auto tree_view{ new QTreeView( this ) };
 	auto combo_model{ new QStandardItemModel( this ) };
 
@@ -52,46 +53,48 @@ sensors_creator::sensors_creator( QWidget* parent )
 	templates_combo->setView( tree_view );
 	templates_combo->setModel( combo_model );
 
-	// Load data from JSON
-	if ( QFile file( ":/sensors_creator/sensors_templates.json" );
+	// Load data from LUA
+	if ( QFile file{ QString{ ":/sensors_creator/scripts/sensors_templates_json.lua" } };
 		 file.open( QIODevice::ReadOnly ) )
 		{
-			auto json_data = file.readAll();
+			auto result{ ( *_ngn_ptr )->script( file.readAll().constData() ) };
 			file.close();
 
-			QJsonParseError error;
-			auto			doc = QJsonDocument::fromJson( json_data, &error );
-			if ( error.error == QJsonParseError::NoError && doc.isObject() )
+			if ( result.valid() )
 				{
-					auto root	   = doc.object();
-					auto templates = root [ "templates" ].toArray();
+					auto templates{ result.get< sol::table >() };
 
-					std::function< void( const QJsonObject&, QStandardItem* ) >
-						parse_json;
-					parse_json = [ &parse_json ]( const QJsonObject& obj,
-												  QStandardItem* parent ) {
-						auto item	   = new QStandardItem( obj [ "name" ].toString() );
-
-						bool is_folder = obj.contains( "children" )
-									  && !obj [ "children" ].toArray().isEmpty();
-						item->setIcon( QIcon( is_folder ? ":/icons/folder.png"
-														: ":/icons/blueprint.png" ) );
-
-						if ( is_folder )
+					std::function< void( const sol::table&, QStandardItem* ) >
+						parse_lua_table;
+					parse_lua_table = [ &parse_lua_table ]( const sol::table& tbl,
+															QStandardItem* parent ) {
+						for ( const auto& [ key, value ] : tbl )
 							{
-								auto children = obj [ "children" ].toArray();
-								for ( const auto& child : children )
+								if ( !key.is< int >() )
+									continue; // We only care about array part
+
+								auto	item{ value.as< sol::table >() };
+								QString name{ item [ "name" ]
+												  .get_or< std::string >( "Unnamed" )
+												  .c_str() };
+								auto	is_folder{ item [ "children" ].valid() };
+
+								auto	tree_item = new QStandardItem( name );
+								tree_item->setIcon(
+									QIcon{ is_folder ? ":/icons/folder.png"
+													 : ":/icons/blueprint.png" } );
+
+								if ( is_folder )
 									{
-										parse_json( child.toObject(), item );
+										sol::table children{ item [ "children" ] };
+										parse_lua_table( children, tree_item );
 									}
+
+								parent->appendRow( tree_item );
 							}
-						parent->appendRow( item );
 					};
 
-					for ( const auto& t : templates )
-						{
-							parse_json( t.toObject(), combo_model->invisibleRootItem() );
-						}
+					parse_lua_table( templates, combo_model->invisibleRootItem() );
 					tree_view->expandAll();
 				}
 		}
@@ -104,10 +107,9 @@ sensors_creator::sensors_creator( QWidget* parent )
 
 	for ( const QString& str : { "derive", "edit", "remove" } )
 		{
-			auto btn
-				= new QPushButton( QIcon( ":/sensors_creator/icons/" + str + ".png" ),
-								   "",
-								   this );
+			auto btn{ new QPushButton( QIcon( ":/sensors_creator/icons/" + str + ".png" ),
+									   "",
+									   this ) };
 			btn->setFixedSize( 32, 32 );
 			templates_btns_layout->addWidget( btn );
 		}
@@ -137,22 +139,22 @@ sensors_creator::sensors_creator( QWidget* parent )
 	left_layout->addWidget( parameters_group );
 
 	// Right side - Edit Group
-	auto edit_group	 = new QGroupBox( "Edit", this );
-	auto edit_layout = new QVBoxLayout();
-	auto edit_area	 = new QTextEdit( this );
+	auto edit_group{ new QGroupBox( "Edit", this ) };
+	auto edit_layout{ new QVBoxLayout() };
+	auto edit_area{ new QTextEdit( this ) };
 	edit_area->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 	edit_layout->addWidget( edit_area );
 
-	auto edit_btns_layout = new QHBoxLayout();
+	auto edit_btns_layout{ new QHBoxLayout() };
 	for ( const QString& str : { "refresh", "save", "|", "to default" } )
 		{
 			if ( str == "|" ) { edit_btns_layout->addStretch( 1 ); }
 			else
 				{
-					auto btn = new QPushButton(
+					auto btn{ new QPushButton(
 						QIcon( ":/sensors_creator/icons/" + str + ".png" ),
 						"",
-						this );
+						this ) };
 					btn->setFixedSize( 32, 32 );
 					edit_btns_layout->addWidget( btn );
 				}
