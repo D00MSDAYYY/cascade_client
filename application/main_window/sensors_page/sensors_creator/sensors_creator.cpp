@@ -15,12 +15,15 @@
 #include <QVBoxLayout>
 #include <sol/sol.hpp>
 
+
+Q_DECLARE_METATYPE( sol::table )
+
 sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget* parent )
 	: scripting::object{ ngn_ptr }
 	, QWidget( parent )
 {
 	Q_INIT_RESOURCE( sensors_creator );
-
+	qRegisterMetaType< sol::table >( "sol::table" );
 	// Main layout
 	auto main_layout{ new QVBoxLayout( this ) };
 	auto splitter{ new QSplitter( this ) };
@@ -40,6 +43,8 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	// Create ComboBox with TreeView
 	auto templates_combo{ new QComboBox( this ) };
 	auto tree_view{ new QTreeView( this ) };
+	tree_view->setSelectionMode( QAbstractItemView::SingleSelection );
+
 	auto combo_model{ new QStandardItemModel( this ) };
 
 	// Configure TreeView
@@ -52,6 +57,11 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	// Set TreeView as view for ComboBox
 	templates_combo->setView( tree_view );
 	templates_combo->setModel( combo_model );
+
+	enum TEMPLATES_ITEM
+	{
+		TABLE = Qt::UserRole + 1
+	};
 
 	// Load data from LUA
 	if ( QFile file{ QString{ ":/sensors_creator/scripts/sensors_templates_json.lua" } };
@@ -70,35 +80,41 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 															QStandardItem* parent ) {
 						for ( const auto& [ key, value ] : tbl )
 							{
-								if ( !key.is< int >() )
-									continue; // We only care about array part
-
-								auto	item{ value.as< sol::table >() };
-								QString name{ item [ "name" ]
-												  .get_or< std::string >( "Unnamed" )
-												  .c_str() };
-								auto	is_folder{ item [ "children" ].valid() };
-
-								auto	tree_item = new QStandardItem( name );
-								tree_item->setIcon(
-									QIcon{ is_folder ? ":/icons/folder.png"
-													 : ":/icons/blueprint.png" } );
-
-								if ( is_folder )
+								if ( key.is< int >() )
 									{
-										sol::table children{ item [ "children" ] };
-										parse_lua_table( children, tree_item );
-									}
+										auto	item{ value.as< sol::table >() };
+										QString name{ item [ "name" ]
+														  .get_or< std::string >(
+															  "Unnamed" )
+														  .c_str() };
 
-								parent->appendRow( tree_item );
+										auto	tree_item = new QStandardItem( name );
+
+										if ( item [ "children" ].valid() )
+											{
+												tree_item->setIcon(
+													QIcon{ ":/icons/folder.png" } );
+												sol::table children{
+													item [ "children" ]
+												};
+												parse_lua_table( children, tree_item );
+											}
+										else
+											{
+												tree_item->setIcon(
+													QIcon{ ":/icons/blueprint.png" } );
+												tree_item->setData(
+													QVariant::fromValue( item ),
+													TEMPLATES_ITEM::TABLE );
+											}
+										parent->appendRow( tree_item );
+									}
 							}
 					};
-
 					parse_lua_table( templates, combo_model->invisibleRootItem() );
 					tree_view->expandAll();
 				}
 		}
-
 	templates_layout->addWidget( templates_combo );
 
 	// Buttons under ComboBox
@@ -170,6 +186,24 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 
 	// Set initial splitter sizes
 	splitter->setSizes( { 300, 500 } );
+
+	connect( tree_view, &QTreeView::pressed, [ edit_area ]( const QModelIndex& index ) {
+		if ( index.isValid() )
+			{
+				auto table_variant{ index.data( TEMPLATES_ITEM::TABLE ) };
+
+				if ( table_variant.canConvert< sol::table >() )
+					{
+						auto	data_tbl{ table_variant.value< sol::table >() };
+
+						QString text{ data_tbl [ "script" ]
+										  .get_or< std::string >( "empty or error" )
+										  .c_str() };
+
+						edit_area->setText( text );
+					}
+			}
+	} );
 }
 
 sensors_creator::~sensors_creator() { Q_CLEANUP_RESOURCE( sensors_creator ); }
