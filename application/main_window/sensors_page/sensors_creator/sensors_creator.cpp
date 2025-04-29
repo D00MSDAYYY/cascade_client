@@ -187,23 +187,31 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	// Set initial splitter sizes
 	splitter->setSizes( { 300, 500 } );
 
-	connect( tree_view, &QTreeView::pressed, [ edit_area ]( const QModelIndex& index ) {
-		if ( index.isValid() )
-			{
-				auto table_variant{ index.data( TEMPLATES_ITEM::TABLE ) };
+	connect(
+		tree_view,
+		&QTreeView::pressed,
+		[ edit_area, tree_view ]( const QModelIndex& index ) {
+			if ( index.isValid() )
+				{
+					if ( not tree_view->model()->hasChildren( index ) )
+						{
+							auto table_variant{ index.data( TEMPLATES_ITEM::TABLE ) };
 
-				if ( table_variant.canConvert< sol::table >() )
-					{
-						auto	data_tbl{ table_variant.value< sol::table >() };
+							if ( table_variant.canConvert< sol::table >() )
+								{
+									auto data_table{ table_variant.value< sol::table >() };
 
-						QString text{ data_tbl [ "script" ]
-										  .get_or< std::string >( "empty or error" )
-										  .c_str() };
+									QString text{ data_table [ "script" ]
+													  .get_or< std::string >(
+														  "empty or error" )
+													  .c_str() };
 
-						edit_area->setText( text );
-					}
-			}
-	} );
+									edit_area->setText( text );
+								}
+						}
+					else { edit_area->clear(); }
+				}
+		} );
 }
 
 sensors_creator::~sensors_creator() { Q_CLEANUP_RESOURCE( sensors_creator ); }
