@@ -37,14 +37,14 @@ public:
 	update();
 
 	void
-	subscribe_to( sol::object obj );
+	add_senders( sol::object obj ); //!
 	void
-	unsubscribe_from( sol::object obj );
+	remove_senders( sol::object obj ); //!
 
 	void
-	add_subscriber( const std::string& name, sol::object obj );
+	add_receiver( const std::string& name, sol::object obj );
 	void
-	remove_subscriber( sol::object obj );
+	remove_receiver( sol::object obj );
 
 
 	std::map< std::string, sol::object >
