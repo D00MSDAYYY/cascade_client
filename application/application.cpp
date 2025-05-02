@@ -9,7 +9,7 @@ application::application( int& argc, char** argv )
 	Q_INIT_RESOURCE( application );
 	setStyle( "Fusion" );
 
-	( *_ngn_ptr )->open_libraries( sol::lib::base );
+	( *_ngn_ptr )->open_libraries( sol::lib::base, sol::lib::table, sol::lib::string );
 
 
 	if ( QFile file( ":/application/scripts/aux_functions.lua" );
@@ -23,7 +23,6 @@ application::application( int& argc, char** argv )
 	else
 		{
 			std::cout << "can't open file aux_functions.lua" << std::endl;
-			file.close();
 		}
 
 	register_in_lua( *_ngn_ptr );

@@ -1,7 +1,44 @@
--- 'system' code
-local sensor = {}
-function sensor:add_senders(...)
-	self.senders = self.senders or {}
+local function create_enum(tbl)
+	local enum = {}
+	local mt = {
+		__index = function (_, k)
+			error("Field '" .. k .. "' doesn't exist in enum")
+		end,
+		__newindex = function ()
+			error("You can't change enum")
+		end
+	}
+	for k, v in pairs(tbl) do
+		enum[k] = v
+	end
+	return setmetatable(enum, mt)
+end
+
+sensor = {}
+
+sensor.WORKING_STATE = create_enum({
+	ON = "ON",
+	OFF = "OFF",
+	SUSPENDED = "SUSPENDED",
+	BROKEN = "BROKEN"
+})
+
+function sensor.new(name, data, ui)
+	local self = {
+		name = name,
+		data = data,
+		ui = ui,
+		senders = {},
+		receivers = {},
+		state = sensor.WORKING_STATE.OFF
+	}
+
+	setmetatable(self, { __index = sensor })
+
+	return self
+end
+
+function sensor:add_senders(...) --
 	local args = { ... }
 	local new_subscriptions = {}
 	local errors = {}
@@ -13,7 +50,7 @@ function sensor:add_senders(...)
 			table.insert(errors, ("Bad argument #%d: expected table, got %s"):format(i, type(arg)))
 		end
 		-- Проверка структуры пары подписки
-		if #arg < 2 then
+		if #arg ~= 2 then
 			table.insert(errors, ("Bad subscription pair #%d: expected {name, sender}"):format(i))
 		end
 
@@ -32,19 +69,15 @@ function sensor:add_senders(...)
 			table.insert(errors,
 				("Subscription '%s' already exists in self.senders"):format(name))
 		end
-
 		if new_subscriptions[name] then
 			table.insert(errors,
 				("Subscriptions with same name '%s' occurs twice (or more) in args"):format(name))
 		end
-
 		new_subscriptions[name] = sender
 	end
-
 	if #errors > 0 then
-		return nil, table.concat(errors, "\n")
+		return false, table.concat(errors, "\n")
 	end
-
 	-- Фаза применения изменений (только если все проверки пройдены)
 	for name, sender in pairs(new_subscriptions) do
 		self.senders[name] = sender
@@ -54,7 +87,6 @@ function sensor:add_senders(...)
 end
 
 function sensor:remove_senders(...)
-	self.senders = self.senders or {}
 	local args = { ... }
 	local errors = {}
 
@@ -109,7 +141,8 @@ function sensor:remove_senders(...)
 end
 
 function sensor:get_senders()
-	self.senders = self.senders or {}
+	print("in get_senders")
+	print(#self.senders)
 	local result = {}
 
 	for name, sender in pairs(self.senders) do
@@ -120,7 +153,6 @@ function sensor:get_senders()
 end
 
 function sensor:add_receivers(...)
-	self.receivers = self.receivers or {}
 	local args = { ... }
 	local errors = {}
 
@@ -128,13 +160,11 @@ function sensor:add_receivers(...)
 		-- Проверка типа элемента подписки
 		if type(arg) ~= "table" then
 			table.insert(errors, ("Bad argument #%d: expected table, got %s"):format(i, type(arg)))
-		end
-		-- Проверка уникальности имени во временном наборе
-		if self.receivers[arg] then
-			table.insert(errors, ("Receiver #%d is already in self.receivers"):format(i))
+		elseif self.receivers[arg] then
+			table.insert(errors, ("Receiver #%d is already exists"):format(i))
 		end
 	end
-	
+
 	if #errors > 0 then
 		return nil, table.concat(errors, "\n")
 	end
@@ -147,14 +177,13 @@ function sensor:add_receivers(...)
 end
 
 function sensor:remove_receivers(...)
-	self.receivers = self.receivers or {}
 	local args = { ... }
 	local errors = {}
 
 	for i, arg in ipairs(args) do
 		-- Проверка типа элемента подписки
 		if type(arg) ~= "table" then
-			table.insert(errors,("Bad argument #%d: expected table, got %s"):format(i, type(arg)))
+			table.insert(errors, ("Bad argument #%d: expected table, got %s"):format(i, type(arg)))
 		end
 		-- Проверка уникальности имени в наборе
 		if not self.receivers[arg] then
@@ -174,14 +203,83 @@ function sensor:remove_receivers(...)
 end
 
 function sensor:get_receivers()
-	self.receivers = self.receivers or {}
 	local result = {}
 
-	for receiver, _ in pairs(self.senders) do
+	for receiver, _ in pairs(self.receivers) do
 		table.insert(result, receiver)
 	end
 
 	return result
+end
+
+function sensor:on()
+	if self.state == sensor.WORKING_STATE.OFF then
+		local is_ok, err_msg = self.on_on()
+
+		if is_ok then
+			self.state = sensor.WORKING_STATE.ON
+		end
+
+		return is_ok, err_msg
+	else
+		return nil, "Sensor is not in 'OFF' state to turn in 'ON'. Sensor working state is '" .. self.state .. "'"
+	end
+end
+
+function sensor:off()
+	if self.state ~= sensor.WORKING_STATE.OFF then
+		local is_ok, err_msg = self.on_off()
+
+		if is_ok then
+			self.state = sensor.WORKING_STATE.OFF
+		end
+
+		return is_ok, err_msg
+	else
+		return nil, "Sensor is already in 'OFF' state"
+	end
+end
+
+function sensor:suspend()
+	if self.state == sensor.WORKING_STATE.ON or self.state == sensor.WORKING_STATE.BROKEN then
+		local is_ok, err_msg = self.on_suspend()
+
+		if is_ok then
+			self.state = sensor.WORKING_STATE.SUSPENDED
+		end
+
+		return is_ok, err_msg
+	else
+		return nil, "Sensor is not in 'ON' state to suspend"
+	end
+end
+
+function sensor:resume()
+	if self.state ~= sensor.WORKING_STATE.SUSPENDED then
+		local is_ok, err_msg = self.on_resume()
+
+		if is_ok then
+			self.state = sensor.WORKING_STATE.ON
+		end
+
+		return is_ok, err_msg
+	else
+		return nil, "Sensor is not in 'SUSPENDED' state to resume"
+	end
+end
+
+function sensor:update()
+	if self.state == sensor.WORKING_STATE.ON or self.state == sensor.WORKING_STATE.BROKEN then
+		local is_ok, err_msg = self.on_update()
+
+		if not is_ok then
+			self.state = sensor.WORKING_STATE.BROKEN
+		end
+
+		return is_ok, err_msg
+	else
+		return nil, "Sensor is not in 'ON' state to update"
+	end
 end
 
 -- 'custom' code

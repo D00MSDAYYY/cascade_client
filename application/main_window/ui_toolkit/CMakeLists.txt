@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.25.1)
-project(sensor)
+project(ui_toolkit)
 
 ####################### insert subdirectories here ##############################
 #################################################################################

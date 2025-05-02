@@ -22,5 +22,7 @@ PUBLIC
 	Qt::Widgets
 	scripting
 	actions_tree
+
+	sensor
 )
 

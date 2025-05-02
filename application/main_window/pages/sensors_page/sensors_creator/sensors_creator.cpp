@@ -24,6 +24,8 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 {
 	Q_INIT_RESOURCE( sensors_creator );
 	qRegisterMetaType< sol::table >( "sol::table" );
+	// 
+	sensor::register_in_lua(*_ngn_ptr);
 	// Main layout
 	auto main_layout{ new QVBoxLayout( this ) };
 	auto splitter{ new QSplitter( this ) };

@@ -7,6 +7,7 @@
 #include <QMenu>
 #include <QToolBar>
 #include <QToolButton>
+#include "sensor.hpp"
 
 class page
 	: public QMainWindow
@@ -117,9 +118,10 @@ protected:
 	virtual void
 	on_off() { };
 	virtual void
-	on_resume() { };
-	virtual void
-							 on_suspend() { };
+	on_resume() {
+	}
+
+	void on_suspend() { };
 
 	std::shared_ptr< _nd_t > _actions_tree_root{};
 	QToolBar*				 _tl_bar{};

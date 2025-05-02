@@ -7,7 +7,7 @@
 
 class sensors_creator
 	: public QWidget
-	, public scripting::object
+	, public scripting::object //! TODO add scripting stuff in this class
 {
 	Q_OBJECT
 

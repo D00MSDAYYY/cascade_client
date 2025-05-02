@@ -1,0 +1,5 @@
+<RCC>
+	<qresource prefix="/sensor">
+		<file>scripts/sensor.lua</file>
+	</qresource>
+</RCC>

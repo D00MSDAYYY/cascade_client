@@ -8,4 +8,23 @@ page:add_alert(a);
 tmp = cascade_client.clock:now()
 tmp:get_minutes()
 -----
-for k, v in pairs(_G) do print(k,v) end
+for k, v in pairs(_G) do print(k, v) end
+-----
+tmp = sensor.new("hell");
+is_ok, err_msg = tmp:add_senders({ "s1", {} })
+-----
+btn_down = ui.QPushButton.new("↓");
+btn_down:setSizePolicy("Expanding", "Expanding")
+txt = ui.QLabel.new("init text");
+txt:setSizePolicy("Expanding", "Expanding")
+btn_up = ui.QPushButton.new("↑");
+btn_up:setSizePolicy("Expanding", "Expanding")
+lyt = ui.QHBoxLayout.new();
+lyt:addWidget(btn_down);
+lyt:addWidget(txt);
+lyt:addWidget(btn_up);
+ui = ui.QWidget.new();
+ui:setLayout(lyt);
+ui:show();
+
+

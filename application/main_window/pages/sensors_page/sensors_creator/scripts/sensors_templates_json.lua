@@ -10,7 +10,6 @@ local templates = {
 			{
 				name = "CO2",
 				modifiable = false,
-				script = "",
 				children = {
 					{
 						name = "default",
