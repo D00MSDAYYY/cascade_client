@@ -25,6 +25,6 @@ lyt:addWidget(txt);
 lyt:addWidget(btn_up);
 ui = ui.QWidget.new();
 ui:setLayout(lyt);
-ui:show();
+btn_up:_aux_connect_to_clicked('con1', function () print('hello') end)
 
 

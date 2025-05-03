@@ -15,7 +15,7 @@ page::page( const std::string&			 name,
 };
 
 void
-page::_init_toolbar()
+page::_init_toolbar( _nd_t& actions_tree_root)
 {
 	std::function< void( _nd_t& ) >
 		fill_empty_node_fields{}; // TODO! move this aux function in page.hpp to common
@@ -51,7 +51,7 @@ page::_init_toolbar()
 				////////////////////////////////////////////////
 			}
 	};
-	fill_empty_node_fields( *_actions_tree_root );
+	fill_empty_node_fields( actions_tree_root );
 
 	std::function< QMenu*( const std::vector< _nd_t >& ) > create_button_menu{};
 	create_button_menu
@@ -72,7 +72,7 @@ page::_init_toolbar()
 		return menu;
 	};
 
-	for ( auto& group : _actions_tree_root->_children )
+	for ( auto& group : actions_tree_root._children )
 		{
 			if ( group._name == "|" ) { _tl_bar->addSeparator(); }
 			else

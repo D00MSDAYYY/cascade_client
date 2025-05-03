@@ -92,13 +92,13 @@ public:
 		return "default empty report";
 	}
 
-	struct _c_c_d_t
+	struct _qact_scr
 	{
 		QAction*	_qaction{};
 		std::string _script{};
 	};
 
-	using _nd_t = actions_tree::node< _c_c_d_t >;
+	using _nd_t = actions_tree::node< _qact_scr >;
 
 	static QAction*
 	_bind_qaction_with_func( QAction* action, auto func )
@@ -111,7 +111,7 @@ public:
 
 protected:
 	void
-	_init_toolbar();
+	_init_toolbar( _nd_t&  actions_tree_root);
 
 	virtual void
 	on_on() { };
@@ -123,7 +123,6 @@ protected:
 
 	void on_suspend() { };
 
-	std::shared_ptr< _nd_t > _actions_tree_root{};
 	QToolBar*				 _tl_bar{};
 
 private:

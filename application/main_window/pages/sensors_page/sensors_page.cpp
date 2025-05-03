@@ -6,131 +6,111 @@
 #include <QMessageBox>
 
 
-static sensors_page::comparator compare_by_name{ []( const sensor& lhs,
-													 const sensor& rhs ) -> bool {
+static sensors_page::comparator compare_by_name{ []( const sensor& lhs, const sensor& rhs ) -> bool {
 	return lhs.get_name() < rhs.get_name();
 } };
 
-sensors_page::sensors_page( const std::string&	   name,
-							scripting::engine::ptr ngn_ptr,
-							QWidget*			   parent )
+sensors_page::sensors_page( const std::string& name, scripting::engine::ptr ngn_ptr, QWidget* parent )
 	: page{ name, ngn_ptr, parent }
 {
 	Q_INIT_RESOURCE( sensors_page );
 	register_in_lua( *_ngn_ptr );
 
-	_lst_wgt		   = new QListWidget{ this };
+	_lst_wgt = new QListWidget{ this };
 
 	// TODO! do something with this messy way of creation of buttons
-	using _nd_t		   = page::_nd_t;
-	_actions_tree_root = std::make_shared< _nd_t >( _nd_t{
-	  { .name		 = "_root_node",
-		.description = "don't use this node ",
-		.children
-		= { _nd_t{ { .name = "sort" } },
-			_nd_t{ {
-			  .name = "|",
-			} },
-			_nd_t{
-			  { .name = "add",
-				.data
-				= { ._qaction = _bind_qaction_with_func(
-						new QAction{ this },
-						[ this ]( auto add_action ) {
-							QList< QAction* > saved_actions{};
-							for ( const auto& action_ptr : _tl_bar->actions() )
-								{
-									saved_actions.append( action_ptr );
-								}
 
-							auto exit_action{
-								new QAction{
-		  QIcon(
-									  QPixmap{ QString{ ":sensors_page/icons/exit.png" } }
-										  .scaled(
-											  iconSize(),
-		  Qt::AspectRatioMode::KeepAspectRatio ) ),
-		  "exit", this }
-							};
-							connect( exit_action,
-									 &QAction::triggered,
-									 [ this, saved_actions ]() {
-										 _tl_bar->clear();
-										 _tl_bar->addActions( { saved_actions.begin(),
-																saved_actions.end() } );
-									 } );
-							auto create_action{
-								new QAction{
-		  QIcon( QPixmap{
-									QString{ ":sensors_page/icons/create.png" } }
-											 .scaled(
-												 iconSize(),
+	_nd_t _actions_tree_root{
+		{ .name		   = "_root_node",
+		  .description = "don't use this node ",
+		  .children
+		  = { _nd_t{ { .name = "sort" } },
+			  _nd_t{ {
+				.name = "|",
+			  } },
+			  _nd_t{ { .name = "add",
+					   .data
+					   = { ._qaction = _bind_qaction_with_func(
+							   new QAction{ this },
+							   [ this ]( auto add_action ) {
+								   QList< QAction* > saved_actions{};
+								   for ( const auto& action_ptr : _tl_bar->actions() )
+									   {
+										   saved_actions.append( action_ptr );
+									   }
+
+								   auto exit_action{
+									   new QAction{
+		 QIcon( QPixmap{ QString{ ":sensors_page/icons/exit.png" } }.scaled(
+											 iconSize(),
 		 Qt::AspectRatioMode::KeepAspectRatio ) ),
-		  "create", this }
-							};
-
-							_tl_bar->clear();
-							_tl_bar->addActions( { exit_action, create_action } );
-							auto creator{
-								new sensors_creator{ *_ngn_ptr, this }
-							};
-							setCentralWidget( creator );
-						} ) } } },
-			_nd_t{
-			  { .name = "remove",
-				.data
-				= { ._qaction = _bind_qaction_with_func(
-						new QAction{ this },
-						[ this ]( auto remove_action ) {
-							auto con{ connect(
-								_lst_wgt,
-								&QListWidget::itemClicked,
-								[ this ]( QListWidgetItem* item ) {
-									if ( auto frame_ptr{ qobject_cast< QFrame* >(
-											 _lst_wgt->itemWidget( item ) ) } )
-										{
-											auto sensor_ptr{
-												frame_ptr->property( "sensor" )
-													.value< std::shared_ptr< sensor > >()
-											};
-											remove_sensor( sensor_ptr->get_name() );
-											sort_sensors();
-										}
-								} ) };
-
-							QList< QAction* > saved_actions{};
-							for ( const auto& action_ptr : _tl_bar->actions() )
-								{
-									saved_actions.append( action_ptr );
-								}
-
-							auto exit_action{
-								new QAction{
-		  QIcon( QPixmap{
-									std::string{ ":sensors_page/icons/exit.png" }
-										.c_str() }
-											 .scaled(
-												 iconSize(),
+		 "exit", this }
+								   };
+								   connect( exit_action, &QAction::triggered, [ this, saved_actions ]() {
+									   _tl_bar->clear();
+									   _tl_bar->addActions( { saved_actions.begin(), saved_actions.end() } );
+								   } );
+								   auto create_action{
+									   new QAction{
+		 QIcon( QPixmap{ QString{ ":sensors_page/icons/create.png" } }.scaled(
+											 iconSize(),
 		 Qt::AspectRatioMode::KeepAspectRatio ) ),
-		  "exit", this }
-							};
-							connect( exit_action,
-									 &QAction::triggered,
-									 [ this, saved_actions, con ]() {
-										 _tl_bar->clear();
-										 _tl_bar->addActions( { saved_actions.begin(),
-																saved_actions.end() } );
-										 disconnect( con );
-									 } );
-							_tl_bar->clear();
-							_tl_bar->addAction( exit_action );
-						} ) } } },
-			_nd_t{ { .name = "|" } },
-			_nd_t{ { .name = "suspend" } },
-			_nd_t{ { .name = "resume" } } } }
-	  } );
+		 "create", this }
+								   };
 
-	_init_toolbar();
+								   _tl_bar->clear();
+								   _tl_bar->addActions( { exit_action, create_action } );
+								   auto creator{
+									   new sensors_creator{ *_ngn_ptr, this }
+								   };
+								   setCentralWidget( creator );
+							   } ) } } },
+			  _nd_t{
+				{ .name = "remove",
+				  .data
+				  = { ._qaction = _bind_qaction_with_func(
+						  new QAction{ this },
+						  [ this ]( auto remove_action ) {
+							  auto con{ connect(
+								  _lst_wgt,
+								  &QListWidget::itemClicked,
+								  [ this ]( QListWidgetItem* item ) {
+									  if ( auto frame_ptr{
+											 qobject_cast< QFrame* >( _lst_wgt->itemWidget( item ) ) } )
+										  {
+											  auto sensor_ptr{ frame_ptr->property( "sensor" )
+																   .value< std::shared_ptr< sensor > >() };
+											  remove_sensor( sensor_ptr->get_name() );
+											  sort_sensors();
+										  }
+								  } ) };
+
+							  QList< QAction* > saved_actions{};
+							  for ( const auto& action_ptr : _tl_bar->actions() )
+								  {
+									  saved_actions.append( action_ptr );
+								  }
+
+							  auto exit_action{
+								  new QAction{
+			QIcon( QPixmap{ std::string{ ":sensors_page/icons/exit.png" }.c_str() }
+											   .scaled( iconSize(), Qt::AspectRatioMode::KeepAspectRatio ) ),
+			"exit", this }
+							  };
+							  connect( exit_action, &QAction::triggered, [ this, saved_actions, con ]() {
+								  _tl_bar->clear();
+								  _tl_bar->addActions( { saved_actions.begin(), saved_actions.end() } );
+								  disconnect( con );
+							  } );
+							  _tl_bar->clear();
+							  _tl_bar->addAction( exit_action );
+						  } ) } } },
+			  _nd_t{ { .name = "|" } },
+			  _nd_t{ { .name = "suspend" } },
+			  _nd_t{ { .name = "resume" } } } }
+	};
+
+	_init_toolbar( _actions_tree_root );
 
 	setCentralWidget( _lst_wgt );
 }
@@ -140,20 +120,15 @@ sensors_page::~sensors_page() { Q_CLEANUP_RESOURCE( sensors_page ); }
 void
 sensors_page::add_sensor( std::shared_ptr< sensor > sensor_ptr )
 {
-	if ( !std::any_of( _sensors.begin(),
-					   _sensors.end(),
-					   [ sensor_ptr ]( const auto& elem_ptr ) {
-						   return *elem_ptr == *sensor_ptr;
-					   } ) )
+	if ( !std::any_of( _sensors.begin(), _sensors.end(), [ sensor_ptr ]( const auto& elem_ptr ) {
+			 return *elem_ptr == *sensor_ptr;
+		 } ) )
 		{
 			_sensors.push_back( sensor_ptr );
 			sort_sensors();
 			_update_list_widget();
 		}
-	else
-		{
-			std::cout << "'sensor name' have to be unique";
-		} // TODO! change this cout str to more consistent
+	else { std::cout << "'sensor name' have to be unique"; } // TODO! change this cout str to more consistent
 }
 
 void
@@ -169,21 +144,16 @@ sensors_page::remove_sensor( const std::string& sensor_name )
 void
 sensors_page::sort_sensors( std::optional< comparator > cmpr_opt )
 {
-	if ( cmpr_opt )
-		{
-			_lst_wgt->setProperty( "default_cmpr", QVariant::fromValue( *cmpr_opt ) );
-		}
+	if ( cmpr_opt ) { _lst_wgt->setProperty( "default_cmpr", QVariant::fromValue( *cmpr_opt ) ); }
 	else if ( auto v{ _lst_wgt->property( "default_cmpr" ) }; v.isValid() )
 		{
 			cmpr_opt = v.value< comparator >();
 		}
 	else { cmpr_opt = compare_by_name; }
 
-	std::sort( _sensors.begin(),
-			   _sensors.end(),
-			   [ cmpr = *cmpr_opt ]( const auto& lhs, const auto& rhs ) {
-				   return cmpr( *lhs, *rhs );
-			   } );
+	std::sort( _sensors.begin(), _sensors.end(), [ cmpr = *cmpr_opt ]( const auto& lhs, const auto& rhs ) {
+		return cmpr( *lhs, *rhs );
+	} );
 
 	_update_list_widget();
 }
@@ -236,9 +206,9 @@ sensors_page::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 {
 	if ( can_register_in_lua< sensors_page >( ngn_ptr ) )
 		{
-			auto type{ ngn_ptr->new_usertype< sensors_page >( _class_name,
-															  sol::base_classes,
-															  sol::bases< page >() ) };
+			auto type{
+				ngn_ptr->new_usertype< sensors_page >( _class_name, sol::base_classes, sol::bases< page >() )
+			};
 		}
 	std::cout << _class_name << "\t is registered" << std::endl;
 }

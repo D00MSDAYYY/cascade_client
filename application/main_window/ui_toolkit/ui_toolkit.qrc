@@ -1,0 +1,6 @@
+<RCC>
+	<qresource prefix="/ui_toolkit">
+		<file>scripts/qabstractbutton_extra.lua</file>
+		<file>scripts/dummy.lua</file>
+	</qresource>
+</RCC>

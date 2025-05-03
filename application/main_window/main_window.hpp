@@ -35,12 +35,12 @@ public:
 	// /////////////////////////////////////////////////////////////////
 
 private:
-	struct _pg_d_t
+	struct _pg_data
 	{
 		page* _page_ptr;
 	};
 
-	using _nd_t = actions_tree::node< _pg_d_t >;
+	using _nd_t = actions_tree::node< _pg_data >;
 
 
 	QToolBar*					   _tl_bar{};

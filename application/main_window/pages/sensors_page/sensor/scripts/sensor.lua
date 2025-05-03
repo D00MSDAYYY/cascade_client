@@ -69,12 +69,14 @@ function sensor:add_senders(...) --
 			table.insert(errors,
 				("Subscription '%s' already exists in self.senders"):format(name))
 		end
+
 		if new_subscriptions[name] then
 			table.insert(errors,
 				("Subscriptions with same name '%s' occurs twice (or more) in args"):format(name))
 		end
 		new_subscriptions[name] = sender
 	end
+
 	if #errors > 0 then
 		return false, table.concat(errors, "\n")
 	end

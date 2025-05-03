@@ -37,16 +37,6 @@ private:
 	void
 	_update_list_widget();
 
-	struct _c_c_d_t
-	{
-		QAction*	_qaction{};
-		std::string _script{};
-	};
-
-	using _nd_t = actions_tree::node< _c_c_d_t >; // TODO! in future remove duplication of
-												  // this struct in classes and locate in
-												  // one place if possible
-
 	QListWidget*							_lst_wgt{};
 
 	std::vector< std::shared_ptr< chart > > _charts;

@@ -1,19 +1,17 @@
 #include "sensors_creator.hpp"
 
+#include "page.hpp"
+
 #include <QComboBox>
 #include <QFile>
 #include <QGroupBox>
 #include <QHBoxLayout>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
 #include <QPushButton>
 #include <QSplitter>
 #include <QStandardItemModel>
 #include <QTextEdit>
 #include <QTreeView>
 #include <QVBoxLayout>
-#include <sol/sol.hpp>
 
 
 Q_DECLARE_METATYPE( sol::table )
@@ -24,8 +22,8 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 {
 	Q_INIT_RESOURCE( sensors_creator );
 	qRegisterMetaType< sol::table >( "sol::table" );
-	// 
-	sensor::register_in_lua(*_ngn_ptr);
+	//
+	sensor::register_in_lua( *_ngn_ptr );
 	// Main layout
 	auto main_layout{ new QVBoxLayout( this ) };
 	auto splitter{ new QSplitter( this ) };
@@ -69,45 +67,37 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	if ( QFile file{ QString{ ":/sensors_creator/scripts/sensors_templates_json.lua" } };
 		 file.open( QIODevice::ReadOnly ) )
 		{
-			auto result{ ( *_ngn_ptr )->script( file.readAll().constData() ) };
+			auto file_data{ ( *_ngn_ptr )->script( file.readAll().constData() ) };
 			file.close();
 
-			if ( result.valid() )
+			if ( file_data.valid() )
 				{
-					auto templates{ result.get< sol::table >() };
+					auto templates{ file_data.get< sol::table >() };
 
-					std::function< void( const sol::table&, QStandardItem* ) >
-						parse_lua_table;
-					parse_lua_table = [ &parse_lua_table ]( const sol::table& tbl,
-															QStandardItem* parent ) {
+					std::function< void( const sol::table&, QStandardItem* ) > parse_lua_table;
+					parse_lua_table = [ &parse_lua_table ]( const sol::table& tbl, QStandardItem* parent ) {
 						for ( const auto& [ key, value ] : tbl )
 							{
 								if ( key.is< int >() )
 									{
 										auto	item{ value.as< sol::table >() };
-										QString name{ item [ "name" ]
-														  .get_or< std::string >(
-															  "Unnamed" )
-														  .c_str() };
+										QString name{
+											item [ "name" ].get_or< std::string >( "Unnamed" ).c_str()
+										};
 
-										auto	tree_item = new QStandardItem( name );
+										auto tree_item = new QStandardItem( name );
 
 										if ( item [ "children" ].valid() )
 											{
-												tree_item->setIcon(
-													QIcon{ ":/icons/folder.png" } );
-												sol::table children{
-													item [ "children" ]
-												};
+												tree_item->setIcon( QIcon{ ":/icons/folder.png" } );
+												sol::table children{ item [ "children" ] };
 												parse_lua_table( children, tree_item );
 											}
 										else
 											{
-												tree_item->setIcon(
-													QIcon{ ":/icons/blueprint.png" } );
-												tree_item->setData(
-													QVariant::fromValue( item ),
-													TEMPLATES_ITEM::TABLE );
+												tree_item->setIcon( QIcon{ ":/icons/blueprint.png" } );
+												tree_item->setData( QVariant::fromValue( item ),
+																	TEMPLATES_ITEM::TABLE );
 											}
 										parent->appendRow( tree_item );
 									}
@@ -125,13 +115,36 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 
 	for ( const QString& str : { "derive", "edit", "remove" } )
 		{
-			auto btn{ new QPushButton( QIcon( ":/sensors_creator/icons/" + str + ".png" ),
-									   "",
-									   this ) };
+			auto btn{ new QPushButton( QIcon( ":/sensors_creator/icons/" + str + ".png" ), "", this ) };
 			btn->setFixedSize( 32, 32 );
 			templates_btns_layout->addWidget( btn );
 		}
+
+
 	templates_btns_layout->addStretch( 1 );
+	_nd_t _actions_tree_root{
+		{ .name		   = "_root_node",
+		  .children
+		  = { _nd_t{ { .name = "derive",
+					   .data = { ._qaction = page::_bind_qaction_with_func( new QAction{ this },
+																			[ this ]( auto derive_action ) {
+
+																			} ) } } },
+			_nd_t{ { .name = "edit",
+					   .data = { ._qaction = page::_bind_qaction_with_func( new QAction{ this },
+																			[ this ]( auto edit_action ) {
+
+																			} ) } } },
+			_nd_t{ { .name = "remove",
+					   .data = { ._qaction = page::_bind_qaction_with_func( new QAction{ this },
+																			[ this ]( auto remove_action ) {
+
+																			} ) } } },
+																		
+																		
+																		} }
+	};
+
 
 	templates_layout->addLayout( templates_btns_layout );
 	templates_group->setLayout( templates_layout );
@@ -164,15 +177,14 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	edit_layout->addWidget( edit_area );
 
 	auto edit_btns_layout{ new QHBoxLayout() };
-	for ( const QString& str : { "refresh", "save", "|", "to default" } )
+	for ( const QString& str : { "preview", "save", " ", "to default" } )
 		{
-			if ( str == "|" ) { edit_btns_layout->addStretch( 1 ); }
+			if ( str == " " ) { edit_btns_layout->addStretch( 1 ); }
 			else
 				{
-					auto btn{ new QPushButton(
-						QIcon( ":/sensors_creator/icons/" + str + ".png" ),
-						"",
-						this ) };
+					auto btn{
+						new QPushButton( QIcon( ":/sensors_creator/icons/" + str + ".png" ), "", this )
+					};
 					btn->setFixedSize( 32, 32 );
 					edit_btns_layout->addWidget( btn );
 				}
@@ -189,31 +201,27 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	// Set initial splitter sizes
 	splitter->setSizes( { 300, 500 } );
 
-	connect(
-		tree_view,
-		&QTreeView::pressed,
-		[ edit_area, tree_view ]( const QModelIndex& index ) {
-			if ( index.isValid() )
-				{
-					if ( not tree_view->model()->hasChildren( index ) )
-						{
-							auto table_variant{ index.data( TEMPLATES_ITEM::TABLE ) };
+	connect( tree_view, &QTreeView::pressed, [ edit_area, tree_view ]( const QModelIndex& index ) {
+		if ( index.isValid() )
+			{
+				if ( not tree_view->model()->hasChildren( index ) )
+					{
+						auto table_variant{ index.data( TEMPLATES_ITEM::TABLE ) };
 
-							if ( table_variant.canConvert< sol::table >() )
-								{
-									auto data_table{ table_variant.value< sol::table >() };
+						if ( table_variant.canConvert< sol::table >() )
+							{
+								auto	data_table{ table_variant.value< sol::table >() };
 
-									QString text{ data_table [ "script" ]
-													  .get_or< std::string >(
-														  "empty or error" )
-													  .c_str() };
+								QString text{
+									data_table [ "script" ].get_or< std::string >( "empty or error" ).c_str()
+								};
 
-									edit_area->setText( text );
-								}
-						}
-					else { edit_area->clear(); }
-				}
-		} );
+								edit_area->setText( text );
+							}
+					}
+				else { edit_area->clear(); }
+			}
+	} );
 }
 
 sensors_creator::~sensors_creator() { Q_CLEANUP_RESOURCE( sensors_creator ); }

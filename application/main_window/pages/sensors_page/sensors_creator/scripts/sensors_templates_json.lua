@@ -2,7 +2,21 @@ local templates = {
 	{
 		name = "BLANK",
 		modifiable = false,
-		script = "if print then print('hello from BLANK') end"
+		script = [[
+btn_down = ui.QPushButton.new('↓');
+btn_down:setSizePolicy('Expanding', 'Expanding')
+txt = ui.QLabel.new('init text');
+txt:setSizePolicy('Expanding', 'Expanding')
+btn_up = ui.QPushButton.new('↑');
+btn_up:setSizePolicy('Expanding', 'Expanding')
+lyt = ui.QHBoxLayout.new();
+lyt:addWidget(btn_down);
+lyt:addWidget(txt);
+lyt:addWidget(btn_up);
+ui = ui.QWidget.new();
+ui:setLayout(lyt);
+btn_up:_aux_connect_to_clicked('con1', function () print('hello') end)
+]],
 	},
 	{
 		name = "Standard",

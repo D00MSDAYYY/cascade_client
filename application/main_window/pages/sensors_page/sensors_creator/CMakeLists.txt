@@ -21,8 +21,10 @@ PUBLIC
 target_link_libraries(${PROJECT_NAME}
 PUBLIC
 	Qt::Widgets
+	actions_tree
 	scripting
 	sensor
+	page
 )
 
 

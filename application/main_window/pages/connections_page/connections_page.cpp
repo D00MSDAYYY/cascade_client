@@ -1,30 +1,28 @@
 #include "connections_page.hpp"
 
-connections_page::connections_page( const std::string&	   name,
-									scripting::engine::ptr ngn_ptr,
-									QWidget*			   parent )
+connections_page::connections_page( const std::string& name, scripting::engine::ptr ngn_ptr, QWidget* parent )
 	: page{ name, ngn_ptr, parent }
 {
 	Q_INIT_RESOURCE( connections_page );
 	register_in_lua( *_ngn_ptr );
 
-	_lst_wgt		   = new QListWidget{ this };
+	_lst_wgt = new QListWidget{ this };
 
-	_actions_tree_root = std::make_shared< _nd_t >( _nd_t{
-	  { .name		 = "_root_node",
-		.description = "don't use this node ",
-		.children	 = { _nd_t{ { .name = "sort" } },
-						 _nd_t{ {
-						   .name = "|",
-						 } },
-						 _nd_t{ { .name = "add" } },
-						 _nd_t{ { .name = "remove" } },
-						 _nd_t{ { .name = "|" } },
-						 _nd_t{ { .name = "suspend" } },
-						 _nd_t{ { .name = "resume" } } } }
-	} );
+	_nd_t _actions_tree_root{
+		{ .name		   = "_root_node",
+		  .description = "don't use this node ",
+		  .children	   = { _nd_t{ { .name = "sort" } },
+						   _nd_t{ {
+							 .name = "|",
+						   } },
+						   _nd_t{ { .name = "add" } },
+						   _nd_t{ { .name = "remove" } },
+						   _nd_t{ { .name = "|" } },
+						   _nd_t{ { .name = "suspend" } },
+						   _nd_t{ { .name = "resume" } } } }
+	};
 
-	_init_toolbar();
+	_init_toolbar( _actions_tree_root );
 
 
 	setCentralWidget( _lst_wgt );
@@ -35,17 +33,14 @@ connections_page::add_connection()
 {
 }
 
-
-
 void
 connections_page::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 {
 	if ( can_register_in_lua< connections_page >( ngn_ptr ) )
 		{
-			auto type{ ngn_ptr->new_usertype< connections_page >(
-				_class_name,
-				sol::base_classes,
-				sol::bases< page >() ) };
+			auto type{ ngn_ptr->new_usertype< connections_page >( _class_name,
+																  sol::base_classes,
+																  sol::bases< page >() ) };
 		}
 	std::cout << _class_name << "\t is registered" << std::endl;
 }

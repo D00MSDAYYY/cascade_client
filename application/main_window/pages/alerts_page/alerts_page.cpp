@@ -33,39 +33,38 @@ alerts_page::alerts_page( const std::string&		   name,
 
 	_lst_wgt		   = new QListWidget{ this };
 
-	_actions_tree_root = std::make_shared< _nd_t >( _nd_t{
+	_nd_t _actions_tree_root = _nd_t{ _nd_t{
 	  { .name		 = "_root_node",
 		.description = "don't use this node ",
 		.children
-		= { _nd_t{
-			  { .name	  = "sort",
-				.children = { _nd_t{ { .name = "by name",
-									   .data = { ._qaction = _bind_qaction_with_func(
-													 new QAction{ this },
-													 [ this ]( auto _ ) {
-														 sort_alerts( compare_by_name );
-													 } ) } } },
-							  _nd_t{ { .name = "by date",
-									   .data = { ._qaction = _bind_qaction_with_func(
-													 new QAction{ this },
-													 [ this ]( auto _ ) {
-														 sort_alerts( compare_by_date );
-													 } ) } } },
-							  _nd_t{ { .name = "by type",
-									   .data = { ._qaction = _bind_qaction_with_func(
-													 new QAction{ this },
-													 [ this ]( auto _ ) {
-														 sort_alerts( compare_by_type );
-													 } ) } } } } } },
+		= { _nd_t{ { .name = "sort",
+					 .children
+					 = { _nd_t{ { .name = "by name",
+								  .data = { ._qaction = _bind_qaction_with_func( new QAction{ this },
+																				 [ this ]( auto _ ) {
+																					 sort_alerts(
+																						 compare_by_name );
+																				 } ) } } },
+						 _nd_t{ { .name = "by date",
+								  .data = { ._qaction = _bind_qaction_with_func( new QAction{ this },
+																				 [ this ]( auto _ ) {
+																					 sort_alerts(
+																						 compare_by_date );
+																				 } ) } } },
+						 _nd_t{ { .name = "by type",
+								  .data = { ._qaction = _bind_qaction_with_func( new QAction{ this },
+																				 [ this ]( auto _ ) {
+																					 sort_alerts(
+																						 compare_by_type );
+																				 } ) } } } } } },
 			_nd_t{ {
 			  .name = "|",
 			} },
 			_nd_t{
 			  { .name = "remove",
-				.data = {
-				  ._qaction = _bind_qaction_with_func(
-					  new QAction{ this },
-					  [ this ]( auto remove_action ) {
+				.data
+				= { ._qaction
+					= _bind_qaction_with_func( new QAction{ this }, [ this ]( auto remove_action ) {
 						  auto con{ connect(
 							  _lst_wgt,
 							  &QListWidget::itemClicked,
@@ -108,10 +107,9 @@ alerts_page::alerts_page( const std::string&		   name,
 								   } );
 						  _tl_bar->clear();
 						  _tl_bar->addAction( exit_action );
-					  } ) } } } } }
-	} );
+					  } ) } } } } } } };
 
-	_init_toolbar();
+	_init_toolbar(_actions_tree_root);
 
 	setCentralWidget( _lst_wgt );
 
