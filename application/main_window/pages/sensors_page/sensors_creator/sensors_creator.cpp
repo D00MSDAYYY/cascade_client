@@ -163,9 +163,11 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	left_layout->addWidget( templates_group );
 
 	// 2. Preview Group
-	auto preview_group{ new QGroupBox {"Preview", this}  };
+	auto preview_group{
+		new QGroupBox{ "Preview", this }
+	};
 	auto preview_layout{ new QVBoxLayout{} };
-	auto preview_window{ new QWidget {this}  };
+	auto preview_window{ new QWidget{ this } };
 	auto pr_win_lyt{ new QVBoxLayout{} };
 	preview_window->setMinimumSize( 100, 100 );
 	preview_window->setMaximumSize( 300, 300 );
@@ -175,9 +177,11 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	left_layout->addWidget( preview_group );
 
 	// 3. Parameters Group
-	auto parameters_group  = new QGroupBox{ "Parameters", this} ;
-	auto parameters_layout = new QVBoxLayout();
-	auto parameters_window = new QWidget( this );
+	auto parameters_group{
+		new QGroupBox{ "Parameters", this }
+	};
+	auto parameters_layout{ new QVBoxLayout() };
+	auto parameters_window{ new QWidget( this ) };
 	parameters_window->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 	parameters_layout->addWidget( parameters_window );
 	parameters_group->setLayout( parameters_layout );
@@ -223,30 +227,17 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 													  old_wgt->deleteLater();
 												  }
 											  pr_win_lyt->addWidget( *wgt_opt );
-
-
-											  _ngn_ptr.value()->script( " ; sensor = nil ; " );
-											  sns_lua.abandon();
-
-											  _ngn_ptr.value()->collect_garbage();
-											  _ngn_ptr.value()->collect_garbage();
-
-											  std::cout << "success" << std::endl;
 										  }
 									  else
 										  {
 											  std::cout
 												  << "can't convert sensor from lua to widget. it's type is"
-												  << sol::type_name( _ngn_ptr.value()->lua_state(),
-																	 sns_lua.get_type() )
 												  << std::endl;
 										  }
 								  }
 							  else { std::cout << "sensor widget result is not valid" << std::endl; }
-							  sol::state_view sv{ _ngn_ptr.value()->lua_state() };
 
-							  _ngn_ptr.value()->collect_garbage();
-							  _ngn_ptr.value()->collect_garbage();
+							  sol::state_view sv{ _ngn_ptr.value()->lua_state() };
 							  sv.stack_clear();
 							  _ngn_ptr.value()->collect_garbage();
 							  _ngn_ptr.value()->collect_garbage();
