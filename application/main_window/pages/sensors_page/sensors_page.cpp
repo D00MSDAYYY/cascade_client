@@ -14,7 +14,7 @@ sensors_page::sensors_page( const std::string& name, scripting::engine::ptr ngn_
 	: page{ name, ngn_ptr, parent }
 {
 	Q_INIT_RESOURCE( sensors_page );
-	register_in_lua( *_ngn_ptr );
+	register_in_lua( _ngn_ptr.value() );
 
 	_lst_wgt = new QListWidget{ this };
 
@@ -164,42 +164,11 @@ sensors_page::_update_list_widget()
 	_lst_wgt->clear();
 	for ( const auto& sensor_ptr : _sensors )
 		{
-			auto frame = new QFrame();
+			auto frame{ new QFrame{} };
 			frame->setFrameShape( QFrame::StyledPanel );
 			frame->setMinimumHeight( 100 ); // Увеличили высоту для всех данных
 		}
 }
-
-// void
-// sensors_page::add_sensor()
-// {
-// 	auto creator{ new sensors_creator{ this } };
-
-// 	connect( creator,
-// 			 &sensors_creator::sensor_created,
-// 			 this,
-// 			 [ this ]( QWidget* new_snsr ) {
-// 				 new_snsr->setStyleSheet( "background-color: gray ;" );
-
-// 				 new_snsr->setMinimumSize( 200, 100 );
-
-// 				 auto count{ _snsrs_grd->count() };
-// 				 new_snsr->setObjectName( "Виджет " + QString::number( count ) );
-
-// 				 new_snsr->setSizePolicy( QSizePolicy::Expanding,
-// 										  QSizePolicy::Expanding );
-
-// 				 int row = count / 2;
-// 				 int col = count % 2;
-
-// 				 _snsrs_grd->addWidget( new_snsr, row, col );
-
-
-// 				 _snsrs_grd->setRowStretch( row, 1 );
-// 			 } );
-// 	creator->exec();
-// }
-
 
 void
 sensors_page::register_in_lua( const scripting::engine::ptr& ngn_ptr )

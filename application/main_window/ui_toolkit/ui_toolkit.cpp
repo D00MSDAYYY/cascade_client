@@ -37,13 +37,21 @@ ui_toolkit::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 
 					auto qwgt_type{ ui_tbl.new_usertype< QWidget >(
 						"QWidget",
-						sol::factories(
-							[]() { return ui_toolkit::ptr_lc_guard< QWidget >( new QWidget{} ); } ),
+						sol::factories( []() {
+							auto ptr{ new QWidget{} };
+
+							std::cout << "-->QWidget addr \t" << ptr << std::endl;
+
+							return std::unique_ptr< QWidget, _asking_deleter< QWidget > >(
+								ptr,
+								_asking_deleter< QWidget >{} );
+						} ),
 
 						"setLayout",
-						[]( sol::this_state ts, QWidget* self, QLayout* lyt ) { 
-							
-							self->setLayout( lyt ); },
+						[]( sol::this_state ts, QWidget* self, QLayout* lyt ) {
+							_steal_ownership( lyt );
+							self->setLayout( lyt );
+						},
 
 						"setSizePolicy",
 						[ SIZE_POLICIES ]( QWidget*			  self,
@@ -88,11 +96,15 @@ ui_toolkit::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 					auto qlabel_type{ ui_tbl.new_usertype< QLabel >(
 						"QLabel",
 						sol::factories( []( std::optional< std::string > text = std::nullopt ) {
-							auto ptr{ ui_toolkit::ptr_lc_guard< QLabel >{
-							  new QLabel{ text.value_or( "" ).c_str() } } };
+							auto ptr{ new QLabel{ text.value_or( "" ).c_str() } };
 							ptr->setSizePolicy( QSizePolicy::Expanding,
 												QSizePolicy::Expanding ); //! TODO remove in future
-							return ptr;
+
+							std::cout << "-->QLabel addr \t\t" << ptr << std::endl;
+
+							return std::unique_ptr< QLabel, _asking_deleter< QLabel > >(
+								ptr,
+								_asking_deleter< QLabel >{} );
 						} ),
 
 						"setText",
@@ -177,8 +189,13 @@ ui_toolkit::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 					auto qpshbtn_type{ ui_tbl.new_usertype< QPushButton >(
 						"QPushButton",
 						sol::factories( []( std::optional< std::string > text = std::nullopt ) {
-							return ui_toolkit::ptr_lc_guard< QPushButton >{ new QPushButton{
-							  text.value_or( "" ).c_str() } };
+							auto ptr{ new QPushButton{ text.value_or( "" ).c_str() } };
+
+							std::cout << "-->QPushButton addr \t" << ptr << std::endl;
+
+							return std::unique_ptr< QPushButton, _asking_deleter< QPushButton > >(
+								ptr,
+								_asking_deleter< QPushButton >{} );
 						} ),
 
 						sol::base_classes,
@@ -187,13 +204,23 @@ ui_toolkit::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 
 					ui_tbl.new_usertype< QHBoxLayout >(
 						"QHBoxLayout",
-						sol::factories(
-							[]() { return ui_toolkit::ptr_lc_guard< QHBoxLayout >{ new QHBoxLayout{} }; } ),
+						sol::factories( []() {
+							auto ptr{ new QHBoxLayout{} };
+
+							std::cout << "-->QHBoxLayout addr \t" << ptr << std::endl;
+
+							return std::unique_ptr< QHBoxLayout, _asking_deleter< QHBoxLayout > >(
+								ptr,
+								_asking_deleter< QHBoxLayout >{} );
+						} ),
 
 						"addWidget",
-						[]( QHBoxLayout* self, QWidget* wgt ) { self->addWidget( wgt ); },
+						[]( QHBoxLayout* self, QWidget* wgt ) {
+							_steal_ownership( wgt );
+							self->addWidget( wgt );
+						},
 
-						"HAZARD", //! todo
+						"HAZARD",
 						[]() { return new QHBoxLayout{}; },
 
 						"addStretch",

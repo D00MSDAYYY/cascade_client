@@ -122,36 +122,67 @@ struct ui_toolkit
 	// 	int*  _ref_count_ptr{};
 	// };
 
-	template < typename TYPE >
-	class ptr_lc_guard : private std::unique_ptr< TYPE >
+	// template < typename TYPE >
+	// class ptr_lc_guard : private std::unique_ptr< TYPE >
+	// {
+	// public:
+	// 	ptr_lc_guard( TYPE* ptr )
+	// 		: std::unique_ptr< TYPE >{ ptr } { };
+
+	// 	TYPE*
+	// 	pass_lc_ownership()
+	// 	{
+	// 		std::unique_ptr< TYPE >::get_deleter() = []( TYPE* ) { /* do nothing */ };
+	// 		return std::unique_ptr< TYPE >::get();
+	// 	}
+
+	// 	TYPE*
+	// 	get() const
+	// 	{
+	// 		return std::unique_ptr< TYPE >::get();
+	// 	}
+
+	// 	TYPE
+	// 	operator* () const
+	// 	{
+	// 		return std::unique_ptr< TYPE >::operator* ();
+	// 	}
+
+	// 	TYPE*
+	// 	operator->() const
+	// 	{
+	// 		return std::unique_ptr< TYPE >::operator->();
+	// 	}
+	// };
+
+	template < typename QT_T >
+	struct _asking_deleter
 	{
-	public:
-		ptr_lc_guard( TYPE* ptr )
-			: std::unique_ptr< TYPE >{ ptr } { };
-
-		TYPE*
-		pass_lc_ownership()
+		void
+		operator() ( QT_T* ptr ) const
 		{
-			std::unique_ptr< TYPE >::get_deleter() = []( TYPE* ) { /* do nothing */ };
-			return std::unique_ptr< TYPE >::get();
-		}
+			std::cout << "++> alone1  \t" << ptr << std::endl;
+			if ( ptr )
+				{
+					auto can_delete_prop{ ptr->property( "can_delete" ) };
 
-		TYPE*
-		get() const
-		{
-			return std::unique_ptr< TYPE >::get();
-		}
-
-		TYPE
-		operator* () const
-		{
-			return std::unique_ptr< TYPE >::operator* ();
-		}
-
-		TYPE*
-		operator->() const
-		{
-			return std::unique_ptr< TYPE >::operator->();
+					bool can_delete{ not can_delete_prop.template canConvert< bool >()
+									 or can_delete_prop.toBool() == true };
+					if ( can_delete )
+						{
+							std::cout << "pointer deleted by uniq_ptr \t" << ptr << std::endl;
+							delete ptr;
+						}
+				}
+			std::cout << "++> alone2  \t" << ptr << std::endl;
 		}
 	};
+
+	template < typename QT_T >
+	static void
+	_steal_ownership( QT_T* ptr )
+	{
+		std::cout << "&&>stole addr \t" << ptr << std::endl;
+		ptr->setProperty( "can_delete", false );
+	}
 };

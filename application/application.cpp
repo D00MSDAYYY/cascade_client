@@ -9,7 +9,7 @@ application::application( int& argc, char** argv )
 	Q_INIT_RESOURCE( application );
 	setStyle( "Fusion" );
 
-	( *_ngn_ptr )->open_libraries( sol::lib::base, sol::lib::table, sol::lib::string );
+	_ngn_ptr.value()->open_libraries( sol::lib::base, sol::lib::table, sol::lib::string );
 
 
 	if ( QFile file( ":/application/scripts/aux_functions.lua" );
@@ -17,7 +17,7 @@ application::application( int& argc, char** argv )
 		{
 			QTextStream in{ &file };
 			auto		str{ in.readAll().toStdString() };
-			( *_ngn_ptr )->script( str );
+			_ngn_ptr.value()->script( str );
 			file.close();
 		}
 	else
@@ -25,15 +25,15 @@ application::application( int& argc, char** argv )
 			std::cout << "can't open file aux_functions.lua" << std::endl;
 		}
 
-	register_in_lua( *_ngn_ptr );
+	register_in_lua( _ngn_ptr.value() );
 
-	( *_ngn_ptr )->globals() [ "cascade_client" ] = this;
+	_ngn_ptr.value()->globals() [ "cascade_client" ] = this;
 
-	_clock	  = std::shared_ptr< class clock >( new class clock{ *_ngn_ptr } );
+	_clock	  = std::shared_ptr< class clock >( new class clock{ _ngn_ptr.value() } );
 
-	_mn_wndw  = std::shared_ptr< main_window >( new main_window{ *_ngn_ptr } );
+	_mn_wndw  = std::shared_ptr< main_window >( new main_window{ _ngn_ptr.value() } );
 
-	_dbg_wndw = std::shared_ptr< debug_console >( new debug_console{ *_ngn_ptr } );
+	_dbg_wndw = std::shared_ptr< debug_console >( new debug_console{ _ngn_ptr.value() } );
 
 
 	_mn_wndw->show();

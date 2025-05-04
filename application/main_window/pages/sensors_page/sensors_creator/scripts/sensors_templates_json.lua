@@ -3,13 +3,13 @@ local templates = {
 		name = "BLANK",
 		modifiable = false,
 		script = [[
-btn_down = ui.QPushButton.new("↓");
+local btn_down = ui.QPushButton.new("↓");
 btn_down:setSizePolicy("Expanding", "Expanding")
-txt = ui.QLabel.new("init text");
+local txt = ui.QLabel.new("init text");
 txt:setSizePolicy("Expanding", "Expanding")
-btn_up = ui.QPushButton.new("↑");
+local btn_up = ui.QPushButton.new("↑");
 btn_up:setSizePolicy("Expanding", "Expanding")
-lyt = ui.QHBoxLayout.new();
+local lyt = ui.QHBoxLayout.new();
 lyt:addWidget(btn_down);
 lyt:addWidget(txt);
 lyt:addWidget(btn_up);

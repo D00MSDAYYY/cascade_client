@@ -24,11 +24,10 @@ debug_console::debug_console( const scripting::engine::ptr ngn_ptr, QWidget* par
 
 	connect( _input, &QLineEdit::returnPressed, this, &debug_console::execute_command );
 
-	(*_ngn_ptr)->globals() [ "debug_output" ] = [ this ]( const std::string& text ) {
-		_printToOutput( QString::fromStdString( text ) );
-	};
+	_ngn_ptr.value()->globals() [ "debug_output" ]
+		= [ this ]( const std::string& text ) { _printToOutput( QString::fromStdString( text ) ); };
 
-	(*_ngn_ptr)->script( R"(
+	_ngn_ptr.value()->script( R"(
         local original_print = print
         print = function(...)
             local args = {...}
@@ -44,15 +43,13 @@ debug_console::debug_console( const scripting::engine::ptr ngn_ptr, QWidget* par
 	setCentralWidget( cntrl_wgt );
 }
 
-
 void
 debug_console::_printToOutput( const QString& text )
 {
 	if ( _output )
 		{
 			_output->appendPlainText( text );
-			_output->verticalScrollBar()->setValue(
-				_output->verticalScrollBar()->maximum() );
+			_output->verticalScrollBar()->setValue( _output->verticalScrollBar()->maximum() );
 		}
 }
 
@@ -69,11 +66,10 @@ debug_console::execute_command()
 	try
 		{
 			// Пробуем выполнить как выражение (с return)
-			sol::object result
-				= ( *_ngn_ptr )->do_string( "return " + command.toStdString() );
+			sol::object	  result	 = _ngn_ptr.value()->do_string( "return " + command.toStdString() );
 
 			// Безопасное преобразование результата в строку
-			sol::function tostring	 = ( *_ngn_ptr )->globals() [ "tostring" ];
+			sol::function tostring	 = _ngn_ptr.value()->globals() [ "tostring" ];
 			std::string	  result_str = tostring( result );
 			_printToOutput( QString::fromStdString( result_str ) );
 		}
@@ -81,7 +77,7 @@ debug_console::execute_command()
 		{
 			try
 				{
-					( *_ngn_ptr )->do_string( command.toStdString() );
+					_ngn_ptr.value()->do_string( command.toStdString() );
 				}
 			catch ( const sol::error& e )
 				{

@@ -1,6 +1,7 @@
 #include "sensors_creator.hpp"
 
 #include "page.hpp"
+#include "ui_toolkit.hpp"
 
 #include <QComboBox>
 #include <QFile>
@@ -23,7 +24,7 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	Q_INIT_RESOURCE( sensors_creator );
 	qRegisterMetaType< sol::table >( "sol::table" );
 	//
-	sensor::register_in_lua( *_ngn_ptr );
+	sensor::register_in_lua( _ngn_ptr.value() );
 	// Main layout
 	auto main_layout{ new QVBoxLayout( this ) };
 	auto splitter{ new QSplitter( this ) };
@@ -67,7 +68,7 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	if ( QFile file{ QString{ ":/sensors_creator/scripts/sensors_templates_json.lua" } };
 		 file.open( QIODevice::ReadOnly ) )
 		{
-			auto file_data{ ( *_ngn_ptr )->script( file.readAll().constData() ) };
+			auto file_data{ _ngn_ptr.value()->script( file.readAll().constData() ) };
 			file.close();
 
 			if ( file_data.valid() )
@@ -162,10 +163,12 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	left_layout->addWidget( templates_group );
 
 	// 2. Preview Group
-	auto preview_group	= new QGroupBox( "Preview", this );
-	auto preview_layout = new QVBoxLayout();
-	auto preview_window = new QWidget( this );
-	auto pr_win_lyt		= new QVBoxLayout();
+	auto preview_group{
+		new QGroupBox{ "Preview", this }
+	};
+	auto preview_layout{ new QVBoxLayout{} };
+	auto preview_window{ new QWidget{ this } };
+	auto pr_win_lyt{ new QVBoxLayout{} };
 	preview_window->setMinimumSize( 100, 100 );
 	preview_window->setMaximumSize( 300, 300 );
 	preview_window->setLayout( pr_win_lyt );
@@ -174,9 +177,11 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	left_layout->addWidget( preview_group );
 
 	// 3. Parameters Group
-	auto parameters_group  = new QGroupBox( "Parameters", this );
-	auto parameters_layout = new QVBoxLayout();
-	auto parameters_window = new QWidget( this );
+	auto parameters_group{
+		new QGroupBox{ "Parameters", this }
+	};
+	auto parameters_layout{ new QVBoxLayout{} };
+	auto parameters_window{ new QWidget{ this } };
 	parameters_window->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 	parameters_layout->addWidget( parameters_window );
 	parameters_group->setLayout( parameters_layout );
@@ -196,37 +201,46 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 		  .children
 		  = { _nd_t{
 				{ .name = "preview",
-				  .data
-				  = { ._qaction = page::_bind_qaction_with_func(
-						  new QAction{ this },
-						  [ this, edit_area, pr_win_lyt ]( auto preview_action ) {
-							  auto text{ edit_area->toPlainText() };
-							  auto sns_lua{ ( *_ngn_ptr )->script( "local sensor = {}; " + text.toStdString() +  "; return sensor; ") };
-							  if ( sns_lua.valid() )
-								  {
-									  if ( auto wgt_opt{ sns_lua.get< std::optional< QWidget* > >() };
-										   wgt_opt )
-										  {
-											  if ( auto item{ pr_win_lyt->itemAt( 0 ) }; item )
-												  {
-													  auto old_wgt{ item->widget() };
-													  pr_win_lyt->removeWidget( old_wgt );
-													  old_wgt->deleteLater();
-												  }
-											  pr_win_lyt->addWidget( *wgt_opt );
-											  std::cout << "success" << std::endl;
-										  }
-									  else
-										  {
-											  std::cout
-												  << "can't convert sensor from lua to widget. it's type is"
-												  << sol::type_name( ( *_ngn_ptr )->lua_state(),
-																	 sns_lua.get_type() )
-												  << std::endl;
-										  }
-								  }
-							  else { std::cout << "sensor widget result is not valid" << std::endl; }
-						  } ) } } },
+				  .data = { ._qaction = page::_bind_qaction_with_func(
+								new QAction{ this },
+								[ this, edit_area, pr_win_lyt ]( auto preview_action ) {
+									auto text{ edit_area->toPlainText() };
+
+									_ngn_ptr.value()->set_function( "_steal_ownership", []( QWidget* ptr ) {
+										ui_toolkit::_steal_ownership< QWidget >( ptr );
+									} );
+
+									auto sns_lua{ _ngn_ptr.value()->script(
+										" ;  local sensor = {} ; " + text.toStdString()
+										+ "; _steal_ownership(sensor) ; return sensor ; " ) };
+
+									if ( sns_lua.valid() )
+										{
+											if ( auto wgt_opt{ sns_lua.get< std::optional< QWidget* > >() };
+												 wgt_opt )
+												{
+													if ( auto item{ pr_win_lyt->itemAt( 0 ) }; item )
+														{
+															auto old_wgt{ item->widget() };
+															pr_win_lyt->removeWidget( old_wgt );
+															old_wgt->deleteLater();
+														}
+													pr_win_lyt->addWidget( *wgt_opt );
+
+													sns_lua.abandon();
+												}
+											else
+												{
+													std::cout << "can't convert sensor from lua to widget"
+															  << std::endl;
+												}
+										}
+									else { std::cout << "sensor widget result is not valid" << std::endl; }
+									sol::state_view sv{ _ngn_ptr.value()->lua_state() };
+
+									_ngn_ptr.value()->collect_garbage();
+									_ngn_ptr.value()->collect_garbage();
+								} ) } } },
 			  _nd_t{ { .name = "save",
 					   .data
 					   = { ._qaction = page::_bind_qaction_with_func( new QAction{ this },

@@ -14,7 +14,7 @@ main_window::main_window( const scripting::engine::ptr ngn_ptr, QWidget* parent 
 
 {
 	Q_INIT_RESOURCE( main_window );
-	register_in_lua( *_ngn_ptr );
+	register_in_lua( _ngn_ptr.value() );
 
 	_stkd_wdgt = new QStackedWidget{ this };
 	_tl_bar	   = new QToolBar{ this };

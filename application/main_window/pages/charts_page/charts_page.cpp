@@ -4,7 +4,7 @@ charts_page::charts_page( const std::string& name, const scripting::engine::ptr 
 	: page{ name, ngn_ptr, parent }
 {
 	Q_INIT_RESOURCE( charts_page );
-	register_in_lua( *_ngn_ptr );
+	register_in_lua( _ngn_ptr.value() );
 
 	_lst_wgt = new QListWidget{ this };
 

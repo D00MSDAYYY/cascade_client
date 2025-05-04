@@ -4,7 +4,7 @@ connections_page::connections_page( const std::string& name, scripting::engine::
 	: page{ name, ngn_ptr, parent }
 {
 	Q_INIT_RESOURCE( connections_page );
-	register_in_lua( *_ngn_ptr );
+	register_in_lua( _ngn_ptr.value() );
 
 	_lst_wgt = new QListWidget{ this };
 

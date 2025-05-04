@@ -8,7 +8,7 @@ scenarios_page::scenarios_page( const std::string& name, scripting::engine::ptr 
 	: page{ name, ngn_ptr, parent }
 {
 	Q_INIT_RESOURCE( scenarios_page );
-	register_in_lua( *_ngn_ptr );
+	register_in_lua( _ngn_ptr.value() );
 
 	_lst_wgt = new QListWidget{ this };
 

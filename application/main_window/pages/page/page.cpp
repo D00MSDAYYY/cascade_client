@@ -42,7 +42,7 @@ page::_init_toolbar( _nd_t& actions_tree_root)
 								  &QAction::triggered,
 								  [ this, child, old_action ]() {
 									  if ( old_action ) { old_action->trigger(); }
-									  ( *_ngn_ptr )->script( child._data._script );
+									  _ngn_ptr.value()->script( child._data._script );
 								  } );
 				////////////////////////////////////////////////
 				// //
