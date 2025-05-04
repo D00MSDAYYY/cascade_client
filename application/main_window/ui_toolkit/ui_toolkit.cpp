@@ -6,6 +6,7 @@
 #include <QPushButton>
 #include <QWidget>
 #include <map>
+#include <memory>
 
 void
 ui_toolkit::register_in_lua( const scripting::engine::ptr& ngn_ptr )
@@ -36,12 +37,13 @@ ui_toolkit::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 
 					auto qwgt_type{ ui_tbl.new_usertype< QWidget >(
 						"QWidget",
-						sol::factories( []( std::optional< QWidget* > parent ) {
-							return new QWidget{ parent.value_or( nullptr ) };
-						} ),
+						sol::factories(
+							[]() { return ui_toolkit::ptr_lc_guard< QWidget >( new QWidget{} ); } ),
 
 						"setLayout",
-						[]( QWidget* self, QLayout* lyt ) { self->setLayout( lyt ); },
+						[]( sol::this_state ts, QWidget* self, QLayout* lyt ) { 
+							
+							self->setLayout( lyt ); },
 
 						"setSizePolicy",
 						[ SIZE_POLICIES ]( QWidget*			  self,
@@ -53,6 +55,9 @@ ui_toolkit::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 														 SIZE_POLICIES.at( vert ) );
 								}
 						},
+
+						"setFixedSize",
+						[]( QWidget* self, int w, int h ) { self->setFixedSize( w, h ); },
 
 						"show",
 						&QWidget::show,
@@ -82,19 +87,13 @@ ui_toolkit::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 
 					auto qlabel_type{ ui_tbl.new_usertype< QLabel >(
 						"QLabel",
-						sol::factories(
-							[]( std::optional< QWidget* > parent ) {
-								auto ptr{ new QLabel{ parent.value_or( nullptr ) } };
-								ptr->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-								return ptr;
-							},
-							[]( const std::string& text, std::optional< QWidget* > parent ) {
-								auto ptr{
-									new QLabel{ text.c_str(), parent.value_or( nullptr ) }
-								};
-								ptr->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-								return ptr;
-							} ),
+						sol::factories( []( std::optional< std::string > text = std::nullopt ) {
+							auto ptr{ ui_toolkit::ptr_lc_guard< QLabel >{
+							  new QLabel{ text.value_or( "" ).c_str() } } };
+							ptr->setSizePolicy( QSizePolicy::Expanding,
+												QSizePolicy::Expanding ); //! TODO remove in future
+							return ptr;
+						} ),
 
 						"setText",
 						[]( QLabel* self, const std::string& text ) { self->setText( text.c_str() ); },
@@ -107,11 +106,9 @@ ui_toolkit::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 
 						sol::base_classes,
 						sol::bases< QFrame, QWidget, QObject >() ) };
-
 					// Регистрация QPushButton
 					auto qabsbtn_type{ ui_tbl.new_usertype< QAbstractButton >(
 						"QAbstractButton",
-
 						"setText",
 						[]( QAbstractButton* self, const std::string& text ) {
 							self->setText( text.c_str() );
@@ -179,13 +176,10 @@ ui_toolkit::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 
 					auto qpshbtn_type{ ui_tbl.new_usertype< QPushButton >(
 						"QPushButton",
-						sol::factories(
-							[]( std::optional< QWidget* > parent ) {
-								return new QPushButton{ parent.value_or( nullptr ) };
-							},
-							[]( const std::string& text, std::optional< QWidget* > parent ) {
-								return new QPushButton{ text.c_str(), parent.value_or( nullptr ) };
-							} ),
+						sol::factories( []( std::optional< std::string > text = std::nullopt ) {
+							return ui_toolkit::ptr_lc_guard< QPushButton >{ new QPushButton{
+							  text.value_or( "" ).c_str() } };
+						} ),
 
 						sol::base_classes,
 						sol::bases< QAbstractButton, QWidget, QObject >() ) };
@@ -193,12 +187,14 @@ ui_toolkit::register_in_lua( const scripting::engine::ptr& ngn_ptr )
 
 					ui_tbl.new_usertype< QHBoxLayout >(
 						"QHBoxLayout",
-						sol::factories( []( std::optional< QWidget* > parent ) {
-							return new QHBoxLayout{ parent.value_or( nullptr ) };
-						} ),
+						sol::factories(
+							[]() { return ui_toolkit::ptr_lc_guard< QHBoxLayout >{ new QHBoxLayout{} }; } ),
 
 						"addWidget",
 						[]( QHBoxLayout* self, QWidget* wgt ) { self->addWidget( wgt ); },
+
+						"HAZARD", //! todo
+						[]() { return new QHBoxLayout{}; },
 
 						"addStretch",
 						&QHBoxLayout::addStretch,

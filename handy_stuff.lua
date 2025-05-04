@@ -23,8 +23,8 @@ lyt = ui.QHBoxLayout.new();
 lyt:addWidget(btn_down);
 lyt:addWidget(txt);
 lyt:addWidget(btn_up);
-ui = ui.QWidget.new();
-ui:setLayout(lyt);
+sensor = ui.QWidget.new();
+sensor:setLayout(lyt);
 btn_up:_aux_connect_to_clicked('con1', function () print('hello') end)
 
 

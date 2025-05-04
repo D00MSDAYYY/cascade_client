@@ -113,16 +113,7 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	auto templates_btns_layout = new QHBoxLayout();
 	templates_btns_layout->setContentsMargins( 0, 0, 0, 0 );
 
-	for ( const QString& str : { "derive", "edit", "remove" } )
-		{
-			auto btn{ new QPushButton( QIcon( ":/sensors_creator/icons/" + str + ".png" ), "", this ) };
-			btn->setFixedSize( 32, 32 );
-			templates_btns_layout->addWidget( btn );
-		}
-
-
-	templates_btns_layout->addStretch( 1 );
-	_nd_t _actions_tree_root{
+	_nd_t templates_actions_tree{
 		{ .name		   = "_root_node",
 		  .children
 		  = { _nd_t{ { .name = "derive",
@@ -145,6 +136,26 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 																		} }
 	};
 
+	auto fill_lyt{ [ this ]( _nd_t& node, auto* lyt ) {
+		for ( auto& group : node._children )
+			{
+				if ( group._name == "|" ) { lyt->addStretch( 1 ); }
+				else
+					{
+						auto btn{ new QPushButton(
+							QIcon( ":/sensors_creator/icons/" + QString{ group._name.c_str() } + ".png" ),
+							"",
+							this ) };
+						connect( btn, &QPushButton::clicked, [ action = group._data._qaction ]() {
+							action->trigger();
+						} );
+						btn->setFixedSize( 32, 32 );
+						lyt->addWidget( btn );
+					}
+			}
+	} };
+	fill_lyt( templates_actions_tree, templates_btns_layout );
+	templates_btns_layout->addStretch( 1 );
 
 	templates_layout->addLayout( templates_btns_layout );
 	templates_group->setLayout( templates_layout );
@@ -154,8 +165,10 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	auto preview_group	= new QGroupBox( "Preview", this );
 	auto preview_layout = new QVBoxLayout();
 	auto preview_window = new QWidget( this );
+	auto pr_win_lyt		= new QVBoxLayout();
 	preview_window->setMinimumSize( 100, 100 );
-	preview_window->setStyleSheet( "background-color: red;" );
+	preview_window->setMaximumSize( 300, 300 );
+	preview_window->setLayout( pr_win_lyt );
 	preview_layout->addWidget( preview_window );
 	preview_group->setLayout( preview_layout );
 	left_layout->addWidget( preview_group );
@@ -176,19 +189,56 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 	edit_area->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 	edit_layout->addWidget( edit_area );
 
-	auto edit_btns_layout{ new QHBoxLayout() };
-	for ( const QString& str : { "preview", "save", " ", "to default" } )
-		{
-			if ( str == " " ) { edit_btns_layout->addStretch( 1 ); }
-			else
-				{
-					auto btn{
-						new QPushButton( QIcon( ":/sensors_creator/icons/" + str + ".png" ), "", this )
-					};
-					btn->setFixedSize( 32, 32 );
-					edit_btns_layout->addWidget( btn );
-				}
-		}
+	auto  edit_btns_layout{ new QHBoxLayout() };
+
+	_nd_t edit_actions_tree{
+		{ .name = "_root_node",
+		  .children
+		  = { _nd_t{
+				{ .name = "preview",
+				  .data
+				  = { ._qaction = page::_bind_qaction_with_func(
+						  new QAction{ this },
+						  [ this, edit_area, pr_win_lyt ]( auto preview_action ) {
+							  auto text{ edit_area->toPlainText() };
+							  auto sns_lua{ ( *_ngn_ptr )->script( "local sensor = {}; " + text.toStdString() +  "; return sensor; ") };
+							  if ( sns_lua.valid() )
+								  {
+									  if ( auto wgt_opt{ sns_lua.get< std::optional< QWidget* > >() };
+										   wgt_opt )
+										  {
+											  if ( auto item{ pr_win_lyt->itemAt( 0 ) }; item )
+												  {
+													  auto old_wgt{ item->widget() };
+													  pr_win_lyt->removeWidget( old_wgt );
+													  old_wgt->deleteLater();
+												  }
+											  pr_win_lyt->addWidget( *wgt_opt );
+											  std::cout << "success" << std::endl;
+										  }
+									  else
+										  {
+											  std::cout
+												  << "can't convert sensor from lua to widget. it's type is"
+												  << sol::type_name( ( *_ngn_ptr )->lua_state(),
+																	 sns_lua.get_type() )
+												  << std::endl;
+										  }
+								  }
+							  else { std::cout << "sensor widget result is not valid" << std::endl; }
+						  } ) } } },
+			  _nd_t{ { .name = "save",
+					   .data
+					   = { ._qaction = page::_bind_qaction_with_func( new QAction{ this },
+																	  [ this ]( auto save_action ) {} ) } } },
+			  _nd_t{ { .name = "|" } },
+			  _nd_t{ { .name = "to default",
+					   .data = { ._qaction = page::_bind_qaction_with_func(
+									 new QAction{ this },
+									 [ this ]( auto to_default_action ) {} ) } } } } }
+	};
+	fill_lyt( edit_actions_tree, edit_btns_layout );
+
 	edit_layout->addLayout( edit_btns_layout );
 	edit_group->setLayout( edit_layout );
 	right_layout->addWidget( edit_group );
@@ -210,13 +260,12 @@ sensors_creator::sensors_creator( const scripting::engine::ptr ngn_ptr, QWidget*
 
 						if ( table_variant.canConvert< sol::table >() )
 							{
-								auto	data_table{ table_variant.value< sol::table >() };
+								auto data_table{ table_variant.value< sol::table >() };
 
-								QString text{
-									data_table [ "script" ].get_or< std::string >( "empty or error" ).c_str()
-								};
+								auto text{ data_table [ "script" ].get_or< std::string >(
+									"empty or error" ) };
 
-								edit_area->setText( text );
+								edit_area->setText( text.c_str() );
 							}
 					}
 				else { edit_area->clear(); }
